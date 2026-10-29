@@ -6,636 +6,584 @@
 <title>تاكسي أحمد 🚕</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <style>
-  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  :root{
-    --yellow:#ffc107; --yellow-d:#e0a800; --dark:#1c1c1e;
-    --gray:#8e8e93; --bg:#f2f2f7; --card:#fff;
-    --green:#34c759; --red:#ff3b30;
-  }
-  body{
-    font-family:-apple-system,'Segoe UI',Tahoma,sans-serif;
-    background:#111;display:flex;justify-content:center;min-height:100vh;
-  }
-  .phone{
-    width:100%;max-width:460px;height:100vh;max-height:920px;
-    background:var(--bg);display:flex;flex-direction:column;
-    position:relative;overflow:hidden;box-shadow:0 0 60px rgba(255,193,7,.25);
-  }
-  header{
-    background:var(--dark);color:#fff;padding:14px 18px;
-    display:flex;align-items:center;justify-content:space-between;z-index:10;
-  }
-  .logo{font-weight:800;font-size:18px}
-  .logo span{color:var(--yellow)}
-  header button{
-    background:rgba(255,255,255,.12);border:none;color:#fff;
-    padding:8px 12px;border-radius:10px;font-size:13px;
-    cursor:pointer;font-family:inherit;transition:.2s;
-  }
-  header button:active{transform:scale(.95)}
-  #map{flex:1;min-height:0;z-index:1}
-  #sheet{
-    background:var(--card);border-radius:24px 24px 0 0;padding:14px 18px 22px;
-    box-shadow:0 -8px 30px rgba(0,0,0,.12);max-height:66%;
-    overflow-y:auto;position:relative;z-index:5;
-  }
-  .handle{width:42px;height:5px;background:#d1d1d6;border-radius:99px;margin:0 auto 14px}
-  .title{font-size:19px;font-weight:800;margin-bottom:14px;color:var(--dark)}
-  .subtitle{font-size:14px;font-weight:700;color:var(--dark);margin:16px 0 10px}
-  .field{
-    display:flex;align-items:center;gap:10px;background:var(--bg);
-    border-radius:14px;padding:4px 12px;margin-bottom:10px;
-  }
-  .field select{
-    flex:1;border:none;background:transparent;padding:13px 0;
-    font-size:15px;font-family:inherit;color:var(--dark);
-    outline:none;appearance:none;cursor:pointer;
-  }
-  .dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
-  .dot.green{background:var(--green)}
-  .dot.red{background:var(--red)}
-  .cars{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-  .car{
-    background:var(--bg);border-radius:14px;padding:10px 4px;text-align:center;
-    cursor:pointer;border:2px solid transparent;transition:.2s;
-  }
-  .car.active{border-color:var(--yellow);background:#fff8e1}
-  .car-icon{font-size:24px}
-  .car-name{font-size:12px;font-weight:700;margin-top:2px;color:var(--dark)}
-  .car-mult{font-size:10px;color:var(--gray)}
-  .summary{
-    display:flex;justify-content:space-between;align-items:center;
-    background:var(--bg);border-radius:14px;padding:14px;margin:16px 0 12px;
-  }
-  .summary .label{font-size:13px;color:var(--gray)}
-  .summary .price{font-size:20px;font-weight:800;color:var(--dark)}
-  .summary .price small{font-size:12px;color:var(--gray);font-weight:600}
-  .primary{
-    width:100%;background:var(--yellow);color:var(--dark);border:none;
-    padding:16px;border-radius:16px;font-size:16px;font-weight:800;
-    font-family:inherit;cursor:pointer;transition:.2s;
-  }
-  .primary:active{transform:scale(.97);background:var(--yellow-d)}
-  .primary:disabled{opacity:.5;cursor:not-allowed}
-  .secondary{
-    width:100%;background:transparent;color:var(--red);border:2px solid var(--red);
-    padding:14px;border-radius:16px;font-size:15px;font-weight:700;
-    font-family:inherit;cursor:pointer;margin-top:10px;
-  }
-  .spinner{
-    width:56px;height:56px;border:5px solid #eee;border-top-color:var(--yellow);
-    border-radius:50%;margin:20px auto;animation:spin .8s linear infinite;
-  }
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .center{text-align:center;padding:10px 0}
-  .center h3{font-size:17px;color:var(--dark);margin-bottom:6px}
-  .center p{font-size:13px;color:var(--gray)}
-  .driver-card{
-    display:flex;align-items:center;gap:12px;background:var(--bg);
-    border-radius:16px;padding:14px;margin-bottom:14px;
-  }
-  .driver-avatar{
-    width:52px;height:52px;border-radius:50%;background:var(--yellow);
-    display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;
-  }
-  .driver-info{flex:1}
-  .driver-name{font-weight:800;font-size:15px;color:var(--dark)}
-  .driver-car{font-size:12px;color:var(--gray);margin-top:2px}
-  .driver-rating{font-size:12px;color:var(--yellow-d);font-weight:700}
-  .call-btn{
-    width:44px;height:44px;border-radius:50%;background:var(--green);border:none;
-    font-size:20px;cursor:pointer;flex-shrink:0;color:#fff;
-  }
-  .eta-badge{
-    display:flex;justify-content:space-between;background:#fff8e1;
-    border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:14px;
-    font-weight:700;color:var(--dark);
-  }
-  .progress{
-    height:8px;background:var(--bg);border-radius:99px;overflow:hidden;margin:16px 0;
-  }
-  .progress-bar{
-    height:100%;background:var(--yellow);width:0%;border-radius:99px;
-    transition:width .3s linear;
-  }
-  .stars{display:flex;justify-content:center;gap:8px;font-size:34px;margin:14px 0;cursor:pointer}
-  .stars span{opacity:.3;transition:.15s;filter:grayscale(1)}
-  .stars span.on{opacity:1;filter:none;transform:scale(1.1)}
-  .toast{
-    position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);
-    background:var(--dark);color:#fff;padding:12px 20px;border-radius:12px;
-    font-size:14px;font-weight:600;opacity:0;transition:.35s;z-index:999;
-    pointer-events:none;max-width:90%;
-  }
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-  .history-item{
-    background:var(--bg);border-radius:14px;padding:12px 14px;margin-bottom:10px;font-size:13px;
-  }
-  .history-item .h-top{display:flex;justify-content:space-between;font-weight:800;color:var(--dark);margin-bottom:6px}
-  .history-item .h-row{color:var(--gray);display:flex;justify-content:space-between;margin-top:3px}
-  .empty{text-align:center;color:var(--gray);padding:30px 0;font-size:14px}
-  .marker-dot{
-    width:22px;height:22px;border-radius:50%;border:3px solid #fff;
-    box-shadow:0 2px 6px rgba(0,0,0,.4);
-  }
-  .car-marker{
-    font-size:26px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.35));
-    transition:transform .1s;text-align:center;
-  }
+:root{--primary:#FFC107;--primary-d:#E0A800;--dark:#0F1419;--gray:#6B7280;--bg:#F5F5F7;--green:#10B981;--red:#EF4444;--sh:0 8px 32px rgba(0,0,0,.08);--sh-lg:0 20px 60px rgba(0,0,0,.15)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:-apple-system,'SF Pro Display','Segoe UI',Tahoma,sans-serif;background:#000;color:var(--dark);overflow:hidden;display:flex;justify-content:center}
+#app{width:100%;max-width:500px;height:100vh;position:relative;overflow:hidden;background:var(--bg)}
+
+/* Auth */
+.auth-view{position:absolute;inset:0;z-index:100;background:linear-gradient(135deg,#FFC107,#FF9800);display:flex;align-items:center;justify-content:center;padding:20px}
+.auth-card{width:100%;max-width:380px;background:#fff;border-radius:28px;padding:32px 24px;box-shadow:var(--sh-lg)}
+.auth-logo{text-align:center;margin-bottom:8px}
+.auth-logo .em{font-size:52px;display:block;margin-bottom:8px}
+.auth-logo h1{font-size:24px;font-weight:800}
+.auth-logo p{color:var(--gray);font-size:14px;margin-top:4px}
+.auth-tabs{display:flex;background:var(--bg);border-radius:14px;padding:4px;margin:20px 0 18px}
+.auth-tabs button{flex:1;border:none;background:transparent;padding:10px;font-family:inherit;font-size:14px;font-weight:700;color:var(--gray);border-radius:10px;cursor:pointer;transition:.2s}
+.auth-tabs button.active{background:#fff;color:var(--dark);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:12px;font-weight:700;color:var(--gray);margin-bottom:6px}
+.fg input{width:100%;padding:14px 16px;border:2px solid transparent;background:var(--bg);border-radius:14px;font-family:inherit;font-size:15px;color:var(--dark);outline:none;transition:.2s}
+.fg input:focus{border-color:var(--primary);background:#fff}
+.remember-row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--gray);margin:10px 0 18px;cursor:pointer}
+.remember-row input{width:18px;height:18px;accent-color:var(--primary);cursor:pointer}
+.btn{width:100%;padding:16px;border-radius:16px;border:none;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;transition:.15s}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--primary);color:var(--dark)}
+.btn-secondary{background:transparent;color:var(--red);border:2px solid var(--red)}
+.btn-ghost{background:var(--bg);color:var(--dark)}
+.err-msg{background:#FEE2E2;color:#991B1B;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;margin-bottom:12px;display:none}
+.err-msg.show{display:block}
+.hint{text-align:center;font-size:12px;color:var(--gray);margin-top:14px;line-height:1.7}
+.hint code{background:var(--bg);padding:2px 6px;border-radius:6px;font-size:11px}
+
+/* App */
+.app-view{position:absolute;inset:0;z-index:1}
+#map{position:absolute;inset:0;z-index:1}
+.top-bar{position:absolute;top:0;right:0;left:0;z-index:10;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(255,255,255,.95) 55%,transparent);pointer-events:none}
+.top-bar>*{pointer-events:auto}
+.user-chip{display:flex;align-items:center;gap:10px;background:#fff;border-radius:99px;padding:6px 14px 6px 6px;box-shadow:var(--sh);cursor:pointer;border:none;font-family:inherit}
+.user-chip .av{width:36px;height:36px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:var(--dark)}
+.user-chip .nm{font-size:14px;font-weight:700;text-align:right;line-height:1.2;color:var(--dark)}
+.user-chip .nm small{display:block;font-weight:500;color:var(--gray);font-size:11px}
+.icon-btn{width:44px;height:44px;border-radius:50%;background:#fff;border:none;cursor:pointer;box-shadow:var(--sh);display:flex;align-items:center;justify-content:center;font-size:18px}
+.icon-btn:active{transform:scale(.92)}
+
+/* Sheet */
+.sheet{position:absolute;bottom:0;right:0;left:0;z-index:20;background:#fff;border-radius:28px 28px 0 0;padding:10px 20px 24px;box-shadow:0 -8px 40px rgba(0,0,0,.12);max-height:74%;overflow-y:auto;animation:slideUp .3s ease}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.handle{width:42px;height:5px;background:#E5E7EB;border-radius:99px;margin:0 auto 16px}
+.sheet h2{font-size:20px;font-weight:800;margin-bottom:16px}
+.sheet .sub{font-size:13px;color:var(--gray);margin:-10px 0 16px}
+.loc-row{display:flex;align-items:center;gap:12px;background:var(--bg);border-radius:16px;padding:8px 14px;margin-bottom:10px}
+.loc-row .dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.loc-row .dot.green{background:var(--green);box-shadow:0 0 0 4px rgba(16,185,129,.2)}
+.loc-row .dot.red{background:var(--red);box-shadow:0 0 0 4px rgba(239,68,68,.2)}
+.loc-inputs{flex:1;min-width:0}
+.loc-inputs select{width:100%;border:none;background:transparent;font-family:inherit;padding:5px 0;font-size:14px;color:var(--dark);outline:none;cursor:pointer;appearance:none;font-weight:700}
+.loc-inputs select:first-child{font-size:12px;color:var(--gray);font-weight:600}
+.cars-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:6px}
+.car-opt{background:var(--bg);border:2px solid transparent;border-radius:16px;padding:12px 6px;text-align:center;cursor:pointer;transition:.15s}
+.car-opt.active{background:#FFF8E1;border-color:var(--primary)}
+.car-opt .ic{font-size:28px;line-height:1}
+.car-opt .nm{font-size:12px;font-weight:700;margin-top:6px}
+.car-opt .ml{font-size:10px;color:var(--gray);margin-top:2px}
+.summary-card{background:linear-gradient(135deg,#FFF8E1,#FFF3C4);border-radius:18px;padding:16px;margin:16px 0;display:flex;justify-content:space-between;align-items:center}
+.summary-card .lbl{font-size:12px;color:#92400E;font-weight:600}
+.summary-card .val{font-size:22px;font-weight:800;margin-top:2px}
+.summary-card .val small{font-size:12px;color:var(--gray);font-weight:600}
+
+/* Searching */
+.searching{text-align:center;padding:20px 0}
+.radar{width:100px;height:100px;margin:0 auto 24px;position:relative;display:flex;align-items:center;justify-content:center}
+.radar::before,.radar::after{content:'';position:absolute;inset:0;border-radius:50%;background:var(--primary);opacity:.2;animation:pulse 2s ease-out infinite}
+.radar::after{animation-delay:1s}
+@keyframes pulse{0%{transform:scale(.4);opacity:.6}100%{transform:scale(1.8);opacity:0}}
+.radar .em{font-size:44px;z-index:1;animation:bob 1s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.searching h3{font-size:18px;font-weight:800;margin-bottom:8px}
+.searching p{color:var(--gray);font-size:14px}
+
+/* Driver */
+.driver-card{display:flex;align-items:center;gap:14px;background:var(--bg);border-radius:20px;padding:14px;margin-bottom:14px}
+.driver-card .av{width:56px;height:56px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.driver-card .info{flex:1;min-width:0}
+.driver-card .nm{font-size:16px;font-weight:800}
+.driver-card .car{font-size:12px;color:var(--gray);margin-top:2px}
+.driver-card .plate{font-size:11px;font-weight:700;background:#fff;padding:2px 8px;border-radius:6px;display:inline-block;margin-top:4px}
+.driver-card .rating{color:#F59E0B;font-weight:700;font-size:13px}
+.driver-card .call{width:48px;height:48px;border-radius:50%;background:var(--green);color:#fff;border:none;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center}
+.eta-banner{background:var(--dark);color:#fff;border-radius:16px;padding:14px 18px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+.eta-banner .lbl{font-size:13px;opacity:.7}
+.eta-banner .val{font-size:20px;font-weight:800;color:var(--primary)}
+.progress-bar{height:8px;background:var(--bg);border-radius:99px;overflow:hidden;margin:14px 0}
+.progress-bar>div{height:100%;background:var(--primary);width:0;transition:width .3s;border-radius:99px}
+.stars{display:flex;justify-content:center;gap:10px;font-size:38px;margin:16px 0;cursor:pointer}
+.stars span{opacity:.35;filter:grayscale(1);transition:.2s}
+.stars span.on{opacity:1;filter:none;transform:scale(1.1)}
+
+/* History */
+.ride-item{background:var(--bg);border-radius:16px;padding:14px;margin-bottom:10px}
+.ride-item .top{display:flex;justify-content:space-between;font-weight:800;margin-bottom:6px;font-size:14px}
+.ride-item .row{display:flex;justify-content:space-between;font-size:12px;color:var(--gray);margin-top:4px}
+.empty-state{text-align:center;padding:40px 20px;color:var(--gray)}
+.empty-state .ic{font-size:44px;margin-bottom:10px;opacity:.5}
+
+/* Modal */
+.modal{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.5);display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+.modal.show{display:flex}
+.modal-content{width:100%;max-width:500px;background:#fff;border-radius:28px 28px 0 0;padding:20px 20px 30px;max-height:85%;overflow-y:auto;animation:slideUp .3s}
+.profile-head{text-align:center;padding:10px 0 20px;border-bottom:1px solid var(--bg);margin-bottom:20px}
+.profile-head .av{width:80px;height:80px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;margin:0 auto 12px}
+.profile-head .nm{font-size:20px;font-weight:800}
+.profile-head .ph{font-size:14px;color:var(--gray);margin-top:4px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.stat{background:var(--bg);border-radius:16px;padding:14px;text-align:center}
+.stat .v{font-size:18px;font-weight:800}
+.stat .l{font-size:12px;color:var(--gray);margin-top:2px}
+
+/* Toast */
+.toast{position:fixed;bottom:30px;left:50%;transform:translate(-50%,100px);background:var(--dark);color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;opacity:0;transition:.35s;pointer-events:none;max-width:90%;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.success{background:var(--green)}
+.toast.error{background:var(--red)}
 </style>
 </head>
 <body>
-<div class="phone">
-  <header>
-    <div class="logo">🚕 تاكسي <span>أحمد</span></div>
-    <button id="historyBtn">📋 السجل</button>
-  </header>
-  <div id="map"></div>
-  <div id="sheet"></div>
-</div>
+<div id="app"></div>
 <div class="toast" id="toast"></div>
-
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-/* ========== البيانات ========== */
-const PLACES = [
-  {name:'الكرادة',    lat:33.2900, lng:44.4200},
-  {name:'الجادرية',   lat:33.2750, lng:44.3800},
-  {name:'المنصور',    lat:33.3160, lng:44.3350},
-  {name:'الكاظمية',   lat:33.3800, lng:44.3600},
-  {name:'الأعظمية',   lat:33.3800, lng:44.3700},
-  {name:'زيونة',      lat:33.3400, lng:44.4500},
-  {name:'الحارثية',   lat:33.3100, lng:44.3200},
-  {name:'العلاوي',    lat:33.3300, lng:44.3950},
-  {name:'الباب الشرقي',lat:33.3300, lng:44.4100},
-  {name:'الطالبية',   lat:33.3500, lng:44.4000},
-  {name:'مطار بغداد', lat:33.2625, lng:44.2346},
-  {name:'الشعلة',     lat:33.3450, lng:44.3000},
+/* ========== 1. البيانات ========== */
+const GOVS = [
+  { name:'بغداد', lat:33.3152, lng:44.3661, areas:['الكرادة','الجادرية','المنصور','الكاظمية','الأعظمية','زيونة','الحارثية','العلاوي','الباب الشرقي','الطالبية','الشعلة','الدورة','المحمودية','أبو غريب','الغزالية','اليرموك','العامرية','البياع','السيدية','حي أور','مدينة الصدر','بغداد الجديدة','الجهاد','الشرطة','الكمالية'] },
+  { name:'البصرة', lat:30.5081, lng:47.7835, areas:['العشار','الجنينة','الموفقية','الزبير','أبو الخصيب','شط العرب','القرنة','الطويسة','كرمة علي','الهارثة','الفاو','سفوان','المدينة','البراضعية'] },
+  { name:'نينوى', lat:36.3350, lng:43.1189, areas:['الموصل القديمة','الدواسة','الزهور','الجامعة','الرسالة','المتنبي','الدوميز','برطلة','تلكيف','الحمدانية','القيارة','سنجار','تلعفر','بعشيقة'] },
+  { name:'أربيل', lat:36.1911, lng:44.0092, areas:['مركز أربيل','عنكاوا','شقلاوة','سوران','كويه','رواندز','جومان','خبات','سيدكان','ميركه سور'] },
+  { name:'السليمانية', lat:35.5550, lng:45.4350, areas:['مركز السليمانية','حلبجة','رانية','دوكان','جمجمال','دربنديخان','بنجوين','سيد صادق','شهربازار','بازيان'] },
+  { name:'دهوك', lat:36.8669, lng:42.9503, areas:['مركز دهوك','زاخو','سميل','العمادية','عقرة','شيخان','بامرني','سرسنك'] },
+  { name:'كركوك', lat:35.4681, lng:44.3922, areas:['مركز كركوك','الحويجة','داقوق','دبس','الرياض','التون كوبري','ليلان','يايجة'] },
+  { name:'صلاح الدين', lat:34.6000, lng:43.6833, areas:['تكريت','سامراء','بيجي','الشرقاط','الدور','بلد','طوزخورماتو','الدجيل','الإسحاقي'] },
+  { name:'الأنبار', lat:33.4200, lng:43.3000, areas:['الرمادي','الفلوجة','هيت','حديثة','الرطبة','القائم','الحبانية','الخالدية','الكرمة','عامرية الفلوجة','البغدادي'] },
+  { name:'بابل', lat:32.4682, lng:44.4231, areas:['الحلة','المحاويل','الهاشمية','المسيب','الحمزة','القاسم','المدحتية','الاسكندرية','الشوملي','الطليعة'] },
+  { name:'كربلاء', lat:32.6160, lng:44.0249, areas:['مركز كربلاء','الحر','الحسينية','الخيرات','عين التمر','الهندية','الجدول الغربي','الاسكان'] },
+  { name:'النجف', lat:31.9976, lng:44.3296, areas:['النجف القديمة','الكوفة','الحيرة','المناذرة','المشخاب','القادسية','السلام','الميسان','العباسية','الغري'] },
+  { name:'القادسية', lat:31.9892, lng:44.9250, areas:['الديوانية','الشامية','عفك','الحمزة','البدير','الدغارة','الشنافية','السلام','المهادية'] },
+  { name:'المثنى', lat:31.3000, lng:45.2833, areas:['السماوة','الرميثة','الخضر','السلمان','الوركاء','الهلال','النجمي','الدراجي'] },
+  { name:'ذي قار', lat:31.0425, lng:46.2561, areas:['الناصرية','الشطرة','الرفاعي','سوق الشيوخ','الجبايش','قلعة سكر','الغراف','النصر','سيد دخيل','البطحاء'] },
+  { name:'ميسان', lat:31.8400, lng:47.1500, areas:['العمارة','المجر الكبير','قلعة صالح','علي الغربي','الكحلاء','الميمونة','العزير','كميت','المشرح'] },
+  { name:'واسط', lat:32.5000, lng:45.8167, areas:['الكوت','الحي','النعمانية','بدرة','الصويرة','العزيزية','شيخ سعد','الزبيدية'] },
+  { name:'ديالى', lat:33.7500, lng:44.6167, areas:['بعقوبة','المقدادية','الخالص','بلدروز','خانقين','كفري','المنصورية','العبارة','بني سعد'] },
 ];
 
 const CARS = {
-  economy:{name:'عادي', icon:'🚗', mult:1.0,  base:5},
-  comfort:{name:'مكيف', icon:'🚙', mult:1.3,  base:4},
-  vip:    {name:'فاخر', icon:'🚘', mult:1.8,  base:3},
-  van:    {name:'فان',  icon:'🚐', mult:1.5,  base:7},
+  economy:{name:'اقتصادي', icon:'🚗', mult:1.0, base:3},
+  comfort:{name:'مريح',    icon:'🚙', mult:1.3, base:5},
+  vip:    {name:'VIP',     icon:'🚘', mult:1.9, base:7},
+  van:    {name:'فان',     icon:'🚐', mult:1.5, base:5},
 };
 
 const DRIVERS = [
-  {name:'أحمد كريم',   rating:4.9, phone:'07701234567', car:'تويوتا كورولا',   plate:'بغداد ٢٤٧٨١', emoji:'👨'},
-  {name:'حسين علي',    rating:4.8, phone:'07809876543', car:'كيا سيراتو',      plate:'بغداد ١٥٦٣٢', emoji:'🧔'},
-  {name:'مصطفى جبار',  rating:5.0, phone:'07512345678', car:'هيونداي إلنترا',  plate:'بغداد ٩٨٤٥٦', emoji:'👨‍🦱'},
-  {name:'علي حسن',     rating:4.7, phone:'07705556677', car:'نيسان صني',       plate:'بغداد ٣٣٤٤٥', emoji:'👨‍🦰'},
-  {name:'كرار محمد',   rating:4.9, phone:'07811112222', car:'تويوتا يارس',     plate:'بغداد ٧٧٨٨٩', emoji:'🧑'},
+  {name:'أحمد كريم', rating:4.9, phone:'07701234567', car:'تويوتا كورولا', plate:'نجف ٢٤٧٨١', emoji:'👨'},
+  {name:'حسين علي', rating:4.8, phone:'07809876543', car:'كيا سيراتو', plate:'بغداد ١٥٦٣٢', emoji:'🧔'},
+  {name:'مصطفى جبار', rating:5.0, phone:'07512345678', car:'هيونداي إلنترا', plate:'بصرة ٩٨٤٥٦', emoji:'👨‍🦱'},
+  {name:'علي حسن', rating:4.7, phone:'07705556677', car:'نيسان صني', plate:'أربيل ٣٣٤٤٥', emoji:'👨‍🦰'},
+  {name:'كرار محمد', rating:4.9, phone:'07811112222', car:'تويوتا يارس', plate:'كربلاء ٧٧٨٨٩', emoji:'🧑'},
+  {name:'سيف علي', rating:4.8, phone:'07703334455', car:'شيفروليه أوبترا', plate:'بابل ٤٤٥٥٦', emoji:'👦'},
 ];
 
-/* ========== الحالة ========== */
-const state = {
-  stage: 'home',
-  pickup: PLACES[0],
-  dest: PLACES[1],
-  carType: 'economy',
-  driver: null,
-  route: null,
-  distance: 0,
-  price: 0,
-  rating: 5,
-  arrived: false,
-  history: JSON.parse(localStorage.getItem('ahmed_taxi_history') || '[]'),
+/* ========== 2. قاعدة البيانات (localStorage) ========== */
+const DB = {
+  KEY:'ahmed_taxi_v2',
+  load(){ try{ const d=JSON.parse(localStorage.getItem(this.KEY)); return d&&d.users?d:{users:[],session:null}; }catch{ return {users:[],session:null}; } },
+  save(db){ localStorage.setItem(this.KEY, JSON.stringify(db)); },
+  hash(p){ let h=5381; for(let i=0;i<p.length;i++) h=((h<<5)+h)^p.charCodeAt(i); return 'h_'+(h>>>0).toString(36)+'_'+p.length; },
+  register({name,phone,password}){
+    const db=this.load();
+    if(db.users.find(u=>u.phone===phone)) throw new Error('رقم الهاتف مسجل من قبل، جرّب تسجيل الدخول');
+    if(!/^07\d{9}$/.test(phone)) throw new Error('رقم الهاتف لازم يبدأ بـ 07 ويكون 11 رقم');
+    if(password.length<4) throw new Error('كلمة المرور 4 أحرف على الأقل');
+    if(name.trim().length<2) throw new Error('الاسم قصير جداً');
+    const user={id:'u_'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),name:name.trim(),phone,password:this.hash(password),createdAt:Date.now(),rides:[]};
+    db.users.push(user); this.save(db); return user;
+  },
+  login(phone,password){
+    const db=this.load(); const user=db.users.find(u=>u.phone===phone);
+    if(!user) throw new Error('ماكو حساب بهذا الرقم');
+    if(user.password!==this.hash(password)) throw new Error('كلمة المرور غلط');
+    return user;
+  },
+  startSession(userId,remember){
+    const db=this.load();
+    db.session={userId,remember:!!remember,expiresAt: remember?Date.now()+365*24*3600*1000 : Date.now()+24*3600*1000,token:'t_'+Math.random().toString(36).slice(2)};
+    this.save(db);
+  },
+  session(){
+    const db=this.load(); if(!db.session) return null;
+    if(db.session.expiresAt<Date.now()){ db.session=null; this.save(db); return null; }
+    return db.users.find(u=>u.id===db.session.userId)||null;
+  },
+  logout(){ const db=this.load(); db.session=null; this.save(db); },
+  addRide(userId,ride){
+    const db=this.load(); const u=db.users.find(x=>x.id===userId);
+    if(u){ u.rides=u.rides||[]; u.rides.unshift(ride); u.rides=u.rides.slice(0,50); this.save(db); }
+  },
 };
 
-/* ========== الخريطة ========== */
-const map = L.map('map', {zoomControl:false, attributionControl:false})
-  .setView([33.3152, 44.3661], 12);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19}).addTo(map);
+/* ========== 3. الحالة ========== */
+const state={ user:null, stage:'book', pickGov:'بغداد', pickArea:'الكرادة', dropGov:'بغداد', dropArea:'المنصور', carType:'economy', driver:null, route:null, distance:0, price:0, rating:5, progress:0, arrived:false };
 
-let pickupMarker=null, destMarker=null, carMarker=null, routeLine=null;
+/* ========== 4. أدوات ========== */
+let map, carMarker, routeLine, pickMarker, dropMarker;
 
-function dotIcon(color){
-  return L.divIcon({
-    className:'', iconSize:[22,22], iconAnchor:[11,11],
-    html:`<div class="marker-dot" style="background:${color}"></div>`
-  });
+function toast(msg,type=''){ const t=document.getElementById('toast'); t.className='toast show '+type; t.textContent=msg; clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2500); }
+function fmt(n){ return Number(n).toLocaleString('en-US'); }
+function initials(name){ const p=name.trim().split(' '); return ((p[0]?.[0]||'')+(p[1]?.[0]||'')).toUpperCase(); }
+function areaCoords(govName,areaName){
+  const g=GOVS.find(x=>x.name===govName); if(!g) return {lat:33.3152,lng:44.3661};
+  const i=g.areas.indexOf(areaName); const a=((i*137.5)%360)*Math.PI/180; const r=0.012+(i%5)*0.01;
+  return {lat:g.lat+Math.cos(a)*r, lng:g.lng+Math.sin(a)*r};
 }
-function carIcon(){
-  return L.divIcon({
-    className:'', iconSize:[40,40], iconAnchor:[20,20],
-    html:`<div class="car-marker">🚕</div>`
-  });
-}
+function haversine(a,b){ const R=6371, dLat=(b.lat-a.lat)*Math.PI/180, dLng=(b.lng-a.lng)*Math.PI/180; const x=Math.sin(dLat/2)**2+Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLng/2)**2; return 2*R*Math.asin(Math.sqrt(x)); }
+function calcPrice(km,type){ const raw=2000+km*800; return Math.round((raw*CARS[type].mult)/250)*250; }
+function pointAlong(coords,t){ if(coords.length<2) return coords[0]; const idx=t*(coords.length-1); const i=Math.floor(idx); if(i>=coords.length-1) return coords[coords.length-1]; const f=idx-i; return [coords[i][0]+(coords[i+1][0]-coords[i][0])*f, coords[i][1]+(coords[i+1][1]-coords[i][1])*f]; }
+function animateCar(coords,dur,done){ const t0=Date.now(); const tm=setInterval(()=>{ const t=Math.min(1,(Date.now()-t0)/dur); if(carMarker) carMarker.setLatLng(pointAlong(coords,t)); if(t>=1){ clearInterval(tm); done?.(); } },50); }
 
-function refreshMapMarkers(){
-  if(pickupMarker) map.removeLayer(pickupMarker);
-  if(destMarker)   map.removeLayer(destMarker);
-  pickupMarker = L.marker([state.pickup.lat, state.pickup.lng], {icon:dotIcon('#34c759')}).addTo(map);
-  destMarker   = L.marker([state.dest.lat,   state.dest.lng],   {icon:dotIcon('#ff3b30')}).addTo(map);
-  const group = L.featureGroup([pickupMarker, destMarker]);
-  map.fitBounds(group.getBounds(), {padding:[60,60], maxZoom:14});
-}
-
-/* ========== دوال مساعدة ========== */
-function haversine(a,b){
-  const R=6371, dLat=(b.lat-a.lat)*Math.PI/180, dLng=(b.lng-a.lng)*Math.PI/180;
-  const x = Math.sin(dLat/2)**2 + Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLng/2)**2;
-  return 2*R*Math.asin(Math.sqrt(x));
-}
-
-function estimateDistance(){
-  if(!state.pickup || !state.dest) return 0;
-  return haversine(state.pickup, state.dest) * 1.35; // معامل الشوارع
-}
-
-function calcPrice(km, type){
-  const c = CARS[type];
-  const raw = 2000 + km * 750;
-  const price = raw * c.mult;
-  return Math.round(price / 250) * 250;
-}
-
-async function getRoute(a,b){
-  try{
-    const url = `https://router.project-osrm.org/route/v1/driving/${a.lng},${a.lat};${b.lng},${b.lat}?overview=full&geometries=geojson`;
-    const res = await fetch(url);
-    const data = await res.json();
-    if(data.routes && data.routes[0]){
-      return {
-        coords: data.routes[0].geometry.coordinates.map(c=>[c[1], c[0]]),
-        distance: data.routes[0].distance / 1000,
-      };
-    }
-  }catch(e){ /* fallback */ }
-  const d = haversine(a,b);
-  return { coords:[[a.lat,a.lng],[b.lat,b.lng]], distance: d };
-}
-
-function pointAlongPath(coords, t){
-  if(coords.length < 2) return coords[0];
-  const idx = t * (coords.length - 1);
-  const i = Math.floor(idx);
-  const f = idx - i;
-  if(i >= coords.length - 1) return coords[coords.length - 1];
-  const A = coords[i], B = coords[i+1];
-  return [A[0]+(B[0]-A[0])*f, A[1]+(B[1]-A[1])*f];
-}
-
-function animateAlong(coords, duration, onDone){
-  const start = Date.now();
-  const timer = setInterval(()=>{
-    const t = Math.min(1, (Date.now()-start)/duration);
-    const pos = pointAlongPath(coords, t);
-    if(carMarker) carMarker.setLatLng(pos);
-    if(t >= 1){
-      clearInterval(timer);
-      if(onDone) onDone();
-    }
-  }, 50);
-}
-
-function toast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(t._tm);
-  t._tm = setTimeout(()=>t.classList.remove('show'), 2400);
-}
-
-function placeOptions(selected){
-  return PLACES.map(p =>
-    `<option value="${p.name}" ${p.name===selected?'selected':''}>${p.name}</option>`
-  ).join('');
-}
-
-/* ========== عرض الشاشات ========== */
-const sheet = document.getElementById('sheet');
-
-function render(){
-  if(state.stage === 'home')        return renderHome();
-  if(state.stage === 'searching')   return renderSearching();
-  if(state.stage === 'driver-found')return renderDriver();
-  if(state.stage === 'in-ride')     return renderInRide();
-  if(state.stage === 'completed')   return renderCompleted();
-  if(state.stage === 'history')     return renderHistory();
-}
-
-function renderHome(){
-  sheet.innerHTML = `
-    <div class="handle"></div>
-    <h2 class="title">وين نوصلك؟</h2>
-    <div class="field">
-      <span class="dot green"></span>
-      <select id="pickupSel">${placeOptions(state.pickup.name)}</select>
-    </div>
-    <div class="field">
-      <span class="dot red"></span>
-      <select id="destSel">${placeOptions(state.dest.name)}</select>
-    </div>
-    <h3 class="subtitle">اختر نوع السيارة</h3>
-    <div class="cars" id="carsEl">
-      ${Object.entries(CARS).map(([k,c]) => `
-        <div class="car ${state.carType===k?'active':''}" data-type="${k}">
-          <div class="car-icon">${c.icon}</div>
-          <div class="car-name">${c.name}</div>
-          <div class="car-mult">×${c.mult}</div>
+/* ========== 5. المصادقة ========== */
+function showAuth(){
+  if(map){ try{ map.remove(); }catch{} map=null; }
+  document.getElementById('app').innerHTML=`
+    <div class="auth-view"><div class="auth-card">
+      <div class="auth-logo"><span class="em">🚕</span><h1>تاكسي أحمد</h1><p>مشوارك بأمان وسرعة</p></div>
+      <div class="auth-tabs">
+        <button type="button" data-tab="login" class="active">تسجيل دخول</button>
+        <button type="button" data-tab="register">حساب جديد</button>
+      </div>
+      <div class="err-msg" id="authErr"></div>
+      <form id="authForm" autocomplete="off">
+        <div class="fg" id="nameGroup" style="display:none">
+          <label>الاسم الكامل</label>
+          <input id="authName" placeholder="مثال: أحمد كريم" autocomplete="off" />
         </div>
-      `).join('')}
-    </div>
-    <div class="summary" id="summary"></div>
-    <button class="primary" id="requestBtn">اطلب التكسي</button>
-  `;
+        <div class="fg">
+          <label>رقم الهاتف</label>
+          <input id="authPhone" type="tel" placeholder="07XX XXX XXXX" autocomplete="off" inputmode="numeric" maxlength="11" />
+        </div>
+        <div class="fg">
+          <label>كلمة المرور</label>
+          <input id="authPass" type="password" placeholder="••••••••" autocomplete="new-password" />
+        </div>
+        <label class="remember-row">
+          <input type="checkbox" id="authRemember" checked />
+          <span>تذكرني (ابقى مسجل دخول)</span>
+        </label>
+        <button type="submit" class="btn btn-primary" id="authSubmit">دخول</button>
+      </form>
+      <p class="hint">بياناتك تنحفظ بمتصفحك فقط<br>ما تحتاج تسجل مرة ثانية إذا فعّلت "تذكرني"</p>
+    </div></div>`;
 
-  const pickupSel = document.getElementById('pickupSel');
-  const destSel   = document.getElementById('destSel');
-  const summary   = document.getElementById('summary');
-
-  function updateSummary(){
-    const km = estimateDistance();
-    const price = calcPrice(km, state.carType);
-    state.distance = km;
-    state.price = price;
-    const eta = Math.max(2, Math.round(km * 2.3));
-    summary.innerHTML = `
-      <div>
-        <div class="label">المسافة التقريبية</div>
-        <div class="price" style="font-size:16px">${km.toFixed(1)} كم</div>
-        <div class="label" style="margin-top:4px">⏱ ~${eta} دقيقة</div>
-      </div>
-      <div style="text-align:left">
-        <div class="label">السعر التقديري</div>
-        <div class="price">${price.toLocaleString()}<small> د.ع</small></div>
-      </div>
-    `;
-  }
-
-  pickupSel.onchange = ()=>{
-    state.pickup = PLACES.find(p=>p.name===pickupSel.value);
-    refreshMapMarkers();
-    updateSummary();
-  };
-  destSel.onchange = ()=>{
-    state.dest = PLACES.find(p=>p.name===destSel.value);
-    refreshMapMarkers();
-    updateSummary();
-  };
-
-  document.querySelectorAll('.car').forEach(el=>{
-    el.onclick = ()=>{
-      state.carType = el.dataset.type;
-      document.querySelectorAll('.car').forEach(c=>c.classList.remove('active'));
-      el.classList.add('active');
-      updateSummary();
+  let mode='login';
+  const ng=document.getElementById('nameGroup'), err=document.getElementById('authErr');
+  document.querySelectorAll('.auth-tabs button').forEach(b=>{
+    b.onclick=()=>{
+      document.querySelectorAll('.auth-tabs button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active'); mode=b.dataset.tab;
+      ng.style.display = mode==='register'?'block':'none';
+      document.getElementById('authSubmit').textContent = mode==='register'?'إنشاء حساب':'دخول';
+      err.classList.remove('show');
     };
   });
+  ['authName','authPhone','authPass'].forEach(id=>{ const el=document.getElementById(id); if(el) el.oninput=()=>err.classList.remove('show'); });
 
-  document.getElementById('requestBtn').onclick = requestTaxi;
+  document.getElementById('authForm').onsubmit=(e)=>{
+    e.preventDefault(); err.classList.remove('show');
+    const phone=document.getElementById('authPhone').value.trim();
+    const pass=document.getElementById('authPass').value;
+    const remember=document.getElementById('authRemember').checked;
+    try{
+      let user;
+      if(mode==='register'){
+        const name=document.getElementById('authName').value.trim();
+        user=DB.register({name,phone,password:pass});
+        toast('تم إنشاء حسابك 🎉','success');
+      } else {
+        user=DB.login(phone,pass);
+        toast('أهلاً بعودتك 👋','success');
+      }
+      DB.startSession(user.id,remember);
+      state.user=user; showApp();
+    }catch(e){ err.textContent=e.message; err.classList.add('show'); }
+  };
+}
 
-  refreshMapMarkers();
-  updateSummary();
+/* ========== 6. التطبيق ========== */
+function showApp(){
+  document.getElementById('app').innerHTML=`
+    <div class="app-view">
+      <div class="top-bar">
+        <button class="icon-btn" id="homeBtn" title="الرئيسية">🏠</button>
+        <button class="user-chip" id="userChip">
+          <div class="av">${initials(state.user.name)}</div>
+          <div class="nm">${state.user.name.split(' ')[0]}<small>${state.user.phone}</small></div>
+        </button>
+      </div>
+      <div id="map"></div>
+      <div class="sheet" id="sheet"></div>
+    </div>
+    <div class="modal" id="modal"><div class="modal-content" id="modalContent"></div></div>`;
+  document.getElementById('userChip').onclick=showProfile;
+  document.getElementById('homeBtn').onclick=()=>{
+    if(['searching','driver','ride'].includes(state.stage)) return toast('انتظر انتهاء الرحلة','error');
+    if(state.stage==='done'){ saveCompletedRide(); }
+    resetTrip(); renderSheet();
+  };
+  setTimeout(()=>{ initMap(); renderSheet(); },30);
+}
+
+function initMap(){
+  if(map){ try{ map.remove(); }catch{} }
+  map=L.map('map',{zoomControl:false, attributionControl:false}).setView([33.3152,44.3661],11);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(map);
+  updateMarkers();
+}
+function markerIcon(color){ return L.divIcon({className:'',iconSize:[24,24],iconAnchor:[12,12],html:`<div style="width:22px;height:22px;border-radius:50%;background:${color};border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.35)"></div>`}); }
+function carIcon(){ return L.divIcon({className:'',iconSize:[44,44],iconAnchor:[22,22],html:`<div style="font-size:32px;text-align:center;filter:drop-shadow(0 3px 5px rgba(0,0,0,.4))">🚕</div>`}); }
+function updateMarkers(){
+  if(!map) return;
+  if(pickMarker) map.removeLayer(pickMarker);
+  if(dropMarker) map.removeLayer(dropMarker);
+  const pc=areaCoords(state.pickGov,state.pickArea), dc=areaCoords(state.dropGov,state.dropArea);
+  pickMarker=L.marker([pc.lat,pc.lng],{icon:markerIcon('#10B981')}).addTo(map);
+  dropMarker=L.marker([dc.lat,dc.lng],{icon:markerIcon('#EF4444')}).addTo(map);
+  if(!routeLine){ const g=L.featureGroup([pickMarker,dropMarker]); map.fitBounds(g.getBounds(),{padding:[80,80],maxZoom:13}); }
+}
+
+/* ========== 7. عرض الشاشات ========== */
+function renderSheet(){
+  if(state.stage==='book') return renderBook();
+  if(state.stage==='searching') return renderSearching();
+  if(state.stage==='driver') return renderDriver();
+  if(state.stage==='ride') return renderRide();
+  if(state.stage==='done') return renderDone();
+}
+function govOptions(sel){ return GOVS.map(g=>`<option value="${g.name}" ${g.name===sel?'selected':''}>${g.name}</option>`).join(''); }
+function areaOptions(govName,sel){ const g=GOVS.find(x=>x.name===govName); if(!g) return ''; return g.areas.map(a=>`<option value="${a}" ${a===sel?'selected':''}>${a}</option>`).join(''); }
+
+function renderBook(){
+  const pc=areaCoords(state.pickGov,state.pickArea), dc=areaCoords(state.dropGov,state.dropArea);
+  const km=haversine(pc,dc)*1.35;
+  state.distance=km; state.price=calcPrice(km,state.carType);
+  const eta=Math.max(3,Math.round(km*2.5));
+  document.getElementById('sheet').innerHTML=`
+    <div class="handle"></div>
+    <h2>وين نوصلك؟</h2>
+    <p class="sub">اختر منطقتك ووجهتك</p>
+    <div class="loc-row">
+      <div class="dot green"></div>
+      <div class="loc-inputs">
+        <select id="pickGov">${govOptions(state.pickGov)}</select>
+        <select id="pickArea">${areaOptions(state.pickGov,state.pickArea)}</select>
+      </div>
+    </div>
+    <div class="loc-row">
+      <div class="dot red"></div>
+      <div class="loc-inputs">
+        <select id="dropGov">${govOptions(state.dropGov)}</select>
+        <select id="dropArea">${areaOptions(state.dropGov,state.dropArea)}</select>
+      </div>
+    </div>
+    <h3 style="font-size:15px;font-weight:800;margin:18px 0 10px">اختر السيارة</h3>
+    <div class="cars-grid">
+      ${Object.entries(CARS).map(([k,c])=>`<div class="car-opt ${state.carType===k?'active':''}" data-type="${k}"><div class="ic">${c.icon}</div><div class="nm">${c.name}</div><div class="ml">×${c.mult}</div></div>`).join('')}
+    </div>
+    <div class="summary-card">
+      <div>
+        <div class="lbl">المسافة التقريبية</div>
+        <div class="val" style="font-size:16px">${km.toFixed(1)} كم</div>
+        <div class="lbl" style="margin-top:6px">⏱ ~${eta} دقيقة</div>
+      </div>
+      <div style="text-align:left">
+        <div class="lbl">السعر التقديري</div>
+        <div class="val">${fmt(state.price)}<small> د.ع</small></div>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="reqBtn">🚕 اطلب التكسي</button>`;
+
+  document.getElementById('pickGov').onchange=(e)=>{ state.pickGov=e.target.value; state.pickArea=GOVS.find(g=>g.name===state.pickGov).areas[0]; updateMarkers(); renderBook(); };
+  document.getElementById('pickArea').onchange=(e)=>{ state.pickArea=e.target.value; updateMarkers(); renderBook(); };
+  document.getElementById('dropGov').onchange=(e)=>{ state.dropGov=e.target.value; state.dropArea=GOVS.find(g=>g.name===state.dropGov).areas[0]; updateMarkers(); renderBook(); };
+  document.getElementById('dropArea').onchange=(e)=>{ state.dropArea=e.target.value; updateMarkers(); renderBook(); };
+  document.querySelectorAll('.car-opt').forEach(el=>{ el.onclick=()=>{ state.carType=el.dataset.type; renderBook(); }; });
+  document.getElementById('reqBtn').onclick=requestTaxi;
 }
 
 function renderSearching(){
-  sheet.innerHTML = `
+  document.getElementById('sheet').innerHTML=`
     <div class="handle"></div>
-    <div class="spinner"></div>
-    <div class="center">
-      <h3>جاري البحث عن سائق قريب...</h3>
+    <div class="searching">
+      <div class="radar"><span class="em">🚕</span></div>
+      <h3>جاري البحث عن سائق...</h3>
       <p>هذا يأخذ لحظات فقط ⏳</p>
-    </div>
-  `;
+    </div>`;
 }
 
 function renderDriver(){
-  const d = state.driver;
-  const c = CARS[state.carType];
-  const eta = state.arrived ? 'السائق وصل! 🎉' : `${c.base} دقائق`;
-  sheet.innerHTML = `
+  const d=state.driver, here=state.arrived;
+  document.getElementById('sheet').innerHTML=`
     <div class="handle"></div>
-    <div class="eta-badge">
-      <span>🚕 سيارتك قادمة</span>
-      <span>${eta}</span>
+    <div class="eta-banner">
+      <div><div class="lbl">${here?'السائق وصل':'وقت الوصول'}</div><div class="val">${here?'🎉':CARS[state.carType].base+' دقائق'}</div></div>
+      <div style="font-size:32px">🚕</div>
     </div>
     <div class="driver-card">
-      <div class="driver-avatar">${d.emoji}</div>
-      <div class="driver-info">
-        <div class="driver-name">${d.name} <span class="driver-rating">⭐ ${d.rating}</span></div>
-        <div class="driver-car">${d.car} • ${d.plate}</div>
+      <div class="av">${d.emoji}</div>
+      <div class="info">
+        <div class="nm">${d.name}</div>
+        <div class="car">${d.car}</div>
+        <div class="plate">${d.plate}</div>
       </div>
-      <button class="call-btn" onclick="window.location.href='tel:${d.phone}'">📞</button>
+      <div style="text-align:center">
+        <div class="rating">⭐ ${d.rating}</div>
+        <button class="call" onclick="window.location.href='tel:${d.phone}'" style="margin-top:6px">📞</button>
+      </div>
     </div>
-    <div class="summary">
+    <div class="summary-card">
       <div>
-        <div class="label">الوجهة</div>
-        <div style="font-weight:800;font-size:15px">${state.dest.name}</div>
+        <div class="lbl">الوجهة</div>
+        <div style="font-weight:800;font-size:15px">${state.dropArea}</div>
+        <div class="lbl">${state.dropGov}</div>
       </div>
-      <div style="text-align:left">
-        <div class="label">السعر</div>
-        <div class="price">${state.price.toLocaleString()}<small> د.ع</small></div>
-      </div>
+      <div style="text-align:left"><div class="lbl">السعر</div><div class="val">${fmt(state.price)}<small> د.ع</small></div></div>
     </div>
-    ${state.arrived
-      ? `<button class="primary" id="startBtn">🚀 بدء الرحلة</button>`
-      : `<button class="secondary" id="cancelBtn">إلغاء الطلب</button>`}
-  `;
-  if(state.arrived){
-    document.getElementById('startBtn').onclick = startRide;
-  }else{
-    document.getElementById('cancelBtn').onclick = cancelRide;
-  }
+    ${here?`<button class="btn btn-primary" id="startBtn">🚀 بدء الرحلة</button>`:`<button class="btn btn-secondary" id="cancelBtn">إلغاء الطلب</button>`}`;
+  if(here) document.getElementById('startBtn').onclick=startRide;
+  else document.getElementById('cancelBtn').onclick=cancelRide;
 }
 
-function renderInRide(){
-  const progress = state._progress || 0;
-  sheet.innerHTML = `
+function renderRide(){
+  const remain=Math.max(1,Math.round((1-state.progress/100)*Math.max(3,state.distance*2)));
+  document.getElementById('sheet').innerHTML=`
     <div class="handle"></div>
-    <div class="center" style="padding:0">
-      <h3>🚕 في الطريق إلى ${state.dest.name}</h3>
-      <p>الوصول المتوقع بعد ${Math.max(1, Math.round((1-progress/100)*Math.round(state.distance*2.3)))} دقيقة</p>
-    </div>
-    <div class="progress"><div class="progress-bar" id="bar" style="width:${progress}%"></div></div>
-    <div class="summary">
+    <h2 style="font-size:17px">🚕 في الطريق إلى ${state.dropArea}</h2>
+    <p class="sub">الوصول المتوقع بعد ${remain} دقيقة</p>
+    <div class="progress-bar"><div id="bar" style="width:${state.progress}%"></div></div>
+    <div class="summary-card">
       <div>
-        <div class="label">السائق</div>
-        <div style="font-weight:800">${state.driver.name}</div>
+        <div class="lbl">السائق</div>
+        <div style="font-weight:800;font-size:15px">${state.driver.name}</div>
+        <div class="lbl">${state.driver.car}</div>
       </div>
-      <div style="text-align:left">
-        <div class="label">السعر</div>
-        <div class="price">${state.price.toLocaleString()}<small> د.ع</small></div>
-      </div>
-    </div>
-  `;
+      <div style="text-align:left"><div class="lbl">الأجرة</div><div class="val">${fmt(state.price)}<small> د.ع</small></div></div>
+    </div>`;
 }
 
-function renderCompleted(){
-  const stars = [1,2,3,4,5].map(i =>
-    `<span data-v="${i}" class="${i<=state.rating?'on':''}">⭐</span>`
-  ).join('');
-  sheet.innerHTML = `
+function renderDone(){
+  document.getElementById('sheet').innerHTML=`
     <div class="handle"></div>
-    <div class="center" style="padding:6px 0 0">
-      <div style="font-size:44px">🎉</div>
-      <h3>وصلت بالسلامة!</h3>
+    <div class="searching" style="padding-top:0">
+      <div style="font-size:60px">🎉</div>
+      <h3 style="margin-top:10px">وصلت بالسلامة!</h3>
       <p>شكراً لاستخدامك تاكسي أحمد</p>
     </div>
-    <div class="summary" style="margin-top:18px">
-      <div>
-        <div class="label">المبلغ الإجمالي</div>
-        <div class="price">${state.price.toLocaleString()}<small> د.ع</small></div>
-      </div>
-      <div style="text-align:left">
-        <div class="label">المسافة</div>
-        <div style="font-weight:800">${state.distance.toFixed(1)} كم</div>
-      </div>
+    <div class="summary-card">
+      <div><div class="lbl">المبلغ الإجمالي</div><div class="val">${fmt(state.price)}<small> د.ع</small></div></div>
+      <div style="text-align:left"><div class="lbl">المسافة</div><div class="val" style="font-size:16px">${state.distance.toFixed(1)} كم</div></div>
     </div>
-    <div style="text-align:center;font-size:14px;font-weight:700;color:#1c1c1e;margin-top:8px">قيّم السائق</div>
-    <div class="stars" id="starsEl">${stars}</div>
-    <button class="primary" id="doneBtn">تم ✅</button>
-  `;
-  document.querySelectorAll('#starsEl span').forEach(s=>{
-    s.onclick = ()=>{
-      state.rating = +s.dataset.v;
-      document.querySelectorAll('#starsEl span').forEach(x=>{
-        x.classList.toggle('on', +x.dataset.v <= state.rating);
-      });
-    };
+    <div style="text-align:center;font-size:14px;font-weight:700;margin-top:6px">قيّم السائق</div>
+    <div class="stars" id="stars">${[1,2,3,4,5].map(i=>`<span data-v="${i}" class="${i<=state.rating?'on':''}">⭐</span>`).join('')}</div>
+    <button class="btn btn-primary" id="doneBtn">تم ✅</button>`;
+  document.querySelectorAll('#stars span').forEach(s=>{
+    s.onclick=()=>{ state.rating=+s.dataset.v; document.querySelectorAll('#stars span').forEach(x=>x.classList.toggle('on',+x.dataset.v<=state.rating)); };
   });
-  document.getElementById('doneBtn').onclick = ()=>{
-    saveHistory();
-    state.stage = 'home';
-    state.arrived = false;
-    state._progress = 0;
-    state.driver = null;
-    if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
-    if(carMarker){ map.removeLayer(carMarker); carMarker = null; }
-    render();
-  };
+  document.getElementById('doneBtn').onclick=()=>{ saveCompletedRide(); resetTrip(); renderSheet(); toast('شكراً لك 🌟','success'); };
 }
 
-function renderHistory(){
-  const list = state.history.length
-    ? state.history.map(h=>`
-      <div class="history-item">
-        <div class="h-top">
-          <span>${h.from} → ${h.to}</span>
-          <span>${h.price.toLocaleString()} د.ع</span>
-        </div>
-        <div class="h-row"><span>🚕 ${h.driver}</span><span>${'⭐'.repeat(h.rating)}</span></div>
-        <div class="h-row"><span>${h.date}</span><span>${h.km} كم</span></div>
-      </div>
-    `).join('')
-    : `<div class="empty">ماكو رحلات سابقة بعد 🚕</div>`;
-
-  sheet.innerHTML = `
-    <div class="handle"></div>
-    <h2 class="title">📋 سجل الرحلات</h2>
-    ${list}
-    <button class="primary" id="backBtn" style="margin-top:10px">رجوع</button>
-  `;
-  document.getElementById('backBtn').onclick = ()=>{
-    state.stage = 'home';
-    render();
-  };
-}
-
-/* ========== منطق الطلب ========== */
+/* ========== 8. المنطق ========== */
 async function requestTaxi(){
-  if(state.pickup.name === state.dest.name){
-    return toast('اختر مكانين مختلفين');
-  }
-  state.stage = 'searching';
-  render();
-
-  const route = await getRoute(state.pickup, state.dest);
-  state.route = route;
-  state.distance = route.distance;
-  state.price = calcPrice(route.distance, state.carType);
-
+  if(state.pickGov===state.dropGov && state.pickArea===state.dropArea) return toast('اختر منطقتين مختلفتين','error');
+  state.stage='searching'; renderSheet();
+  const pick=areaCoords(state.pickGov,state.pickArea), drop=areaCoords(state.dropGov,state.dropArea);
+  let route;
+  try{
+    const url=`https://router.project-osrm.org/route/v1/driving/${pick.lng},${pick.lat};${drop.lng},${drop.lat}?overview=full&geometries=geojson`;
+    const res=await fetch(url); const data=await res.json();
+    if(data.routes?.[0]) route={coords:data.routes[0].geometry.coordinates.map(c=>[c[1],c[0]]),distance:data.routes[0].distance/1000};
+  }catch{}
+  if(!route) route={coords:[[pick.lat,pick.lng],[drop.lat,drop.lng]],distance:haversine(pick,drop)};
+  state.route=route; state.distance=route.distance; state.price=calcPrice(route.distance,state.carType);
   if(routeLine) map.removeLayer(routeLine);
-  routeLine = L.polyline(route.coords, {color:'#ffc107', weight:6, opacity:.9}).addTo(map);
-  map.fitBounds(routeLine.getBounds(), {padding:[60,60]});
-
+  routeLine=L.polyline(route.coords,{color:'#FFC107',weight:6,opacity:0.9}).addTo(map);
+  map.fitBounds(routeLine.getBounds(),{padding:[80,80]});
   setTimeout(()=>{
-    state.driver = DRIVERS[Math.floor(Math.random()*DRIVERS.length)];
-    state.stage = 'driver-found';
-    state.arrived = false;
-    render();
-
-    // ضع التكسي قريب من نقطة البداية وحاركه نحوها
-    const start = {lat: state.pickup.lat + 0.012, lng: state.pickup.lng + 0.012};
+    state.driver=DRIVERS[Math.floor(Math.random()*DRIVERS.length)];
+    state.stage='driver'; state.arrived=false; renderSheet();
+    const st={lat:pick.lat+0.015,lng:pick.lng+0.012};
     if(carMarker) map.removeLayer(carMarker);
-    carMarker = L.marker([start.lat, start.lng], {icon: carIcon()}).addTo(map);
-
-    animateAlong([[start.lat, start.lng], [state.pickup.lat, state.pickup.lng]], 5000, ()=>{
-      state.arrived = true;
-      if(state.stage === 'driver-found') render();
-      toast('وصل السائق 🚕');
+    carMarker=L.marker([st.lat,st.lng],{icon:carIcon()}).addTo(map);
+    animateCar([[st.lat,st.lng],[pick.lat,pick.lng]],5000,()=>{
+      state.arrived=true;
+      if(state.stage==='driver') renderSheet();
+      toast('السائق وصل 🎉','success');
     });
-  }, 2600);
+  },2500);
 }
 
 function startRide(){
-  state.stage = 'in-ride';
-  state._progress = 0;
-  render();
-
-  const duration = Math.max(5000, state.distance * 1400);
-  const startTime = Date.now();
-
-  const timer = setInterval(()=>{
-    const t = Math.min(1, (Date.now()-startTime)/duration);
-    state._progress = Math.round(t*100);
-    const bar = document.getElementById('bar');
-    if(bar) bar.style.width = state._progress + '%';
-    const pos = pointAlongPath(state.route.coords, t);
-    if(carMarker) carMarker.setLatLng(pos);
-    if(t >= 1){
-      clearInterval(timer);
-      finishRide();
-    }
-  }, 100);
+  state.stage='ride'; state.progress=0; renderSheet();
+  const dur=Math.max(6000,state.distance*1200); const t0=Date.now();
+  const tm=setInterval(()=>{
+    const t=Math.min(1,(Date.now()-t0)/dur);
+    state.progress=Math.round(t*100);
+    const bar=document.getElementById('bar');
+    if(bar) bar.style.width=state.progress+'%';
+    const p=pointAlong(state.route.coords,t);
+    if(carMarker) carMarker.setLatLng(p);
+    if(t>=1){ clearInterval(tm); state.stage='done'; state.rating=5; renderSheet(); }
+  },100);
 }
 
-function finishRide(){
-  state.stage = 'completed';
-  state.rating = 5;
-  render();
+function cancelRide(){ resetTrip(); renderSheet(); toast('تم إلغاء الطلب'); }
+
+function resetTrip(){
+  state.stage='book'; state.driver=null; state.arrived=false; state.progress=0;
+  if(routeLine){ map.removeLayer(routeLine); routeLine=null; }
+  if(carMarker){ map.removeLayer(carMarker); carMarker=null; }
+  updateMarkers();
 }
 
-function cancelRide(){
-  state.stage = 'home';
-  state.driver = null;
-  state.arrived = false;
-  if(routeLine){ map.removeLayer(routeLine); routeLine = null; }
-  if(carMarker){ map.removeLayer(carMarker); carMarker = null; }
-  render();
-  toast('تم إلغاء الطلب');
-}
-
-function saveHistory(){
-  const now = new Date();
-  const date = now.toLocaleDateString('ar-EG') + ' ' +
-               now.toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
-  state.history.unshift({
-    from: state.pickup.name,
-    to: state.dest.name,
-    price: state.price,
-    driver: state.driver.name,
-    rating: state.rating,
-    km: state.distance.toFixed(1),
-    date
+function saveCompletedRide(){
+  if(!state.driver) return;
+  DB.addRide(state.user.id,{
+    from:`${state.pickArea}، ${state.pickGov}`,
+    to:`${state.dropArea}، ${state.dropGov}`,
+    price:state.price, km:state.distance.toFixed(1),
+    driver:state.driver.name, rating:state.rating,
+    date:new Date().toLocaleDateString('en-GB')+' • '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})
   });
-  state.history = state.history.slice(0, 30);
-  localStorage.setItem('ahmed_taxi_history', JSON.stringify(state.history));
+  const updated=DB.session(); if(updated) state.user=updated;
 }
 
-/* ========== ربط السجل ========== */
-document.getElementById('historyBtn').onclick = ()=>{
-  if(state.stage === 'in-ride' || state.stage === 'searching'){
-    return toast('انتظر انتهاء الرحلة');
-  }
-  state.stage = 'history';
-  render();
-};
+/* ========== 9. الحساب ========== */
+function showProfile(){
+  const u=state.user, rides=u.rides||[];
+  const total=rides.length, spent=rides.reduce((s,r)=>s+r.price,0);
+  const avg=total?(rides.reduce((s,r)=>s+r.rating,0)/total).toFixed(1):'—';
+  document.getElementById('modalContent').innerHTML=`
+    <div class="handle"></div>
+    <div class="profile-head">
+      <div class="av">${initials(u.name)}</div>
+      <div class="nm">${u.name}</div>
+      <div class="ph">📱 ${u.phone}</div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">${total}</div><div class="l">رحلة</div></div>
+      <div class="stat"><div class="v">${fmt(spent)}</div><div class="l">د.ع مصروف</div></div>
+      <div class="stat"><div class="v">${avg} ⭐</div><div class="l">متوسط التقييم</div></div>
+      <div class="stat"><div class="v" style="font-size:14px">${new Date(u.createdAt).toLocaleDateString('en-GB')}</div><div class="l">تاريخ التسجيل</div></div>
+    </div>
+    <h3 style="font-size:15px;font-weight:800;margin:10px 0">آخر الرحلات</h3>
+    ${rides.length ? rides.slice(0,8).map(r=>`
+      <div class="ride-item">
+        <div class="top"><span>${r.from.split('،')[0]} → ${r.to.split('،')[0]}</span><span>${fmt(r.price)} د.ع</span></div>
+        <div class="row"><span>🚕 ${r.driver}</span><span>${'⭐'.repeat(r.rating)}</span></div>
+        <div class="row"><span>${r.date}</span><span>${r.km} كم</span></div>
+      </div>`).join('') : '<div class="empty-state"><div class="ic">🚕</div><div>ماكو رحلات بعد</div></div>'}
+    <button class="btn btn-secondary" id="logoutBtn" style="margin-top:10px">تسجيل الخروج</button>
+    <button class="btn btn-ghost" id="closeModal" style="margin-top:8px">إغلاق</button>`;
+  document.getElementById('modal').classList.add('show');
+  document.getElementById('closeModal').onclick=()=>document.getElementById('modal').classList.remove('show');
+  document.getElementById('logoutBtn').onclick=()=>{
+    if(!confirm('تريد تسجيل الخروج؟')) return;
+    DB.logout(); state.user=null;
+    document.getElementById('modal').classList.remove('show');
+    showAuth();
+  };
+}
 
-/* ========== البداية ========== */
-render();
+/* ========== 10. البداية ========== */
+function boot(){ const user=DB.session(); if(user){ state.user=user; showApp(); } else { showAuth(); } }
+boot();
 </script>
 </body>
 </html>
