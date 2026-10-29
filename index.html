@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>تكسي أحمد - فخامة</title>
     
-    <!-- خط Tajawal الفخم -->
+    <!-- خط Tajawal -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;800;900&display=swap" rel="stylesheet">
@@ -14,73 +14,21 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- Firebase SDK (الإصدار 9 المتوافق مع المتصفحات) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
-
-        // ⚠️⚠️⚠️ استبدل هذا الكائن بإعدادات Firebase الخاصة بك ⚠️⚠️⚠️
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-
-        // تهيئة Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getDatabase(app);
-        
-        // جعل المتغيرات متاحة عالمياً لاستخدامها في السكريبت الرئيسي
-        window.firebaseAuth = auth;
-        window.firebaseDb = db;
-        window.firebaseSignOut = () => signOut(auth);
-        window.firebaseSignIn = signInWithEmailAndPassword;
-        window.firebaseSignUp = createUserWithEmailAndPassword;
-        window.firebaseOnAuth = onAuthStateChanged;
-        window.firebaseSet = set;
-        window.firebaseRef = ref;
-        window.firebaseOnValue = onValue;
-        
-        // إخفاء شاشة التحميل بعد تهيئة Firebase
-        document.getElementById('loading-screen').style.display = 'none';
-        document.getElementById('auth-screen').style.display = 'flex';
-        
-        // التحقق من حالة تسجيل الدخول عند بدء التشغيل (ميزة البقاء مسجلاً)
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // المستخدم مسجل دخوله بالفعل -> تخطي شاشة الدخول
-                showMainApp(user);
-            } else {
-                // المستخدم غير مسجل -> إظهار شاشة الدخول
-                document.getElementById('auth-screen').style.display = 'flex';
-                document.getElementById('main-app').style.display = 'none';
-            }
-        });
-        
-        window.showMainApp = showMainApp;
-    </script>
+    <!-- أيقونات Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <style>
-        /* التصميم الفخم (نفس النمط السابق مع تحسينات) */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
         body { background: #0b0a0f; color: #eee; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 10px; }
         
         .phone-frame { max-width: 430px; width: 100%; background: linear-gradient(145deg, #14121a 0%, #1a1722 100%); border-radius: 50px; padding: 20px 18px; box-shadow: 0 30px 80px rgba(0,0,0,0.9), 0 0 0 2px rgba(212, 175, 55, 0.15); border: 1px solid rgba(212, 175, 55, 0.3); position: relative; overflow: hidden; min-height: 600px; }
-        
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 215, 0, 0.1); border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
 
         /* شاشة التحميل */
-        #loading-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; color: #f5d472; }
+        #loading-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 600px; color: #f5d472; }
         .spinner { width: 50px; height: 50px; border: 3px solid rgba(245, 212, 114, 0.3); border-top-color: #f5d472; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* شاشة تسجيل الدخول / إنشاء حساب */
+        /* شاشة تسجيل الدخول */
         #auth-screen { display: none; flex-direction: column; height: 100%; padding-top: 40px; }
         #auth-screen h2 { text-align: center; color: #f5d472; font-size: 28px; margin-bottom: 30px; font-weight: 900; }
         .auth-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
@@ -95,13 +43,11 @@
 
         /* التطبيق الرئيسي */
         #main-app { display: none; height: 100%; flex-direction: column; }
-        
-        /* رأس التطبيق */
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 5px 15px 5px; }
         .app-header h1 { font-size: 24px; font-weight: 900; background: linear-gradient(135deg, #f5d472, #b8860b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; }
-        .app-header .user-info { display: flex; align-items: center; gap: 10px; }
-        .app-header .user-info span { color: #aaa; font-size: 12px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
-        .app-header .logout-btn { background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.2); color: #f5d472; padding: 8px 12px; border-radius: 50px; cursor: pointer; font-size: 14px; }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .user-info span { color: #aaa; font-size: 12px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
+        .logout-btn { background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.2); color: #f5d472; padding: 8px 12px; border-radius: 50px; cursor: pointer; font-size: 14px; }
 
         /* الخريطة */
         #map-container { height: 250px; border-radius: 25px; margin-bottom: 20px; overflow: hidden; border: 1px solid rgba(255,215,0,0.2); position: relative; z-index: 1; }
@@ -110,15 +56,12 @@
         .map-overlay p { color: #f5d472; font-weight: 700; font-size: 14px; }
         .map-overlay button { background: linear-gradient(135deg, #f5d472, #b8860b); border: none; padding: 8px 20px; border-radius: 50px; font-weight: 800; cursor: pointer; color: #0b0a0f; }
 
-        /* أزرار الخدمات السريعة */
+        /* أزرار الخدمات */
         .quick-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
         .action-item { background: rgba(255,255,255,0.02); backdrop-filter: blur(10px); border: 1px solid rgba(255,215,0,0.06); border-radius: 20px; padding: 15px 8px; text-align: center; cursor: pointer; transition: 0.3s; }
         .action-item:active { transform: scale(0.95); background: rgba(212, 175, 55, 0.08); border-color: #b8860b; }
         .action-item i { font-size: 26px; color: #f5d472; margin-bottom: 8px; display: block; }
         .action-item span { color: #cfcfdf; font-size: 12px; font-weight: 700; display: block; }
-        
-        /* تذييل بسيط */
-        .footer-note { text-align: center; color: #4d5d7a; font-size: 11px; margin-top: auto; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.03); }
     </style>
 </head>
 <body>
@@ -131,7 +74,7 @@
         <p>جاري تحميل تكسي أحمد...</p>
     </div>
 
-    <!-- شاشة تسجيل الدخول / إنشاء حساب -->
+    <!-- شاشة الدخول -->
     <div id="auth-screen">
         <h2>🚖 تكسي أحمد</h2>
         <div class="auth-tabs">
@@ -163,31 +106,60 @@
             </div>
         </div>
 
-        <!-- الخريطة -->
         <div id="map-container">
             <div id="map"></div>
             <div class="map-overlay">
                 <p><i>📍</i> موقعك الحالي</p>
-                <button onclick="requestTaxi()">اطلب تكسي الآن</button>
+                <button onclick="requestTaxi()">اطلب تكسي</button>
             </div>
         </div>
 
-        <!-- خدمات سريعة -->
         <div class="quick-actions">
             <div class="action-item" onclick="requestTaxi()"><i class="fas fa-taxi"></i><span>طلب تكسي</span></div>
             <div class="action-item" onclick="showMyRequests()"><i class="fas fa-history"></i><span>طلباتي</span></div>
             <div class="action-item" onclick="showProfile()"><i class="fas fa-user"></i><span>حسابي</span></div>
-        </div>
-
-        <div class="footer-note">
-            <i>✨</i> تكسي أحمد - الفخامة في كل رحلة <i>✨</i>
         </div>
     </div>
 
 </div>
 
 <script>
-    // ==================== دوال واجهة المستخدم ====================
+    // ==========================================
+    // نظام قاعدة البيانات المحلية (LocalStorage)
+    // ==========================================
+    const DB = {
+        getUsers: () => JSON.parse(localStorage.getItem('taxi_users') || '[]'),
+        saveUsers: (users) => localStorage.setItem('taxi_users', JSON.stringify(users)),
+        getCurrentUser: () => JSON.parse(localStorage.getItem('taxi_current_user') || 'null'),
+        setCurrentUser: (user) => localStorage.setItem('taxi_current_user', JSON.stringify(user)),
+        logout: () => localStorage.removeItem('taxi_current_user'),
+        saveRequest: (req) => {
+            const reqs = JSON.parse(localStorage.getItem('taxi_requests') || '[]');
+            reqs.push(req);
+            localStorage.setItem('taxi_requests', JSON.stringify(reqs));
+        },
+        getRequests: () => JSON.parse(localStorage.getItem('taxi_requests') || '[]')
+    };
+
+    // ==========================================
+    // التحقق من حالة الدخول عند فتح التطبيق
+    // ==========================================
+    window.onload = function() {
+        document.getElementById('loading-screen').style.display = 'none';
+        const currentUser = DB.getCurrentUser();
+        
+        if (currentUser) {
+            // المستخدم مسجل مسبقاً -> تخطي الدخول
+            showMainApp(currentUser);
+        } else {
+            // غير مسجل -> إظهار الدخول
+            document.getElementById('auth-screen').style.display = 'flex';
+        }
+    };
+
+    // ==========================================
+    // دوال الواجهة
+    // ==========================================
     function switchAuthTab(tab) {
         document.getElementById('form-login').style.display = tab === 'login' ? 'flex' : 'none';
         document.getElementById('form-signup').style.display = tab === 'signup' ? 'flex' : 'none';
@@ -203,19 +175,17 @@
         const errorEl = document.getElementById('login-error');
         errorEl.textContent = '';
         
-        if (!email || !password) {
-            errorEl.textContent = 'يرجى إدخال البريد الإلكتروني وكلمة المرور.';
-            return;
-        }
+        if (!email || !password) { errorEl.textContent = 'يرجى ملء جميع الحقول.'; return; }
         
-        window.firebaseSignIn(window.firebaseAuth, email, password)
-            .then((userCredential) => {
-                // تم تسجيل الدخول بنجاح - Firebase يحفظ الجلسة تلقائياً
-                showMainApp(userCredential.user);
-            })
-            .catch((error) => {
-                errorEl.textContent = 'خطأ: ' + error.message;
-            });
+        const users = DB.getUsers();
+        const user = users.find(u => u.email === email && u.password === password);
+        
+        if (user) {
+            DB.setCurrentUser(user);
+            showMainApp(user);
+        } else {
+            errorEl.textContent = 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+        }
     }
 
     function handleSignup() {
@@ -225,155 +195,119 @@
         const errorEl = document.getElementById('signup-error');
         errorEl.textContent = '';
         
-        if (!name || !email || !password) {
-            errorEl.textContent = 'يرجى ملء جميع الحقول.';
-            return;
-        }
-        if (password.length < 6) {
-            errorEl.textContent = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل.';
+        if (!name || !email || !password) { errorEl.textContent = 'يرجى ملء جميع الحقول.'; return; }
+        if (password.length < 6) { errorEl.textContent = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل.'; return; }
+        
+        const users = DB.getUsers();
+        if (users.find(u => u.email === email)) {
+            errorEl.textContent = 'هذا البريد مسجل مسبقاً. جرب تسجيل الدخول.';
             return;
         }
         
-        window.firebaseSignUp(window.firebaseAuth, email, password)
-            .then((userCredential) => {
-                // حفظ بيانات المستخدم الإضافية (الاسم) في قاعدة البيانات
-                window.firebaseSet(window.firebaseRef(window.firebaseDb, 'users/' + userCredential.user.uid), {
-                    name: name,
-                    email: email,
-                    createdAt: new Date().toISOString()
-                });
-                showMainApp(userCredential.user);
-            })
-            .catch((error) => {
-                errorEl.textContent = 'خطأ: ' + error.message;
-            });
+        const newUser = { name, email, password };
+        users.push(newUser);
+        DB.saveUsers(users);
+        DB.setCurrentUser(newUser);
+        showMainApp(newUser);
     }
 
     function handleLogout() {
-        window.firebaseSignOut().then(() => {
-            document.getElementById('main-app').style.display = 'none';
-            document.getElementById('auth-screen').style.display = 'flex';
-            // مسح حقول الإدخال
-            document.getElementById('login-email').value = '';
-            document.getElementById('login-password').value = '';
-        });
+        DB.logout();
+        document.getElementById('main-app').style.display = 'none';
+        document.getElementById('auth-screen').style.display = 'flex';
+        document.getElementById('login-email').value = '';
+        document.getElementById('login-password').value = '';
     }
 
-    // ==================== دالة عرض التطبيق الرئيسي ====================
     function showMainApp(user) {
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('main-app').style.display = 'flex';
-        document.getElementById('user-email-display').textContent = user.email;
-        
-        // تهيئة الخريطة بعد ظهور الحاوية
+        document.getElementById('user-email-display').textContent = user.name || user.email;
         initMap();
     }
 
-    // ==================== الخريطة (Leaflet) ====================
+    // ==========================================
+    // الخريطة
+    // ==========================================
     let map;
     let userMarker;
     
     function initMap() {
-        if (map) return; // منع التهيئة المزدوجة
-        
-        // إحداثيات افتراضية (بغداد كمثال)
+        if (map) return;
         map = L.map('map').setView([33.3152, 44.3661], 13);
-        
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            attribution: '&copy; OpenStreetMap',
             maxZoom: 19
         }).addTo(map);
         
-        // محاولة تحديد موقع المستخدم
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    map.setView([lat, lng], 15);
-                    
-                    if (userMarker) map.removeLayer(userMarker);
-                    userMarker = L.marker([lat, lng]).addTo(map)
-                        .bindPopup('موقعك الحالي').openPopup();
-                },
-                (error) => {
-                    console.warn('تعذر تحديد الموقع:', error.message);
-                }
-            );
+            navigator.geolocation.getCurrentPosition((position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                map.setView([lat, lng], 15);
+                if (userMarker) map.removeLayer(userMarker);
+                userMarker = L.marker([lat, lng]).addTo(map).bindPopup('موقعك الحالي').openPopup();
+            }, (error) => {
+                console.warn('تعذر تحديد الموقع:', error.message);
+            });
         }
     }
 
-    // ==================== طلب تكسي (حفظ في قاعدة البيانات) ====================
+    // ==========================================
+    // طلبات التكسي
+    // ==========================================
     function requestTaxi() {
-        const user = window.firebaseAuth.currentUser;
-        if (!user) {
-            alert('يجب تسجيل الدخول أولاً.');
-            return;
-        }
+        const user = DB.getCurrentUser();
+        if (!user) return;
         
-        // تحديد موقع المستخدم (أو استخدام الموقع الافتراضي)
         let lat = 33.3152, lng = 44.3661;
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((pos) => {
                 lat = pos.coords.latitude;
                 lng = pos.coords.longitude;
-                saveTaxiRequest(user, lat, lng);
-            }, () => {
-                saveTaxiRequest(user, lat, lng); // استخدام الافتراضي عند الفشل
-            });
+                saveReq(user, lat, lng);
+            }, () => saveReq(user, lat, lng));
         } else {
-            saveTaxiRequest(user, lat, lng);
+            saveReq(user, lat, lng);
         }
     }
 
-    function saveTaxiRequest(user, lat, lng) {
-        const requestId = 'req_' + Date.now();
-        window.firebaseSet(window.firebaseRef(window.firebaseDb, 'requests/' + requestId), {
-            userId: user.uid,
+    function saveReq(user, lat, lng) {
+        const request = {
             userEmail: user.email,
             lat: lat,
             lng: lng,
-            status: 'pending',
-            timestamp: new Date().toISOString()
-        }).then(() => {
-            alert('✅ تم إرسال طلبك بنجاح! سيتواصل معك السائق قريباً.');
-        }).catch((error) => {
-            alert('❌ حدث خطأ: ' + error.message);
-        });
+            status: 'قيد الانتظار',
+            time: new Date().toLocaleString('ar-IQ')
+        };
+        DB.saveRequest(request);
+        alert('✅ تم إرسال طلبك بنجاح! سيتواصل معك السائق قريباً.');
     }
 
     function showMyRequests() {
-        const user = window.firebaseAuth.currentUser;
+        const user = DB.getCurrentUser();
         if (!user) return;
         
-        window.firebaseOnValue(window.firebaseRef(window.firebaseDb, 'requests/'), (snapshot) => {
-            const data = snapshot.val();
-            if (!data) {
-                alert('لا توجد طلبات سابقة.');
-                return;
-            }
-            let userRequests = Object.values(data).filter(r => r.userId === user.uid);
-            if (userRequests.length === 0) {
-                alert('لا توجد طلبات سابقة.');
-            } else {
-                let msg = 'طلباتك السابقة:\n';
-                userRequests.forEach(r => {
-                    msg += `- ${new Date(r.timestamp).toLocaleString('ar')} | الحالة: ${r.status}\n`;
-                });
-                alert(msg);
-            }
-        }, { onlyOnce: true });
+        const allReqs = DB.getRequests();
+        const myReqs = allReqs.filter(r => r.userEmail === user.email);
+        
+        if (myReqs.length === 0) {
+            alert('لا توجد طلبات سابقة.');
+        } else {
+            let msg = 'طلباتك السابقة:\n\n';
+            myReqs.reverse().forEach((r, i) => {
+                msg += `${i+1}. ${r.time}\nالحالة: ${r.status}\n\n`;
+            });
+            alert(msg);
+        }
     }
 
     function showProfile() {
-        const user = window.firebaseAuth.currentUser;
+        const user = DB.getCurrentUser();
         if (user) {
-            alert(`👤 حسابك:\nالبريد: ${user.email}\nالمعرف: ${user.uid}`);
+            alert(`👤 حسابك:\nالاسم: ${user.name}\nالبريد: ${user.email}`);
         }
     }
 </script>
-
-<!-- أيقونات Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </body>
 </html>
