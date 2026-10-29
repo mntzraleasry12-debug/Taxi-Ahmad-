@@ -137,9 +137,6 @@ body{font-family:-apple-system,'SF Pro Display','Segoe UI',Tahoma,sans-serif;bac
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .toast.success{background:var(--green)}
 .toast.error{background:var(--red)}
-
-/* Leaflet fallback */
-.leaflet-tile{filter:inherit}
 </style>
 </head>
 <body>
@@ -153,7 +150,7 @@ body{font-family:-apple-system,'SF Pro Display','Segoe UI',Tahoma,sans-serif;bac
 <div class="toast" id="toast"></div>
 
 <script>
-/* ========== تحميل Leaflet بشكل موثوق (fallback) ========== */
+/* ========== تحميل Leaflet ========== */
 function loadLeafletCSS(){
   return new Promise(res => {
     const link = document.createElement('link');
@@ -360,7 +357,6 @@ function showAuth(){
 
 /* ========== التطبيق ========== */
 function showApp(){
-  // تهيئة نقطة البداية/الوجهة من محافظة المستخدم
   if(!state.pickGov){
     const gov = state.user.gov || 'بغداد';
     const govData = GOVS.find(g => g.name === gov) || GOVS[0];
@@ -392,13 +388,12 @@ function showApp(){
   setTimeout(()=>{ initMap(); renderSheet(); }, 50);
 }
 
-/* ========== تهيئة الخريطة (محسّنة) ========== */
+/* ========== تهيئة الخريطة (الحل الجديد) ========== */
 function initMap(){
   const container = document.getElementById('map');
   if(!container) return;
-  if(!window.L){ showMapError('تعذّر تحميل مكتبة الخريطة. تحقق من اتصال الإنترنت ثم أعد تحميل الصفحة.'); return; }
+  if(!window.L){ showMapError('تعذّر تحميل مكتبة الخريطة. تحقق من اتصال الإنترنت.'); return; }
 
-  // تنظيف خريطة سابقة إن وُجدت
   if(map){ try{ map.remove(); }catch(e){} map=null; }
   container.innerHTML = '';
   if(container._leaflet_id) delete container._leaflet_id;
@@ -410,32 +405,30 @@ function initMap(){
       preferCanvas: true,
     });
 
-    // محاولة أولى: OSM
-    let tile = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // المزود الأول: Esri (ما يحتاج مفتاح، ممتاز للعراق)
+    let tile = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
       maxZoom: 19,
-      crossOrigin: true,
-      attribution: '© OpenStreetMap',
+      attribution: 'Tiles &copy; Esri'
     }).addTo(map);
 
-    // fallback تلقائي إذا فشلت البلاطات
+    // البديل في حال فشل Esri: OSM France
     let fellBack = false;
     tile.on('tileerror', function(){
       if(fellBack) return;
       fellBack = true;
       try{ map.removeLayer(tile); }catch(e){}
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
         maxZoom: 19,
-        subdomains: 'abcd',
-        attribution: '© CartoDB © OSM',
+        subdomains: 'abc',
+        attribution: '© OpenStreetMap France'
       }).addTo(map);
     });
 
     // توسيط الخريطة على محافظة المستخدم
     const govName = state.user?.gov || 'بغداد';
     const govData = GOVS.find(g => g.name === govName) || GOVS[0];
-    map.setView([govData.lat, govData.lng], 11);
+    map.setView([govData.lat, govData.lng], 12);
 
-    // انتظر لحظة لضبط الحجم ثم حدّث العلامات
     setTimeout(()=>{ map.invalidateSize(); updateMarkers(); }, 100);
   }catch(err){
     console.error('Map init error:', err);
