@@ -4,36 +4,40 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>تاكسي أحمد - المنظومة الشاملة 🚕</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
-/* =========================================================
-   1. إعدادات المتغيرات الأساسية (Theme Variables)
-   ========================================================= */
+/* ==========================================================================
+   1. إعدادات المتغيرات العامة (Theme Variables & Reset)
+   ========================================================================== */
 :root {
+  /* الألوان الأساسية */
   --primary: #FFC107;
-  --primary-hover: #E0A800;
+  --primary-d: #E0A800;
   --dark: #0F1419;
   --gray: #6B7280;
   --light-gray: #E5E7EB;
   --bg: #F5F5F7;
   --white: #FFFFFF;
+  
+  /* ألوان الحالات */
   --green: #10B981;
   --red: #EF4444;
   --blue: #3B82F6;
+  --orange: #F59E0B;
   
+  /* الظلال */
   --sh-sm: 0 2px 8px rgba(0,0,0,.08);
   --sh-md: 0 8px 24px rgba(0,0,0,.12);
   --sh-lg: 0 20px 60px rgba(0,0,0,.15);
+  --sh-yellow: 0 10px 30px rgba(255, 193, 7, 0.4);
   
+  /* الحواف */
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 24px;
   --radius-full: 999px;
 }
 
-/* =========================================================
-   2. التهيئة العامة (Reset & Global Styles)
-   ========================================================= */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -62,9 +66,9 @@ html, body {
   box-shadow: 0 0 40px rgba(0,0,0,0.5);
 }
 
-/* =========================================================
-   3. شاشة التحميل (Splash / Boot Screen)
-   ========================================================= */
+/* ==========================================================================
+   2. شاشة التحميل (Splash Screen)
+   ========================================================================== */
 #boot-screen {
   position: absolute;
   inset: 0;
@@ -110,9 +114,9 @@ html, body {
   to { transform: rotate(360deg); }
 }
 
-/* =========================================================
-   4. واجهة المصادقة (Auth UI)
-   ========================================================= */
+/* ==========================================================================
+   3. واجهة المصادقة (Auth UI)
+   ========================================================================== */
 .auth-container {
   position: absolute;
   inset: 0;
@@ -268,9 +272,9 @@ html, body {
   display: none;
 }
 
-/* =========================================================
-   5. الأزرار العامة (Buttons)
-   ========================================================= */
+/* ==========================================================================
+   4. الأزرار العامة (Buttons)
+   ========================================================================== */
 .btn {
   width: 100%;
   padding: 16px;
@@ -296,9 +300,9 @@ html, body {
 .btn-ghost { background: var(--bg); color: var(--dark); }
 .btn-green { background: var(--green); color: var(--white); }
 
-/* =========================================================
-   6. الواجهة الرئيسية والخريطة (Main Layout)
-   ========================================================= */
+/* ==========================================================================
+   5. الواجهة الرئيسية والخريطة (Main Layout)
+   ========================================================================== */
 .app-view {
   position: absolute;
   inset: 0;
@@ -366,9 +370,9 @@ html, body {
 .user-name { font-size: 15px; font-weight: 800; color: var(--dark); line-height: 1.2; }
 .user-meta { font-size: 11px; color: var(--gray); font-weight: 600; margin-top: 2px; }
 
-/* =========================================================
-   7. القائمة السفلية (Bottom Sheet)
-   ========================================================= */
+/* ==========================================================================
+   6. القائمة السفلية (Bottom Sheet)
+   ========================================================================== */
 .bottom-sheet {
   position: absolute;
   bottom: 0; left: 0; right: 0;
@@ -425,13 +429,13 @@ html, body {
   border-radius: var(--radius-full);
   font-size: 17px;
   font-weight: 800;
-  box-shadow: 0 10px 30px rgba(255, 193, 7, 0.4);
+  box-shadow: var(--sh-yellow);
   display: none;
 }
 
-/* =========================================================
-   8. عناصر اختيار المواقع
-   ========================================================= */
+/* ==========================================================================
+   7. عناصر اختيار المواقع والسيارات
+   ========================================================================== */
 .sheet-title {
   font-size: 20px;
   font-weight: 800;
@@ -482,9 +486,6 @@ html, body {
 
 .loc-map-btn:active { background: var(--bg); transform: scale(0.95); }
 
-/* =========================================================
-   9. اختيار السيارة والكلفة
-   ========================================================= */
 .section-title {
   font-size: 15px;
   font-weight: 800;
@@ -527,9 +528,9 @@ html, body {
 .price-col .p-value { font-size: 22px; font-weight: 800; color: var(--dark); }
 .price-col .p-value small { font-size: 13px; color: var(--gray); font-weight: 700; }
 
-/* =========================================================
-   10. شاشات الانتظار والرحلة
-   ========================================================= */
+/* ==========================================================================
+   8. شاشات الانتظار والرحلة
+   ========================================================================== */
 .searching-view { text-align: center; padding: 20px 0; }
 
 .radar-anim {
@@ -624,9 +625,9 @@ html, body {
   transform: scale(1.1);
 }
 
-/* =========================================================
-   11. واجهة السائق
-   ========================================================= */
+/* ==========================================================================
+   9. واجهة السائق (Driver Mode)
+   ========================================================================== */
 .driver-toggle-row {
   display: flex;
   align-items: center;
@@ -640,6 +641,7 @@ html, body {
 .toggle-title { font-size: 16px; font-weight: 800; color: var(--dark); }
 .toggle-sub { font-size: 12px; color: var(--gray); margin-top: 4px; }
 
+/* Switch Toggle */
 .switch {
   position: relative;
   display: inline-block;
@@ -686,9 +688,9 @@ input:checked + .slider:before { transform: translateX(24px); }
 .req-route { font-size: 14px; font-weight: 700; margin-bottom: 8px; line-height: 1.5; color: var(--dark); }
 .req-dist { font-size: 12px; color: var(--gray); font-weight: 600; margin-bottom: 16px; }
 
-/* =========================================================
-   12. النوافذ المنبثقة (Modals)
-   ========================================================= */
+/* ==========================================================================
+   10. النوافذ المنبثقة (Modals)
+   ========================================================================== */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -737,9 +739,9 @@ input:checked + .slider:before { transform: translateX(24px); }
 .loc-list-item:active { background: var(--bg); }
 .loc-list-item .arrow { color: var(--gray); font-size: 12px; }
 
-/* =========================================================
-   13. الخريطة الكاملة (Full Screen Map Picker)
-   ========================================================= */
+/* ==========================================================================
+   11. الخريطة الكاملة (Full Screen Map Picker)
+   ========================================================================== */
 #full-map-overlay {
   position: fixed;
   inset: 0;
@@ -807,9 +809,9 @@ input:checked + .slider:before { transform: translateX(24px); }
   color: var(--dark);
 }
 
-/* =========================================================
-   14. الملف الشخصي والإشعارات
-   ========================================================= */
+/* ==========================================================================
+   12. الملف الشخصي والإشعارات
+   ========================================================================== */
 .profile-header { text-align: center; padding-bottom: 20px; border-bottom: 1px solid var(--bg); margin-bottom: 20px; }
 .profile-avatar {
   width: 80px; height: 80px;
@@ -859,9 +861,9 @@ input:checked + .slider:before { transform: translateX(24px); }
 .toast-msg.success { background: var(--green); }
 .toast-msg.error { background: var(--red); }
 
-/* =========================================================
-   15. تنسيقات خرائط Leaflet
-   ========================================================= */
+/* ==========================================================================
+   13. تنسيقات خرائط Leaflet
+   ========================================================================== */
 .leaflet-container { font-family: inherit; }
 .custom-marker { display: flex; align-items: center; justify-content: center; }
 .marker-dot { width: 24px; height: 24px; border-radius: 50%; border: 3px solid var(--white); box-shadow: var(--sh-sm); }
@@ -870,20 +872,20 @@ input:checked + .slider:before { transform: translateX(24px); }
 </head>
 <body>
 
-<!-- شاشة التحميل -->
+<!-- 1. شاشة التحميل -->
 <div id="boot-screen">
   <div class="boot-logo">🚕</div>
-  <div class="boot-text" id="boot-text">جاري التحميل...</div>
+  <div class="boot-text" id="boot-text">جاري الاتصال بالخريطة...</div>
   <div class="boot-spinner"></div>
 </div>
 
-<!-- الحاوية الرئيسية -->
+<!-- 2. الحاوية الرئيسية -->
 <div id="app"></div>
 
-<!-- الإشعارات -->
+<!-- 3. الإشعارات -->
 <div class="toast-msg" id="toast"></div>
 
-<!-- نافذة الخريطة الكاملة -->
+<!-- 4. نافذة الخريطة الكاملة -->
 <div id="full-map-overlay">
   <div class="full-map-header">
     <button class="back-btn" onclick="closeMapPicker()">✕</button>
@@ -897,7 +899,7 @@ input:checked + .slider:before { transform: translateX(24px); }
   </div>
 </div>
 
-<!-- نافذة اختيار المنطقة بالقائمة -->
+<!-- 5. نافذة اختيار المنطقة بالقائمة -->
 <div class="modal-overlay" id="loc-list-modal">
   <div class="modal-content">
     <div class="sheet-handle"></div>
@@ -907,16 +909,18 @@ input:checked + .slider:before { transform: translateX(24px); }
   </div>
 </div>
 
-<!-- نافذة الحساب -->
+<!-- 6. نافذة الحساب -->
 <div class="modal-overlay" id="profile-modal">
   <div class="modal-content" id="profile-modal-content"></div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- مكتبة الخريطة -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
-/* =========================================================
+/* ==========================================================================
    البيانات الأساسية (Data Core)
-   ========================================================= */
+   ========================================================================== */
 const GOVS = [
   { name:'بغداد', lat:33.3152, lng:44.3661, areas:['الكرادة','الجادرية','المنصور','الكاظمية','الأعظمية','زيونة','الحارثية','العلاوي','الباب الشرقي','الطالبية','الشعلة','الدورة','المحمودية','أبو غريب','الغزالية','اليرموك','العامرية','البياع','السيدية','حي أور','مدينة الصدر','بغداد الجديدة'] },
   { name:'البصرة', lat:30.5081, lng:47.7835, areas:['العشار','الجنينة','الموفقية','الزبير','أبو الخصيب','شط العرب','القرنة','الطويسة','كرمة علي','الهارثة','الفاو','سفوان','المدينة','البراضعية'] },
@@ -948,16 +952,13 @@ const CARS = {
 const DRIVERS_DB = [
   { name: 'أحمد كريم', rating: 4.9, phone: '07701234567', car: 'تويوتا كورولا', plate: '٢٤٧٨١', emoji: '👨' },
   { name: 'حسين علي', rating: 4.8, phone: '07809876543', car: 'كيا سيراتو', plate: '١٥٦٣٢', emoji: '🧔' },
-  { name: 'مصطفى جبار', rating: 5.0, phone: '07512345678', car: 'هيونداي إلنترا', plate: '٩٨٤٥٦', emoji: '👨‍🦱' },
-  { name: 'علي حسن', rating: 4.7, phone: '07705556677', car: 'نيسان صني', plate: '٣٣٤٤٥', emoji: '👨‍🦰' },
 ];
 
-/* =========================================================
+/* ==========================================================================
    قاعدة البيانات المحلية (LocalStorage DB)
-   ========================================================= */
+   ========================================================================== */
 const DB = {
-  KEY: 'ahmed_taxi_v10',
-  
+  KEY: 'ahmed_taxi_v12',
   load() {
     try { 
       const d = JSON.parse(localStorage.getItem(this.KEY)); 
@@ -965,21 +966,17 @@ const DB = {
     } catch (e) {}
     return { users: [], session: null, activeRide: null };
   },
-  
   save(data) { localStorage.setItem(this.KEY, JSON.stringify(data)); },
-  
   hash(str) { 
     let h = 5381; 
     for (let i = 0; i < str.length; i++) h = ((h << 5) + h) ^ str.charCodeAt(i); 
     return 'h_' + (h >>> 0).toString(36); 
   },
-  
   register(u) {
     const db = this.load();
     if (db.users.find(x => x.phone === u.phone)) throw new Error('رقم الهاتف مسجل من قبل');
     if (!/^07\d{9}$/.test(u.phone)) throw new Error('رقم الهاتف يجب أن يبدأ بـ 07 ويكون 11 رقماً');
     if (u.password.length < 4) throw new Error('كلمة المرور يجب أن تكون 4 أحرف على الأقل');
-    
     const newUser = { 
       id: 'u_' + Date.now().toString(36), 
       name: u.name.trim(), 
@@ -990,12 +987,10 @@ const DB = {
       createdAt: Date.now(), 
       rides: [] 
     };
-    
     db.users.push(newUser); 
     this.save(db); 
     return newUser;
   },
-  
   login(phone, password) {
     const db = this.load(); 
     const u = db.users.find(x => x.phone === phone);
@@ -1003,46 +998,38 @@ const DB = {
     if (u.password !== this.hash(password)) throw new Error('كلمة المرور غير صحيحة');
     return u;
   },
-  
   startSession(userId, remember) {
     const db = this.load(); 
     const dur = remember ? 365*24*60*60*1000 : 24*60*60*1000;
     db.session = { userId, remember, expiresAt: Date.now() + dur }; 
     this.save(db);
   },
-  
   getSession() {
     const db = this.load(); 
     if (!db.session) return null;
     if (db.session.expiresAt < Date.now()) { db.session = null; this.save(db); return null; }
     return db.users.find(x => x.id === db.session.userId) || null;
   },
-  
   logout() { 
     const db = this.load(); 
     db.session = null; 
     this.save(db); 
   },
-  
   createRide(r) { 
     const db = this.load(); 
     db.activeRide = { id: 'r_'+Date.now().toString(36), ...r, status: 'pending', createdAt: Date.now() }; 
     this.save(db); 
   },
-  
   getRide() { return this.load().activeRide; },
-  
   updateRide(status) { 
     const db = this.load(); 
     if (db.activeRide) { db.activeRide.status = status; this.save(db); } 
   },
-  
   clearRide() { 
     const db = this.load(); 
     db.activeRide = null; 
     this.save(db); 
   },
-  
   addHistory(userId, ride) {
     const db = this.load(); 
     const u = db.users.find(x => x.id === userId);
@@ -1050,9 +1037,9 @@ const DB = {
   }
 };
 
-/* =========================================================
+/* ==========================================================================
    حالة التطبيق (State Management)
-   ========================================================= */
+   ========================================================================== */
 const state = {
   user: null, 
   role: 'passenger', 
@@ -1073,9 +1060,9 @@ let pickMarker = null, dropMarker = null, carMarker = null, routePolyline = null
 let pickerTarget = null, pickerStep = 'gov', selectedMapCoords = null;
 let driverTimeout = null, rideInterval = null;
 
-/* =========================================================
+/* ==========================================================================
    الدوال المساعدة (Utilities)
-   ========================================================= */
+   ========================================================================== */
 function toast(msg, type = '') {
   const t = document.getElementById('toast');
   if (!t) return;
@@ -1109,10 +1096,8 @@ function haversine(lat1, lon1, lat2, lon2) {
   const R = 6371, 
         dLat = (lat2-lat1)*Math.PI/180, 
         dLon = (lon2-lon1)*Math.PI/180;
-        
   const a = Math.sin(dLat/2)**2 + 
             Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2)**2;
-            
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 
@@ -1125,15 +1110,14 @@ function resetState() {
   state.driver = null; 
   state.progress = 0; 
   state.arrived = false;
-  
   if (rideInterval) clearInterval(rideInterval);
   if (routePolyline && mainMap) { mainMap.removeLayer(routePolyline); routePolyline = null; }
   if (carMarker && mainMap) { mainMap.removeLayer(carMarker); carMarker = null; }
 }
 
-/* =========================================================
-   واجهة المصادقة (Auth Render)
-   ========================================================= */
+/* ==========================================================================
+   واجهة المصادقة (Auth UI)
+   ========================================================================== */
 function renderAuth() {
   const govOptions = GOVS.map(g => `<option value="${g.name}">${g.name}</option>`).join('');
   
@@ -1192,12 +1176,8 @@ function renderAuth() {
       </div>
     </div>`;
     
-  // إخفاء شاشة التحميل
   const boot = document.getElementById('boot-screen');
-  if (boot) {
-    boot.style.opacity = '0';
-    setTimeout(() => boot.style.display = 'none', 400);
-  }
+  if (boot) { boot.style.opacity = '0'; setTimeout(() => boot.style.display = 'none', 400); }
 
   let currentRole = 'passenger', currentMode = 'login';
   
@@ -1256,9 +1236,9 @@ function renderAuth() {
   };
 }
 
-/* =========================================================
-   الواجهة الرئيسية (Main App Render)
-   ========================================================= */
+/* ==========================================================================
+   الواجهة الرئيسية والخريطة (Main App & Map)
+   ========================================================================== */
 function renderMainApp() {
   try {
     if (!state.user) return renderAuth();
@@ -1267,7 +1247,6 @@ function renderMainApp() {
     const uGov = state.user.gov || 'بغداد';
     const uRole = state.role || 'passenger';
 
-    // تهيئة المواقع الافتراضية
     if (!state.pickGov) {
       const g = GOVS.find(x => x.name === uGov) || GOVS[0];
       state.pickGov = g.name; state.pickArea = g.areas[0];
@@ -1310,7 +1289,9 @@ function renderMainApp() {
         if (!container) return;
         
         mainMap = L.map(container, { zoomControl: false, attributionControl: false }).setView([state.pickLat, state.pickLng], 12);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mainMap);
+        
+        // استخدام خريطة Esri
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 }).addTo(mainMap);
         
         setTimeout(() => {
           mainMap.invalidateSize();
@@ -1324,12 +1305,8 @@ function renderMainApp() {
       }
     }, 150);
     
-    // إخفاء شاشة التحميل
     const boot = document.getElementById('boot-screen');
-    if (boot) {
-      boot.style.opacity = '0';
-      setTimeout(() => boot.style.display = 'none', 400);
-    }
+    if (boot) { boot.style.opacity = '0'; setTimeout(() => boot.style.display = 'none', 400); }
     
   } catch (e) {
     console.error("Render main app error:", e);
@@ -1338,18 +1315,14 @@ function renderMainApp() {
   }
 }
 
-/* =========================================================
-   إدارة الخريطة والعلامات
-   ========================================================= */
 function updateMarkers() {
   if (!mainMap) return;
   try {
     if (pickMarker) mainMap.removeLayer(pickMarker);
     if (dropMarker) mainMap.removeLayer(dropMarker);
     
-    pickMarker = L.marker([state.pickLat, state.pickLng], { icon: L.divIcon({ className: 'custom-marker', iconSize: [24,24], iconAnchor:[12,12], html: `<div class="marker-dot" style="background:var(--green)"></div>` }) }).addTo(mainMap);
-    
-    dropMarker = L.marker([state.dropLat, state.dropLng], { icon: L.divIcon({ className: 'custom-marker', iconSize: [24,24], iconAnchor:[12,12], html: `<div class="marker-dot" style="background:var(--red)"></div>` }) }).addTo(mainMap);
+    pickMarker = L.marker([state.pickLat, state.pickLng], { icon: L.divIcon({ className: '', iconSize: [24,24], iconAnchor:[12,12], html: `<div class="marker-dot" style="background:var(--green)"></div>` }) }).addTo(mainMap);
+    dropMarker = L.marker([state.dropLat, state.dropLng], { icon: L.divIcon({ className: '', iconSize: [24,24], iconAnchor:[12,12], html: `<div class="marker-dot" style="background:var(--red)"></div>` }) }).addTo(mainMap);
     
     if (!routePolyline) {
       const b = L.featureGroup([pickMarker, dropMarker]).getBounds();
@@ -1358,19 +1331,14 @@ function updateMarkers() {
   } catch(e) { console.warn("Marker error:", e); }
 }
 
-/* =========================================================
-   إدارة القائمة السفلية (Bottom Sheet Control)
-   ========================================================= */
+/* ==========================================================================
+   إدارة القائمة السفلية (Bottom Sheet Toggle)
+   ========================================================================== */
 function toggleSheet(isOpen) {
   const s = document.getElementById('bottom-sheet'), b = document.getElementById('open-sheet-btn');
   if (s && b) {
-    if (isOpen) { 
-      s.style.transform = 'translateY(0)'; 
-      b.style.display = 'none'; 
-    } else { 
-      s.style.transform = 'translateY(100%)'; 
-      b.style.display = 'block'; 
-    }
+    if (isOpen) { s.style.transform = 'translateY(0)'; b.style.display = 'none'; }
+    else { s.style.transform = 'translateY(100%)'; b.style.display = 'block'; }
   }
 }
 
@@ -1387,9 +1355,9 @@ function renderSheet() {
   }
 }
 
-/* =========================================================
-   واجهات الراكب (Passenger UI)
-   ========================================================= */
+/* ==========================================================================
+   واجهة الراكب (Passenger UI)
+   ========================================================================== */
 function renderPassengerBook() {
   toggleSheet(true);
   const sheet = document.getElementById('bottom-sheet');
@@ -1555,9 +1523,9 @@ function setRating(val) {
   ); 
 }
 
-/* =========================================================
+/* ==========================================================================
    منطق رحلة الراكب (Passenger Ride Logic)
-   ========================================================= */
+   ========================================================================== */
 function requestTaxi() {
   if (state.pickArea === state.dropArea && state.pickGov === state.dropGov) {
     return toast('اختر منطقتين مختلفتين', 'error');
@@ -1575,7 +1543,6 @@ function requestTaxi() {
     price: state.price, distance: state.distance 
   });
   
-  // محاكاة قبول السائق في حال لم يكن هناك سائق حقيقي
   setTimeout(() => {
     const r = DB.getRide();
     if (r && r.id === rideId && r.status === 'pending') {
@@ -1597,7 +1564,7 @@ function startDriverFoundSimulation() {
     const sLat = state.pickLat + 0.02, sLng = state.pickLng + 0.02;
     if (carMarker) mainMap.removeLayer(carMarker);
     
-    carMarker = L.marker([sLat, sLng], { icon: L.divIcon({ className:'custom-marker', iconSize:[44,44], iconAnchor:[22,22], html:`<div class="car-marker-icon">🚕</div>` }) }).addTo(mainMap);
+    carMarker = L.marker([sLat, sLng], { icon: L.divIcon({ className:'', iconSize:[44,44], iconAnchor:[22,22], html:`<div class="car-marker-icon">🚕</div>` }) }).addTo(mainMap);
     
     const t0 = Date.now(), dur = 4000;
     const tm = setInterval(() => {
@@ -1671,9 +1638,9 @@ function finishPassengerRide() {
   toast('شكراً لك! تم حفظ الرحلة 🌟', 'success');
 }
 
-/* =========================================================
+/* ==========================================================================
    اختيار الموقع من القائمة (Location List)
-   ========================================================= */
+   ========================================================================== */
 function openLocationList(target) { 
   pickerTarget = target; 
   pickerStep = 'gov'; 
@@ -1730,9 +1697,9 @@ function selectAreaList(areaName) {
   renderPassengerBook();
 }
 
-/* =========================================================
+/* ==========================================================================
    اختيار الموقع من الخريطة (Full Map Picker)
-   ========================================================= */
+   ========================================================================== */
 function openMapPicker(target) {
   pickerTarget = target; 
   document.getElementById('map-picker-title').textContent = target === 'pick' ? 'حدد نقطة الانطلاق' : 'حدد الوجهة';
@@ -1744,7 +1711,7 @@ function openMapPicker(target) {
       
       if (!pickerMap) {
         pickerMap = L.map('full-map', { zoomControl: false, attributionControl: false }).setView([33.3152, 44.3661], 14);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(pickerMap);
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 }).addTo(pickerMap);
         pickerMap.on('moveend', updateClosestArea);
       }
       
@@ -1821,9 +1788,9 @@ async function drawRouteOnMainMap() {
   if (state.stage === 'book') renderPassengerBook();
 }
 
-/* =========================================================
+/* ==========================================================================
    واجهة السائق (Driver App Logic)
-   ========================================================= */
+   ========================================================================== */
 function renderDriverBook() {
   toggleSheet(true);
   document.getElementById('bottom-sheet').innerHTML = `
@@ -1935,9 +1902,9 @@ function finishDriverRide() {
   toast('تم إنهاء الرحلة بنجاح 💸', 'success'); 
 }
 
-/* =========================================================
+/* ==========================================================================
    الملف الشخصي (Profile Modal)
-   ========================================================= */
+   ========================================================================== */
 function showProfile() {
   const u = state.user, r = u.rides || [];
   document.getElementById('profile-modal-content').innerHTML = `
@@ -1968,9 +1935,9 @@ function logoutUser() {
   renderAuth();
 }
 
-/* =========================================================
+/* ==========================================================================
    المزامنة بين النوافذ (Cross-Tab Sync)
-   ========================================================= */
+   ========================================================================== */
 window.addEventListener('storage', (e) => {
   if (e.key === DB.KEY && state.user) {
     const ride = DB.getRide();
@@ -1986,9 +1953,9 @@ window.addEventListener('storage', (e) => {
   }
 });
 
-/* =========================================================
+/* ==========================================================================
    التشغيل (Boot)
-   ========================================================= */
+   ========================================================================== */
 setTimeout(() => {
   try {
     const user = DB.getSession();
