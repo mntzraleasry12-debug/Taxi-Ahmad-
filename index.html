@@ -3,190 +3,966 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>تاكسي أحمد 🚕</title>
+<title>تاكسي أحمد - النظام الشامل 🚕</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
 <style>
-:root{--primary:#FFC107;--primary-d:#E0A800;--dark:#0F1419;--gray:#6B7280;--bg:#F5F5F7;--green:#10B981;--red:#EF4444;--blue:#3B82F6;--sh:0 8px 32px rgba(0,0,0,.08);--sh-lg:0 20px 60px rgba(0,0,0,.15)}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%}
-body{font-family:-apple-system,'SF Pro Display','Segoe UI',Tahoma,sans-serif;background:#000;color:var(--dark);overflow:hidden;display:flex;justify-content:center}
-#app{width:100%;max-width:500px;height:100vh;position:relative;overflow:hidden;background:var(--bg)}
-#boot{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;background:linear-gradient(135deg,#FFC107,#FF9800);color:#fff;gap:16px}
-#boot .em{font-size:64px;animation:bob 1s ease-in-out infinite}
-@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-#boot p{font-size:15px;font-weight:600;opacity:.9}
-.boot-spinner{width:32px;height:32px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
+/* =========================================================
+   1. المتغيرات الأساسية والتهيئة (CSS Variables)
+   ========================================================= */
+:root {
+  --primary: #FFC107;
+  --primary-d: #E0A800;
+  --dark: #0F1419;
+  --gray: #6B7280;
+  --light-gray: #E5E7EB;
+  --bg: #F5F5F7;
+  --white: #FFFFFF;
+  --green: #10B981;
+  --red: #EF4444;
+  --blue: #3B82F6;
+  --sh-sm: 0 2px 8px rgba(0,0,0,.08);
+  --sh-md: 0 8px 24px rgba(0,0,0,.12);
+  --sh-lg: 0 20px 60px rgba(0,0,0,.15);
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+}
 
-/* Auth */
-.auth-view{position:absolute;top:0;right:0;bottom:0;left:0;z-index:100;background:linear-gradient(135deg,#FFC107,#FF9800);display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
-.auth-card{width:100%;max-width:380px;background:#fff;border-radius:28px;padding:32px 24px;box-shadow:var(--sh-lg);margin:auto}
-.auth-logo{text-align:center;margin-bottom:8px}
-.auth-logo .em{font-size:52px;display:block;margin-bottom:8px}
-.auth-logo h1{font-size:24px;font-weight:800}
-.auth-logo p{color:var(--gray);font-size:14px;margin-top:4px}
-.auth-tabs{display:flex;background:var(--bg);border-radius:14px;padding:4px;margin:20px 0 18px}
-.auth-tabs button{flex:1;border:none;background:transparent;padding:10px;font-family:inherit;font-size:14px;font-weight:700;color:var(--gray);border-radius:10px;cursor:pointer;transition:.2s}
-.auth-tabs button.active{background:#fff;color:var(--dark);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
 
-/* Role Selector */
-.role-selector{display:flex;gap:10px;margin-bottom:16px}
-.role-opt{flex:1;border:2px solid var(--bg);border-radius:14px;padding:12px;text-align:center;cursor:pointer;transition:.2s;background:#fff}
-.role-opt.active{border-color:var(--primary);background:#FFF8E1}
-.role-opt .ic{font-size:24px}
-.role-opt .nm{font-size:13px;font-weight:700;margin-top:4px}
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #000;
+  color: var(--dark);
+  display: flex;
+  justify-content: center;
+}
 
-.fg{margin-bottom:12px}
-.fg label{display:block;font-size:12px;font-weight:700;color:var(--gray);margin-bottom:6px}
-.fg input,.fg select{width:100%;padding:14px 16px;border:2px solid transparent;background:var(--bg);border-radius:14px;font-family:inherit;font-size:15px;color:var(--dark);outline:none;transition:.2s;appearance:none}
-.fg input:focus,.fg select:focus{border-color:var(--primary);background:#fff}
-.remember-row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--gray);margin:10px 0 18px;cursor:pointer}
-.remember-row input{width:18px;height:18px;accent-color:var(--primary);cursor:pointer}
-.btn{width:100%;padding:16px;border-radius:16px;border:none;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;transition:.15s}
-.btn:active{transform:scale(.97)}
-.btn-primary{background:var(--primary);color:var(--dark)}
-.btn-secondary{background:transparent;color:var(--red);border:2px solid var(--red)}
-.btn-blue{background:var(--blue);color:#fff}
-.btn-ghost{background:var(--bg);color:var(--dark)}
-.err-msg{background:#FEE2E2;color:#991B1B;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;margin-bottom:12px;display:none}
-.err-msg.show{display:block}
+#app {
+  width: 100%;
+  max-width: 500px;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--bg);
+  box-shadow: 0 0 40px rgba(0,0,0,0.5);
+}
 
-/* App Main */
-.app-view{position:absolute;top:0;right:0;bottom:0;left:0;z-index:1}
-#map{position:absolute;top:0;right:0;bottom:0;left:0;z-index:1;background:#E5E7EB}
-.top-bar{position:absolute;top:0;right:0;left:0;z-index:10;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(255,255,255,.95) 55%,transparent);pointer-events:none}
-.top-bar>*{pointer-events:auto}
-.user-chip{display:flex;align-items:center;gap:10px;background:#fff;border-radius:99px;padding:6px 14px 6px 6px;box-shadow:var(--sh);cursor:pointer;border:none;font-family:inherit}
-.user-chip .av{width:36px;height:36px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:var(--dark)}
-.user-chip.driver .av{background:var(--blue);color:#fff}
-.user-chip .nm{font-size:14px;font-weight:700;text-align:right;line-height:1.2;color:var(--dark)}
-.user-chip .nm small{display:block;font-weight:500;color:var(--gray);font-size:11px}
+/* =========================================================
+   2. شاشة التحميل (Boot Screen)
+   ========================================================= */
+#boot-screen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--primary), #FF9800);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  color: var(--white);
+}
 
-/* Sheet & UI */
-.sheet{position:absolute;bottom:0;right:0;left:0;z-index:20;background:#fff;border-radius:28px 28px 0 0;padding:10px 20px 24px;box-shadow:0 -8px 40px rgba(0,0,0,.12);max-height:74%;overflow-y:auto;animation:slideUp .3s ease}
-@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
-.handle{width:42px;height:5px;background:#E5E7EB;border-radius:99px;margin:0 auto 16px}
-.sheet h2{font-size:20px;font-weight:800;margin-bottom:16px}
-.sheet .sub{font-size:13px;color:var(--gray);margin:-10px 0 16px}
-.loc-row{display:flex;align-items:center;gap:12px;background:var(--bg);border-radius:16px;padding:12px 16px;margin-bottom:10px;transition:0.2s;border:2px solid transparent}
-.loc-row .dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
-.loc-row .dot.green{background:var(--green);box-shadow:0 0 0 4px rgba(16,185,129,.2)}
-.loc-row .dot.red{background:var(--red);box-shadow:0 0 0 4px rgba(239,68,68,.2)}
-.loc-info{flex:1;min-width:0;cursor:pointer}
-.loc-lbl{font-size:11px;color:var(--gray);font-weight:600}
-.loc-val{font-size:15px;font-weight:800;color:var(--dark);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.map-btn{background:#fff;border:1px solid #ddd;border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;box-shadow:0 2px 4px rgba(0,0,0,.05);transition:0.2s}
-.map-btn:active{background:#f0f0f0}
+.boot-logo {
+  font-size: 72px;
+  animation: bounce 1.5s infinite;
+  margin-bottom: 16px;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
 
-.cars-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:6px}
-.car-opt{background:var(--bg);border:2px solid transparent;border-radius:16px;padding:12px 6px;text-align:center;cursor:pointer;transition:.15s}
-.car-opt.active{background:#FFF8E1;border-color:var(--primary)}
-.car-opt .ic{font-size:28px;line-height:1}
-.car-opt .nm{font-size:12px;font-weight:700;margin-top:6px}
-.car-opt .ml{font-size:10px;color:var(--gray);margin-top:2px}
-.summary-card{background:linear-gradient(135deg,#FFF8E1,#FFF3C4);border-radius:18px;padding:16px;margin:16px 0;display:flex;justify-content:space-between;align-items:center}
-.summary-card .lbl{font-size:12px;color:#92400E;font-weight:600}
-.summary-card .val{font-size:22px;font-weight:800;margin-top:2px}
-.summary-card .val small{font-size:12px;color:var(--gray);font-weight:600}
+.boot-text {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
 
-/* Searching / Driver */
-.searching{text-align:center;padding:20px 0}
-.radar{width:100px;height:100px;margin:0 auto 24px;position:relative;display:flex;align-items:center;justify-content:center}
-.radar::before,.radar::after{content:'';position:absolute;inset:0;border-radius:50%;background:var(--primary);opacity:.2;animation:pulse 2s ease-out infinite}
-.radar::after{animation-delay:1s}
-@keyframes pulse{0%{transform:scale(.4);opacity:.6}100%{transform:scale(1.8);opacity:0}}
-.radar .em{font-size:44px;z-index:1;animation:bob 1s ease-in-out infinite}
-.searching h3{font-size:18px;font-weight:800;margin-bottom:8px}
-.searching p{color:var(--gray);font-size:14px}
+.boot-spinner {
+  width: 36px;
+  height: 36px;
+  border: 4px solid rgba(255,255,255,0.3);
+  border-top-color: var(--white);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-top: 24px;
+}
 
-/* Driver App Specific */
-.driver-toggle{display:flex;align-items:center;justify-content:space-between;background:var(--bg);padding:16px;border-radius:16px;margin-bottom:16px}
-.switch{position:relative;display:inline-block;width:52px;height:30px}
-.switch input{opacity:0;width:0;height:0}
-.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#ccc;transition:.4s;border-radius:34px}
-.slider:before{position:absolute;content:"";height:22px;width:22px;left:4px;bottom:4px;background-color:white;transition:.4s;border-radius:50%}
-input:checked + .slider{background-color:var(--green)}
-input:checked + .slider:before{transform:translateX(22px)}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
 
-.request-card{background:#fff;border:2px solid var(--blue);border-radius:16px;padding:16px;margin-bottom:16px;animation:slideUp .3s}
-.request-card .price{color:var(--green);font-size:24px;font-weight:800;text-align:left}
-.request-card .route-info{font-size:14px;margin:12px 0;font-weight:700}
-.request-card .route-sub{font-size:12px;color:var(--gray);font-weight:500}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 
-/* Modals & Toasts */
-.modal{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.5);display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
-.modal.show{display:flex}
-.modal-content{width:100%;max-width:500px;background:#fff;border-radius:28px 28px 0 0;padding:20px 20px 30px;max-height:85%;overflow-y:auto;animation:slideUp .3s}
+/* =========================================================
+   3. واجهة تسجيل الدخول والتسجيل (Auth UI)
+   ========================================================= */
+.auth-container {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--primary), #FF9800);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+  overflow-y: auto;
+}
 
-.profile-head{text-align:center;padding:10px 0 20px;border-bottom:1px solid var(--bg);margin-bottom:20px}
-.profile-head .av{width:80px;height:80px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;margin:0 auto 12px;color:var(--dark)}
-.profile-head .av.driver{background:var(--blue);color:#fff}
-.profile-head .nm{font-size:20px;font-weight:800}
-.profile-head .ph{font-size:14px;color:var(--gray);margin-top:4px}
-.profile-head .gov{display:inline-block;background:#FFF8E1;color:#92400E;padding:4px 12px;border-radius:99px;font-size:12px;font-weight:700;margin-top:8px}
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 32px 24px;
+  box-shadow: var(--sh-lg);
+  margin: auto;
+  animation: slideUpFade 0.4s ease-out;
+}
 
-.toast{position:fixed;bottom:30px;left:50%;transform:translate(-50%,100px);background:var(--dark);color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;opacity:0;transition:.35s;pointer-events:none;max-width:90%;text-align:center}
-.toast.show{opacity:1;transform:translate(-50%,0)}
-.toast.success{background:var(--green)}
-.toast.error{background:var(--red)}
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-/* Full Screen Map Picker */
-#mapPickerOverlay { position: fixed; inset: 0; z-index: 2000; background: #fff; display: none; flex-direction: column; }
-#pickerMap { flex: 1; width: 100%; z-index: 1; }
-.map-picker-header { position: absolute; top: 0; left: 0; right: 0; padding: 20px; background: rgba(255,255,255,0.95); z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 16px; border-radius: 0 0 20px 20px; }
-.back-btn { background: var(--bg); border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-.map-picker-header h3 { font-size: 16px; font-weight: 800; }
-.center-pin { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -100%); z-index: 10; font-size: 40px; pointer-events: none; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3)); }
-.map-picker-footer { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: #fff; z-index: 10; border-radius: 24px 24px 0 0; box-shadow: 0 -8px 24px rgba(0,0,0,0.1); text-align: center; }
-.closest-area { font-size: 18px; font-weight: 800; margin-bottom: 16px; color: var(--dark); }
+.auth-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
 
-/* Location List Modal */
-.loc-modal-list{list-style:none;padding:0;margin:0}
-.loc-modal-item{padding:16px;border-bottom:1px solid var(--bg);display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-weight:700;font-size:15px;transition:0.2s}
-.loc-modal-item:active{background:var(--bg)}
-.loc-modal-header{font-size:18px;font-weight:800;margin-bottom:16px;text-align:center;}
+.auth-header h1 {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--dark);
+  margin-bottom: 6px;
+}
+
+.auth-header p {
+  font-size: 14px;
+  color: var(--gray);
+}
+
+/* اختيار نوع الحساب (راكب / سائق) */
+.role-selector {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.role-option {
+  flex: 1;
+  border: 2px solid var(--light-gray);
+  border-radius: var(--radius-md);
+  padding: 16px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--white);
+}
+
+.role-option.active {
+  border-color: var(--primary);
+  background: #FFF8E1;
+}
+
+.role-option .icon {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+.role-option .title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--dark);
+}
+
+/* التابات (دخول / تسجيل) */
+.auth-tabs {
+  display: flex;
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 20px;
+}
+
+.auth-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gray);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.auth-tab-btn.active {
+  background: var(--white);
+  color: var(--dark);
+  box-shadow: var(--sh-sm);
+}
+
+/* حقول الإدخال */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray);
+  margin-bottom: 6px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid transparent;
+  background: var(--bg);
+  border-radius: 12px;
+  font-size: 15px;
+  color: var(--dark);
+  outline: none;
+  transition: 0.2s;
+  font-family: inherit;
+}
+
+.form-control:focus {
+  border-color: var(--primary);
+  background: var(--white);
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--gray);
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.remember-me input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+}
+
+.error-box {
+  background: #FEE2E2;
+  color: #991B1B;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: none;
+}
+
+/* الأزرار العامة */
+.btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  border: none;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.15s;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn:active { transform: scale(0.97); }
+
+.btn-primary { background: var(--primary); color: var(--dark); }
+.btn-secondary { background: transparent; color: var(--red); border: 2px solid var(--red); }
+.btn-blue { background: var(--blue); color: var(--white); }
+.btn-ghost { background: var(--bg); color: var(--dark); }
+.btn-green { background: var(--green); color: var(--white); }
+
+/* =========================================================
+   4. الواجهة الرئيسية والخريطة (Main App & Map)
+   ========================================================= */
+.app-view {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#map-container {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--light-gray);
+}
+
+/* الشريط العلوي */
+.top-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.top-bar > * { pointer-events: auto; }
+
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--white);
+  border-radius: 99px;
+  padding: 6px 16px 6px 6px;
+  box-shadow: var(--sh-md);
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: 0.2s;
+}
+
+.user-chip:active { transform: scale(0.95); }
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--dark);
+}
+
+.user-chip.driver .user-avatar {
+  background: var(--blue);
+  color: var(--white);
+}
+
+.user-info {
+  text-align: right;
+}
+
+.user-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--dark);
+  line-height: 1.2;
+}
+
+.user-meta {
+  font-size: 11px;
+  color: var(--gray);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* =========================================================
+   5. القائمة السفلية (Bottom Sheet)
+   ========================================================= */
+.bottom-sheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--white);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: 12px 20px 24px;
+  box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+  z-index: 20;
+  max-height: 85%;
+  overflow-y: auto;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: sheetUp 0.3s ease-out;
+}
+
+@keyframes sheetUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.sheet-handle {
+  width: 40px;
+  height: 5px;
+  background: var(--light-gray);
+  border-radius: 99px;
+  margin: 0 auto 16px;
+}
+
+.close-sheet-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 32px;
+  height: 32px;
+  background: var(--bg);
+  border: none;
+  border-radius: 50%;
+  color: var(--gray);
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+.close-sheet-btn:active { background: var(--light-gray); transform: scale(0.9); }
+
+.open-sheet-btn {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+  width: 85%;
+  max-width: 380px;
+  padding: 18px;
+  border-radius: 99px;
+  font-size: 17px;
+  font-weight: 800;
+  box-shadow: 0 10px 30px rgba(255, 193, 7, 0.4);
+  display: none;
+}
+
+/* =========================================================
+   6. عناصر اختيار المواقع
+   ========================================================= */
+.sheet-title {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  color: var(--dark);
+}
+
+.location-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg);
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+  border: 2px solid transparent;
+}
+
+.loc-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.loc-dot.green { background: var(--green); box-shadow: 0 0 0 4px rgba(16,185,129,0.2); }
+.loc-dot.red { background: var(--red); box-shadow: 0 0 0 4px rgba(239,68,68,0.2); }
+
+.loc-text-area {
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.loc-label {
+  font-size: 11px;
+  color: var(--gray);
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.loc-value {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.loc-map-btn {
+  width: 40px;
+  height: 40px;
+  background: var(--white);
+  border: 1px solid var(--light-gray);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: var(--sh-sm);
+  transition: 0.2s;
+}
+
+.loc-map-btn:active { background: var(--bg); transform: scale(0.95); }
+
+/* =========================================================
+   7. اختيار السيارة والكلفة
+   ========================================================= */
+.section-title {
+  font-size: 15px;
+  font-weight: 800;
+  margin: 20px 0 12px;
+  color: var(--dark);
+}
+
+.cars-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.car-card {
+  background: var(--bg);
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  padding: 12px 6px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.car-card.active {
+  background: #FFF8E1;
+  border-color: var(--primary);
+}
+
+.car-icon { font-size: 28px; margin-bottom: 4px; }
+.car-name { font-size: 12px; font-weight: 800; color: var(--dark); }
+.car-mult { font-size: 10px; color: var(--gray); font-weight: 600; }
+
+.price-summary {
+  background: linear-gradient(135deg, #FFF8E1, #FFF3C4);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin: 20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.price-col .p-label { font-size: 12px; color: #92400E; font-weight: 700; margin-bottom: 4px; }
+.price-col .p-value { font-size: 22px; font-weight: 800; color: var(--dark); }
+.price-col .p-value small { font-size: 13px; color: var(--gray); font-weight: 700; }
+
+/* =========================================================
+   8. شاشات الانتظار والرحلة
+   ========================================================= */
+.searching-view { text-align: center; padding: 20px 0; }
+
+.radar-anim {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 20px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radar-anim::before, .radar-anim::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--primary);
+  opacity: 0.3;
+  animation: pulse 2s ease-out infinite;
+}
+
+.radar-anim::after { animation-delay: 1s; }
+.radar-anim .emoji { font-size: 44px; z-index: 1; animation: bounce 1s infinite; }
+
+@keyframes pulse {
+  0% { transform: scale(0.5); opacity: 0.8; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
+.searching-view h3 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+.searching-view p { font-size: 14px; color: var(--gray); }
+
+.driver-info-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg);
+  padding: 16px;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+}
+
+.driver-avatar-lg {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+}
+
+.driver-details { flex: 1; }
+.driver-name-lg { font-size: 17px; font-weight: 800; }
+.driver-car-lg { font-size: 13px; color: var(--gray); margin-top: 2px; }
+.driver-plate { font-size: 12px; font-weight: 800; background: var(--white); padding: 2px 8px; border-radius: 6px; display: inline-block; margin-top: 4px; }
+
+.progress-container {
+  height: 8px;
+  background: var(--light-gray);
+  border-radius: 99px;
+  overflow: hidden;
+  margin: 16px 0;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--primary);
+  width: 0%;
+  transition: width 0.2s linear;
+  border-radius: 99px;
+}
+
+.rating-stars {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  font-size: 36px;
+  margin: 16px 0;
+  cursor: pointer;
+}
+
+.rating-stars span {
+  opacity: 0.3;
+  filter: grayscale(1);
+  transition: 0.2s;
+}
+
+.rating-stars span.active {
+  opacity: 1;
+  filter: none;
+  transform: scale(1.1);
+}
+
+/* =========================================================
+   9. واجهة السائق (Driver Specific)
+   ========================================================= */
+.driver-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg);
+  padding: 20px;
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+}
+
+.toggle-title { font-size: 16px; font-weight: 800; }
+.toggle-sub { font-size: 12px; color: var(--gray); margin-top: 4px; }
+
+/* Switch Button */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 56px;
+  height: 32px;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 24px; width: 24px;
+  left: 4px; bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+input:checked + .slider { background-color: var(--green); }
+input:checked + .slider:before { transform: translateX(24px); }
+
+.incoming-request {
+  background: var(--white);
+  border: 2px solid var(--blue);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 16px;
+  animation: slideUpFade 0.4s;
+}
+
+.req-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.req-passenger { font-size: 16px; font-weight: 800; }
+.req-price { font-size: 22px; font-weight: 800; color: var(--green); }
+
+.req-route {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.req-dist { font-size: 12px; color: var(--gray); font-weight: 600; margin-bottom: 16px; }
+
+/* =========================================================
+   10. النوافذ المنبثقة (Modals)
+   ========================================================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.modal-overlay.show { display: flex; }
+
+.modal-content {
+  width: 100%;
+  max-width: 500px;
+  background: var(--white);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: 20px;
+  max-height: 85%;
+  overflow-y: auto;
+  animation: sheetUp 0.3s ease-out;
+}
+
+/* قائمة اختيار المحافظة */
+.list-modal-header {
+  font-size: 18px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.loc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.loc-list-item {
+  padding: 16px;
+  border-bottom: 1px solid var(--bg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.loc-list-item:active { background: var(--bg); }
+.loc-list-item .arrow { color: var(--gray); font-size: 12px; }
+
+/* =========================================================
+   11. الخريطة الكاملة لتحديد الموقع (Full Screen Map)
+   ========================================================= */
+#full-map-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: var(--white);
+  display: none;
+  flex-direction: column;
+}
+
+#full-map { flex: 1; width: 100%; z-index: 1; }
+
+.full-map-header {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  padding: 20px;
+  background: rgba(255,255,255,0.95);
+  z-index: 10;
+  box-shadow: var(--sh-md);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-radius: 0 0 20px 20px;
+}
+
+.back-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.full-map-title { font-size: 16px; font-weight: 800; }
+
+.center-pin {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -100%);
+  font-size: 44px;
+  z-index: 10;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 4px rgba(0,0,0,0.4));
+  animation: bounce 2s infinite;
+}
+
+.full-map-footer {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 24px;
+  background: var(--white);
+  z-index: 10;
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 -8px 24px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.closest-area-text {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  color: var(--dark);
+}
+
+/* =========================================================
+   12. الملف الشخصي والإشعارات (Profile & Toast)
+   ========================================================= */
+.profile-header { text-align: center; padding-bottom: 20px; border-bottom: 1px solid var(--bg); margin-bottom: 20px; }
+.profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; margin: 0 auto 12px; }
+.profile-avatar.driver { background: var(--blue); color: var(--white); }
+.profile-name { font-size: 20px; font-weight: 800; }
+.profile-phone { font-size: 14px; color: var(--gray); margin-top: 4px; }
+.profile-badge { display: inline-block; background: #FFF8E1; color: #92400E; padding: 4px 12px; border-radius: 99px; font-size: 12px; font-weight: 700; margin-top: 8px; }
+
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.stat-box { background: var(--bg); padding: 16px; border-radius: var(--radius-md); text-align: center; }
+.stat-val { font-size: 18px; font-weight: 800; }
+.stat-lbl { font-size: 12px; color: var(--gray); margin-top: 4px; }
+
+.toast-msg {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translate(-50%, 100px);
+  background: var(--dark);
+  color: var(--white);
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  z-index: 9999;
+  opacity: 0;
+  transition: 0.3s;
+  pointer-events: none;
+  max-width: 90%;
+  text-align: center;
+  box-shadow: var(--sh-lg);
+}
+
+.toast-msg.show { opacity: 1; transform: translate(-50%, 0); }
+.toast-msg.success { background: var(--green); }
+.toast-msg.error { background: var(--red); }
+
+/* =========================================================
+   13. تنسيقات خرائط Leaflet
+   ========================================================= */
+.leaflet-container { font-family: inherit; }
+.custom-marker { display: flex; align-items: center; justify-content: center; }
+.marker-dot { width: 24px; height: 24px; border-radius: 50%; border: 3px solid var(--white); box-shadow: var(--sh-sm); }
+.car-marker-icon { font-size: 32px; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3)); text-align: center; }
 </style>
 </head>
 <body>
-<div id="app">
-  <div id="boot">
-    <div class="em">🚕</div>
-    <p>تاكسي أحمد</p>
-    <div class="boot-spinner"></div>
-  </div>
-</div>
-<div class="toast" id="toast"></div>
 
-<!-- شاشة الخريطة الكاملة لتحديد الموقع -->
-<div id="mapPickerOverlay">
-  <div class="map-picker-header">
+<!-- شاشة التحميل -->
+<div id="boot-screen">
+  <div class="boot-logo">🚕</div>
+  <div class="boot-text">تاكسي أحمد</div>
+  <div class="boot-spinner"></div>
+</div>
+
+<!-- الحاوية الرئيسية -->
+<div id="app"></div>
+
+<!-- الإشعارات -->
+<div class="toast-msg" id="toast"></div>
+
+<!-- نافذة الخريطة الكاملة -->
+<div id="full-map-overlay">
+  <div class="full-map-header">
     <button class="back-btn" onclick="closeMapPicker()">✕</button>
-    <h3 id="mapPickerTitle">حدد موقعك</h3>
+    <div class="full-map-title" id="map-picker-title">حدد الموقع</div>
   </div>
-  <div id="pickerMap"></div>
+  <div id="full-map"></div>
   <div class="center-pin">📍</div>
-  <div class="map-picker-footer">
-    <div class="closest-area" id="closestAreaText">جاري التحديد...</div>
+  <div class="full-map-footer">
+    <div class="closest-area-text" id="map-picker-text">جاري التحديد...</div>
     <button class="btn btn-primary" onclick="confirmMapLocation()">تأكيد الموقع</button>
   </div>
 </div>
 
 <!-- نافذة اختيار المنطقة بالقائمة -->
-<div class="modal" id="locModal">
-  <div class="modal-content" style="padding:20px">
-    <div class="handle"></div>
-    <div class="loc-modal-header" id="locModalTitle">اختر المحافظة</div>
-    <ul class="loc-modal-list" id="locModalList"></ul>
-    <button class="btn btn-ghost" style="margin-top:16px" onclick="document.getElementById('locModal').classList.remove('show')">إلغاء</button>
+<div class="modal-overlay" id="loc-list-modal">
+  <div class="modal-content">
+    <div class="sheet-handle"></div>
+    <div class="list-modal-header" id="loc-list-title">اختر المحافظة</div>
+    <ul class="loc-list" id="loc-list-container"></ul>
+    <button class="btn btn-ghost" style="margin-top:16px" onclick="document.getElementById('loc-list-modal').classList.remove('show')">إلغاء</button>
   </div>
 </div>
 
 <!-- نافذة الحساب -->
-<div class="modal" id="modal"><div class="modal-content" id="modalContent"></div></div>
+<div class="modal-overlay" id="profile-modal">
+  <div class="modal-content" id="profile-modal-content"></div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-/* ========== البيانات ========== */
+/* =========================================================
+   البيانات الأساسية (Data)
+   ========================================================= */
 const GOVS = [
   { name:'بغداد', lat:33.3152, lng:44.3661, areas:['الكرادة','الجادرية','المنصور','الكاظمية','الأعظمية','زيونة','الحارثية','العلاوي','الباب الشرقي','الطالبية','الشعلة','الدورة','المحمودية','أبو غريب','الغزالية','اليرموك','العامرية','البياع','السيدية','حي أور','مدينة الصدر','بغداد الجديدة'] },
   { name:'البصرة', lat:30.5081, lng:47.7835, areas:['العشار','الجنينة','الموفقية','الزبير','أبو الخصيب','شط العرب','القرنة','الطويسة','كرمة علي','الهارثة','الفاو','سفوان','المدينة','البراضعية'] },
@@ -209,360 +985,998 @@ const GOVS = [
 ];
 
 const CARS = {
-  economy:{name:'اقتصادي', icon:'🚗', mult:1.0},
-  comfort:{name:'مريح',    icon:'🚙', mult:1.3},
-  vip:    {name:'VIP',     icon:'🚘', mult:1.9},
-  van:    {name:'فان',     icon:'🚐', mult:1.5},
+  economy: { name: 'اقتصادي', icon: '🚗', mult: 1.0 },
+  comfort: { name: 'مريح',    icon: '🚙', mult: 1.3 },
+  vip:     { name: 'VIP',     icon: '🚘', mult: 1.9 },
+  van:     { name: 'فان',     icon: '🚐', mult: 1.5 },
 };
 
-/* ========== قاعدة البيانات ========== */
+const DRIVERS_DB = [
+  { name: 'أحمد كريم', rating: 4.9, phone: '07701234567', car: 'تويوتا كورولا', plate: '٢٤٧٨١', emoji: '👨' },
+  { name: 'حسين علي', rating: 4.8, phone: '07809876543', car: 'كيا سيراتو', plate: '١٥٦٣٢', emoji: '🧔' },
+  { name: 'مصطفى جبار', rating: 5.0, phone: '07512345678', car: 'هيونداي إلنترا', plate: '٩٨٤٥٦', emoji: '👨‍🦱' },
+  { name: 'علي حسن', rating: 4.7, phone: '07705556677', car: 'نيسان صني', plate: '٣٣٤٤٥', emoji: '👨‍🦰' },
+];
+
+/* =========================================================
+   نظام قاعدة البيانات (LocalStorage DB)
+   ========================================================= */
 const DB = {
-  KEY:'ahmed_taxi_v6',
-  load(){ try{ const d=JSON.parse(localStorage.getItem(this.KEY)); return d&&d.users?d:{users:[],session:null,activeRide:null}; }catch{ return {users:[],session:null,activeRide:null}; } },
-  save(db){ localStorage.setItem(this.KEY, JSON.stringify(db)); },
-  hash(p){ let h=5381; for(let i=0;i<p.length;i++) h=((h<<5)+h)^p.charCodeAt(i); return 'h_'+(h>>>0).toString(36)+'_'+p.length; },
+  KEY: 'ahmed_taxi_final_v1',
   
-  register({name,phone,password,gov,role}){
-    const db=this.load();
-    if(db.users.find(u=>u.phone===phone)) throw new Error('رقم الهاتف مسجل من قبل');
-    if(!/^07\d{9}$/.test(phone)) throw new Error('رقم الهاتف لازم يبدأ بـ 07 ويكون 11 رقم');
-    if(password.length<4) throw new Error('كلمة المرور 4 أحرف على الأقل');
-    const user={id:'u_'+Date.now().toString(36),name:name.trim(),phone,password:this.hash(password),gov,role,createdAt:Date.now(),rides:[]};
-    db.users.push(user); this.save(db); return user;
+  load() {
+    try {
+      const data = JSON.parse(localStorage.getItem(this.KEY));
+      if (data && data.users) return data;
+    } catch (e) {}
+    return { users: [], session: null, activeRide: null };
   },
   
-  login(phone,password){
-    const db=this.load(); const user=db.users.find(u=>u.phone===phone);
-    if(!user) throw new Error('ماكو حساب بهذا الرقم');
-    if(user.password!==this.hash(password)) throw new Error('كلمة المرور غلط');
+  save(data) {
+    localStorage.setItem(this.KEY, JSON.stringify(data));
+  },
+  
+  hash(str) {
+    let hash = 5381;
+    for (let i = 0; i < str.length; i++) {
+      hash = ((hash << 5) + hash) ^ str.charCodeAt(i);
+    }
+    return 'h_' + (hash >>> 0).toString(36);
+  },
+  
+  register(userData) {
+    const db = this.load();
+    if (db.users.find(u => u.phone === userData.phone)) {
+      throw new Error('رقم الهاتف مسجل من قبل');
+    }
+    if (!/^07\d{9}$/.test(userData.phone)) {
+      throw new Error('رقم الهاتف يجب أن يبدأ بـ 07 ويكون 11 رقماً');
+    }
+    if (userData.password.length < 4) {
+      throw new Error('كلمة المرور يجب أن تكون 4 أحرف على الأقل');
+    }
+    
+    const newUser = {
+      id: 'u_' + Date.now().toString(36),
+      name: userData.name.trim(),
+      phone: userData.phone,
+      password: this.hash(userData.password),
+      gov: userData.gov,
+      role: userData.role,
+      createdAt: Date.now(),
+      rides: []
+    };
+    
+    db.users.push(newUser);
+    this.save(db);
+    return newUser;
+  },
+  
+  login(phone, password) {
+    const db = this.load();
+    const user = db.users.find(u => u.phone === phone);
+    
+    if (!user) throw new Error('لا يوجد حساب بهذا الرقم');
+    if (user.password !== this.hash(password)) throw new Error('كلمة المرور غير صحيحة');
+    
     return user;
   },
   
-  startSession(userId,remember){
-    const db=this.load();
-    db.session={userId,remember:!!remember,expiresAt: remember?Date.now()+365*24*3600*1000 : Date.now()+24*3600*1000};
+  startSession(userId, remember) {
+    const db = this.load();
+    const duration = remember ? 365 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
+    db.session = {
+      userId: userId,
+      remember: remember,
+      expiresAt: Date.now() + duration
+    };
     this.save(db);
   },
   
-  session(){
-    const db=this.load(); if(!db.session) return null;
-    if(db.session.expiresAt<Date.now()){ db.session=null; this.save(db); return null; }
-    return db.users.find(u=>u.id===db.session.userId)||null;
+  getSession() {
+    const db = this.load();
+    if (!db.session) return null;
+    if (db.session.expiresAt < Date.now()) {
+      db.session = null;
+      this.save(db);
+      return null;
+    }
+    return db.users.find(u => u.id === db.session.userId) || null;
   },
   
-  logout(){ const db=this.load(); db.session=null; this.save(db); },
-
-  addRideHistory(userId,ride){
-    const db=this.load(); const u=db.users.find(x=>x.id===userId);
-    if(u){ u.rides=u.rides||[]; u.rides.unshift(ride); this.save(db); }
-  },
-
-  createRideRequest(ride){
-    const db=this.load();
-    db.activeRide = { id:'r_'+Date.now(), ...ride, status:'pending' };
+  logout() {
+    const db = this.load();
+    db.session = null;
     this.save(db);
   },
-  clearRide(){
-    const db=this.load(); db.activeRide=null; this.save(db);
+  
+  createRideRequest(rideData) {
+    const db = this.load();
+    db.activeRide = {
+      id: 'r_' + Date.now().toString(36),
+      ...rideData,
+      status: 'pending',
+      createdAt: Date.now()
+    };
+    this.save(db);
+  },
+  
+  getActiveRide() {
+    return this.load().activeRide;
+  },
+  
+  updateRideStatus(status) {
+    const db = this.load();
+    if (db.activeRide) {
+      db.activeRide.status = status;
+      this.save(db);
+    }
+  },
+  
+  clearRide() {
+    const db = this.load();
+    db.activeRide = null;
+    this.save(db);
+  },
+  
+  addRideToHistory(userId, ride) {
+    const db = this.load();
+    const user = db.users.find(u => u.id === userId);
+    if (user) {
+      user.rides = user.rides || [];
+      user.rides.unshift(ride);
+      this.save(db);
+    }
   }
 };
 
-/* ========== الحالة ========== */
-const state={ user:null, role:'passenger', stage:'book', pickGov:null, pickArea:null, pickLat:null, pickLng:null, dropGov:null, dropArea:null, dropLat:null, dropLng:null, carType:'economy', distance:0, price:0, progress:0, arrived:false, isOnline:false };
-let map=null, pickerMap=null, carMarker=null, routeLine=null, pickMarker=null, dropMarker=null;
-let pickerTarget = null; let pickerStep = 'gov';
-let driverInterval = null;
+/* =========================================================
+   حالة التطبيق (State Management)
+   ========================================================= */
+const state = {
+  user: null,
+  role: 'passenger',
+  stage: 'book',
+  
+  // مواقع الرحلة
+  pickGov: null, pickArea: null, pickLat: null, pickLng: null,
+  dropGov: null, dropArea: null, dropLat: null, dropLng: null,
+  
+  // الرحلة
+  carType: 'economy',
+  distance: 0,
+  price: 0,
+  driver: null,
+  progress: 0,
+  arrived: false,
+  
+  // السائق
+  isOnline: false,
+};
+
+/* =========================================================
+   متغيرات الخرائط والعناصر (Map Variables)
+   ========================================================= */
+let mainMap = null;
+let pickerMap = null;
+let pickMarker = null;
+let dropMarker = null;
+let carMarker = null;
+let routePolyline = null;
+
+let pickerTarget = null; // 'pick' أو 'drop'
+let pickerStep = 'gov'; // 'gov' أو 'area'
 let selectedMapCoords = null;
+let driverTimeout = null;
 
-/* ========== أدوات ========== */
-function toast(msg,type=''){ const t=document.getElementById('toast'); t.className='toast show '+type; t.textContent=msg; clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2500); }
-function fmt(n){ return Number(n).toLocaleString('en-US'); }
-function initials(name){ const p=name.trim().split(' '); return ((p[0]?.[0]||'')+(p[1]?.[0]||'')).toUpperCase(); }
-
-function areaCoords(govName,areaName){
-  const g=GOVS.find(x=>x.name===govName); if(!g) return {lat:33.3152,lng:44.3661};
-  const i=g.areas.indexOf(areaName); 
-  const a=((i*137.5)%360)*Math.PI/180; 
-  const r=0.05+(i%5)*0.02; 
-  return {lat:g.lat+Math.cos(a)*r, lng:g.lng+Math.sin(a)*r};
+/* =========================================================
+   أدوات مساعدة (Utilities)
+   ========================================================= */
+function showToast(msg, type = '') {
+  const toast = document.getElementById('toast');
+  toast.className = 'toast-msg show ' + type;
+  toast.textContent = msg;
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-function haversine(a,b){ const R=6371, dLat=(b.lat-a.lat)*Math.PI/180, dLng=(b.lng-a.lng)*Math.PI/180; const x=Math.sin(dLat/2)**2+Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLng/2)**2; return 2*R*Math.asin(Math.sqrt(x)); }
-function calcPrice(km,type){ const raw=2000+km*800; return Math.round((raw*CARS[type].mult)/250)*250; }
+function formatNum(num) {
+  return Number(num).toLocaleString('en-US');
+}
 
-/* ========== المصادقة ========== */
-function showAuth(){
-  if(map){ try{ map.remove(); }catch{} map=null; }
-  const govOptions = GOVS.map(g=>`<option value="${g.name}">${g.name}</option>`).join('');
-  document.getElementById('app').innerHTML=`
-    <div class="auth-view"><div class="auth-card">
-      <div class="auth-logo"><span class="em">🚕</span><h1>تاكسي أحمد</h1><p>أهلاً بك، حدد حسابك</p></div>
-      
-      <div class="role-selector" id="roleSelector">
-        <div class="role-opt active" data-role="passenger">
-          <div class="ic">🙋‍♂️</div><div class="nm">راكب</div>
-        </div>
-        <div class="role-opt" data-role="driver">
-          <div class="ic">🚕</div><div class="nm">سائق</div>
-        </div>
-      </div>
+function getInitials(name) {
+  const parts = name.trim().split(' ');
+  return ((parts[0]?.[0] || '') + (parts[1]?.[0] || '')).toUpperCase();
+}
 
-      <div class="auth-tabs">
-        <button type="button" data-tab="login" class="active">دخول</button>
-        <button type="button" data-tab="register">حساب جديد</button>
-      </div>
-      <div class="err-msg" id="authErr"></div>
-      <form id="authForm" autocomplete="off">
-        <div class="fg" id="nameGroup" style="display:none">
-          <label>الاسم الكامل</label>
-          <input id="authName" placeholder="مثال: أحمد كريم" autocomplete="off" />
-        </div>
-        <div class="fg">
-          <label>رقم الهاتف</label>
-          <input id="authPhone" type="tel" placeholder="07XX XXX XXXX" autocomplete="off" inputmode="numeric" maxlength="11" />
-        </div>
-        <div class="fg">
-          <label>كلمة المرور</label>
-          <input id="authPass" type="password" placeholder="••••••••" autocomplete="new-password" />
-        </div>
-        <div class="fg" id="govGroup" style="display:none">
-          <label>📍 محافظتك</label>
-          <select id="authGov">${govOptions}</select>
-        </div>
-        <label class="remember-row">
-          <input type="checkbox" id="authRemember" checked />
-          <span>تذكرني (ابقى مسجل دخول)</span>
-        </label>
-        <button type="submit" class="btn btn-primary" id="authSubmit">دخول</button>
-      </form>
-    </div></div>`;
-
-  let mode='login';
-  let currentRole='passenger';
-  const ng=document.getElementById('nameGroup'), gg=document.getElementById('govGroup'), err=document.getElementById('authErr');
+// حساب إحداثيات وهمية للمنطقة بناءً على موقع المحافظة
+function getAreaCoords(govName, areaName) {
+  const gov = GOVS.find(g => g.name === govName);
+  if (!gov) return { lat: 33.3152, lng: 44.3661 }; // بغداد افتراضياً
   
-  document.querySelectorAll('.role-opt').forEach(r => {
-    r.onclick = () => {
-      document.querySelectorAll('.role-opt').forEach(x => x.classList.remove('active'));
-      r.classList.add('active'); currentRole = r.dataset.role;
-    };
-  });
-
-  document.querySelectorAll('.auth-tabs button').forEach(b=>{
-    b.onclick=()=>{
-      document.querySelectorAll('.auth-tabs button').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active'); mode=b.dataset.tab;
-      ng.style.display = mode==='register'?'block':'none';
-      gg.style.display = mode==='register'?'block':'none';
-      document.getElementById('authSubmit').textContent = mode==='register'?'إنشاء حساب':'دخول';
-      err.classList.remove('show');
-    };
-  });
-
-  document.getElementById('authForm').onsubmit=(e)=>{
-    e.preventDefault(); err.classList.remove('show');
-    const phone=document.getElementById('authPhone').value.trim();
-    const pass=document.getElementById('authPass').value;
-    const remember=document.getElementById('authRemember').checked;
-    try{
-      let user;
-      if(mode==='register'){
-        const name=document.getElementById('authName').value.trim();
-        const gov=document.getElementById('authGov').value;
-        user=DB.register({name,phone,password:pass,gov,role:currentRole});
-        toast('تم إنشاء حسابك 🎉','success');
-      } else {
-        user=DB.login(phone,pass);
-        if(user.role !== currentRole) throw new Error('هذا الحساب مسجل كـ' + (user.role==='driver'?'سائق':'راكب') + '، يرجى تغيير النوع فوق');
-        toast('أهلاً بعودتك 👋','success');
-      }
-      DB.startSession(user.id,remember);
-      state.user=user; state.role=user.role; showApp();
-    }catch(e){ err.textContent=e.message; err.classList.add('show'); }
+  const index = gov.areas.indexOf(areaName);
+  const angle = ((index * 137.5) % 360) * Math.PI / 180;
+  const radius = 0.05 + (index % 5) * 0.02;
+  
+  return {
+    lat: gov.lat + Math.cos(angle) * radius,
+    lng: gov.lng + Math.sin(angle) * radius
   };
 }
 
-/* ========== التطبيق ========== */
-function showApp(){
-  if(!state.pickGov){
-    const gov = state.user.gov || 'بغداد';
-    const govData = GOVS.find(g => g.name === gov) || GOVS[0];
-    state.pickGov = govData.name; state.pickArea = govData.areas[0];
-    state.dropGov = govData.name; state.dropArea = govData.areas[1] || govData.areas[0];
-    // إحداثيات مبدئية
-    const pc = areaCoords(state.pickGov, state.pickArea);
-    const dc = areaCoords(state.dropGov, state.dropArea);
+// حساب المسافة بين نقطتين (Haversine)
+function calcDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
+
+// حساب السعر
+function calcPrice(km, type) {
+  const base = 2000;
+  const perKm = 800;
+  const raw = base + km * perKm;
+  const finalPrice = raw * CARS[type].mult;
+  return Math.round(finalPrice / 250) * 250; // تقريب لأقرب 250
+}
+
+/* =========================================================
+   البدء والتشغيل (Boot & Init)
+   ========================================================= */
+function initApp() {
+  // إخفاء شاشة التحميل بعد ثانية
+  setTimeout(() => {
+    document.getElementById('boot-screen').style.display = 'none';
+    
+    const user = DB.getSession();
+    if (user) {
+      state.user = user;
+      state.role = user.role;
+      renderMainApp();
+    } else {
+      renderAuth();
+    }
+  }, 1000);
+}
+
+/* =========================================================
+   واجهة المصادقة (Auth UI)
+   ========================================================= */
+function renderAuth() {
+  const govOptions = GOVS.map(g => `<option value="${g.name}">${g.name}</option>`).join('');
+  
+  document.getElementById('app').innerHTML = `
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="auth-header">
+          <h1>تاكسي أحمد 🚕</h1>
+          <p>أهلاً بك، يرجى تسجيل الدخول</p>
+        </div>
+        
+        <div class="role-selector" id="role-selector">
+          <div class="role-option active" data-role="passenger">
+            <div class="icon">🙋‍♂️</div>
+            <div class="title">راكب</div>
+          </div>
+          <div class="role-option" data-role="driver">
+            <div class="icon">🚕</div>
+            <div class="title">سائق</div>
+          </div>
+        </div>
+
+        <div class="auth-tabs">
+          <button class="auth-tab-btn active" data-tab="login">دخول</button>
+          <button class="auth-tab-btn" data-tab="register">حساب جديد</button>
+        </div>
+        
+        <div class="error-box" id="auth-error"></div>
+        
+        <form id="auth-form">
+          <div class="form-group" id="group-name" style="display:none">
+            <label>الاسم الكامل</label>
+            <input type="text" id="auth-name" class="form-control" placeholder="مثال: أحمد كريم">
+          </div>
+          
+          <div class="form-group">
+            <label>رقم الهاتف</label>
+            <input type="tel" id="auth-phone" class="form-control" placeholder="07XX XXX XXXX" maxlength="11" inputmode="numeric">
+          </div>
+          
+          <div class="form-group">
+            <label>كلمة المرور</label>
+            <input type="password" id="auth-password" class="form-control" placeholder="••••••••">
+          </div>
+          
+          <div class="form-group" id="group-gov" style="display:none">
+            <label>المحافظة</label>
+            <select id="auth-gov" class="form-control">${govOptions}</select>
+          </div>
+          
+          <label class="remember-me">
+            <input type="checkbox" id="auth-remember" checked>
+            <span>تذكرني (ابقى مسجل دخول)</span>
+          </label>
+          
+          <button type="submit" class="btn btn-primary" id="auth-submit">دخول</button>
+        </form>
+      </div>
+    </div>
+  `;
+
+  let currentRole = 'passenger';
+  let currentMode = 'login';
+
+  // التبديل بين راكب وسائق
+  document.querySelectorAll('.role-option').forEach(el => {
+    el.onclick = () => {
+      document.querySelectorAll('.role-option').forEach(x => x.classList.remove('active'));
+      el.classList.add('active');
+      currentRole = el.dataset.role;
+    };
+  });
+
+  // التبديل بين دخول وتسجيل
+  document.querySelectorAll('.auth-tab-btn').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.auth-tab-btn').forEach(x => x.classList.remove('active'));
+      btn.classList.add('active');
+      currentMode = btn.dataset.tab;
+      
+      document.getElementById('group-name').style.display = currentMode === 'register' ? 'block' : 'none';
+      document.getElementById('group-gov').style.display = currentMode === 'register' ? 'block' : 'none';
+      document.getElementById('auth-submit').textContent = currentMode === 'register' ? 'إنشاء حساب' : 'دخول';
+      
+      document.getElementById('auth-error').style.display = 'none';
+    };
+  });
+
+  // إرسال النموذج
+  document.getElementById('auth-form').onsubmit = (e) => {
+    e.preventDefault();
+    const errBox = document.getElementById('auth-error');
+    errBox.style.display = 'none';
+    
+    const phone = document.getElementById('auth-phone').value.trim();
+    const pass = document.getElementById('auth-password').value;
+    const remember = document.getElementById('auth-remember').checked;
+    
+    try {
+      let user;
+      if (currentMode === 'register') {
+        const name = document.getElementById('auth-name').value.trim();
+        const gov = document.getElementById('auth-gov').value;
+        user = DB.register({ name, phone, password: pass, gov, role: currentRole });
+        showToast('تم إنشاء الحساب بنجاح 🎉', 'success');
+      } else {
+        user = DB.login(phone, pass);
+        if (user.role !== currentRole) {
+          throw new Error('هذا الحساب مسجل كـ ' + (user.role === 'driver' ? 'سائق' : 'راكب'));
+        }
+        showToast('أهلاً بعودتك 👋', 'success');
+      }
+      
+      DB.startSession(user.id, remember);
+      state.user = user;
+      state.role = user.role;
+      renderMainApp();
+      
+    } catch (err) {
+      errBox.textContent = err.message;
+      errBox.style.display = 'block';
+    }
+  };
+}
+
+/* =========================================================
+   الواجهة الرئيسية (Main App Layout)
+   ========================================================= */
+function renderMainApp() {
+  // تهيئة المواقع الافتراضية
+  if (!state.pickGov) {
+    const govName = state.user.gov || 'بغداد';
+    const govData = GOVS.find(g => g.name === govName) || GOVS[0];
+    
+    state.pickGov = govData.name;
+    state.pickArea = govData.areas[0];
+    state.dropGov = govData.name;
+    state.dropArea = govData.areas[1] || govData.areas[0];
+    
+    const pc = getAreaCoords(state.pickGov, state.pickArea);
+    const dc = getAreaCoords(state.dropGov, state.dropArea);
+    
     state.pickLat = pc.lat; state.pickLng = pc.lng;
     state.dropLat = dc.lat; state.dropLng = dc.lng;
   }
 
-  document.getElementById('app').innerHTML=`
+  document.getElementById('app').innerHTML = `
     <div class="app-view">
       <div class="top-bar">
-        <button class="user-chip ${state.role==='driver'?'driver':''}" id="userChip">
-          <div class="av">${initials(state.user.name)}</div>
-          <div class="nm">${state.user.name.split(' ')[0]}<small>📍 ${state.user.gov} (${state.role==='driver'?'سائق':'راكب'})</small></div>
+        <button class="user-chip ${state.role === 'driver' ? 'driver' : ''}" onclick="showProfile()">
+          <div class="user-avatar">${getInitials(state.user.name)}</div>
+          <div class="user-info">
+            <div class="user-name">${state.user.name.split(' ')[0]}</div>
+            <div class="user-meta">📍 ${state.user.gov} (${state.role === 'driver' ? 'سائق' : 'راكب'})</div>
+          </div>
         </button>
       </div>
-      <div id="map"></div>
-      <div class="sheet" id="sheet"></div>
+      
+      <div id="map-container"></div>
+      
+      <button class="btn btn-primary open-sheet-btn" id="open-sheet-btn" onclick="toggleSheet(true)">🚕 عرض التفاصيل</button>
+      
+      <div class="bottom-sheet" id="bottom-sheet"></div>
     </div>
-    <div class="modal" id="locModal">
-      <div class="modal-content" style="padding:20px">
-        <div class="handle"></div>
-        <div class="loc-modal-header" id="locModalTitle">اختر المحافظة</div>
-        <ul class="loc-modal-list" id="locModalList"></ul>
-        <button class="btn btn-ghost" style="margin-top:16px" onclick="document.getElementById('locModal').classList.remove('show')">إلغاء</button>
-      </div>
-    </div>`;
-    
-  document.getElementById('userChip').onclick=showProfile;
-  setTimeout(()=>{ initMap(); renderSheet(); }, 50);
+  `;
+
+  initMainMap();
+  
+  setTimeout(() => {
+    renderSheet();
+  }, 100);
 }
 
-function initMap(){
-  const container = document.getElementById('map');
-  if(!container || !window.L) return;
-  if(map){ try{ map.remove(); }catch(e){} map=null; }
-  map = L.map(container, { zoomControl: false, attributionControl: false }).setView([33.3152,44.3661], 11);
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 }).addTo(map);
-  setTimeout(()=>{ map.invalidateSize(); if(state.role==='passenger') updateMarkers(); }, 100);
-}
+/* =========================================================
+   تهيئة الخريطة الرئيسية
+   ========================================================= */
+function initMainMap() {
+  const container = document.getElementById('map-container');
+  if (!container || !window.L) return;
 
-function markerIcon(color){ return L.divIcon({className:'',iconSize:[24,24],iconAnchor:[12,12],html:`<div style="width:22px;height:22px;border-radius:50%;background:${color};border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.35)"></div>`}); }
-function carIcon(){ return L.divIcon({className:'',iconSize:[44,44],iconAnchor:[22,22],html:`<div style="font-size:32px;text-align:center;filter:drop-shadow(0 3px 5px rgba(0,0,0,.4))">🚕</div>`}); }
+  if (mainMap) {
+    try { mainMap.remove(); } catch(e) {}
+    mainMap = null;
+  }
 
-function updateMarkers(){
-  if(!map || state.role !== 'passenger') return;
-  try{
-    if(pickMarker) map.removeLayer(pickMarker);
-    if(dropMarker) map.removeLayer(dropMarker);
-    
-    pickMarker=L.marker([state.pickLat,state.pickLng],{icon:markerIcon('#10B981')}).addTo(map);
-    dropMarker=L.marker([state.dropLat,state.dropLng],{icon:markerIcon('#EF4444')}).addTo(map);
-    
-    if(!routeLine){
-      const g=L.featureGroup([pickMarker,dropMarker]);
-      const bounds = g.getBounds();
-      if(bounds.isValid()) map.fitBounds(bounds,{padding:[80,80],maxZoom:13});
+  mainMap = L.map(container, { zoomControl: false, attributionControl: false }).setView([33.3152, 44.3661], 12);
+  
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    subdomains: 'abc'
+  }).addTo(mainMap);
+
+  setTimeout(() => {
+    mainMap.invalidateSize();
+    if (state.role === 'passenger') {
+      updateMainMarkers();
     }
-  }catch(e){ console.warn(e); }
+  }, 400);
 }
 
-/* ========== شاشات الراكب ========== */
-function renderSheet(){
-  if(state.role === 'passenger') {
-    if(state.stage==='book') return renderPassengerBook();
-    if(state.stage==='searching') return renderPassengerSearching();
-    if(state.stage==='driver') return renderPassengerDriver();
-    if(state.stage==='ride') return renderPassengerRide();
-    if(state.stage==='done') return renderPassengerDone();
-  } else {
-    if(state.stage==='book') return renderDriverBook();
-    if(state.stage==='driver-ride') return renderDriverActiveRide();
+function createMarkerIcon(color) {
+  return L.divIcon({
+    className: 'custom-marker',
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+    html: `<div class="marker-dot" style="background:${color}"></div>`
+  });
+}
+
+function createCarIcon() {
+  return L.divIcon({
+    className: 'custom-marker',
+    iconSize: [44, 44],
+    iconAnchor: [22, 22],
+    html: `<div class="car-marker-icon">🚕</div>`
+  });
+}
+
+function updateMainMarkers() {
+  if (!mainMap || state.role !== 'passenger') return;
+  
+  try {
+    if (pickMarker) mainMap.removeLayer(pickMarker);
+    if (dropMarker) mainMap.removeLayer(dropMarker);
+    
+    pickMarker = L.marker([state.pickLat, state.pickLng], { icon: createMarkerIcon('#10B981') }).addTo(mainMap);
+    dropMarker = L.marker([state.dropLat, state.dropLng], { icon: createMarkerIcon('#EF4444') }).addTo(mainMap);
+    
+    if (!routePolyline) {
+      const group = L.featureGroup([pickMarker, dropMarker]);
+      const bounds = group.getBounds();
+      if (bounds.isValid()) {
+        mainMap.fitBounds(bounds, { padding: [80, 80], maxZoom: 14 });
+      }
+    }
+  } catch(e) {
+    console.warn("Marker error:", e);
   }
 }
 
-function renderPassengerBook(){
-  // نحسب المسافة المبدئية بناءً على الإحداثيات
-  const km = haversine({lat:state.pickLat,lng:state.pickLng}, {lat:state.dropLat,lng:state.dropLng}) * 1.35;
-  state.distance = km; state.price = calcPrice(km,state.carType);
+/* =========================================================
+   إدارة القائمة السفلية (Bottom Sheet Toggle)
+   ========================================================= */
+function toggleSheet(isOpen) {
+  const sheet = document.getElementById('bottom-sheet');
+  const openBtn = document.getElementById('open-sheet-btn');
   
-  document.getElementById('sheet').innerHTML=`
-    <div class="handle"></div>
-    <h2>وين نوصلك؟</h2>
-    
-    <div class="loc-row">
-      <div class="dot green"></div>
-      <div class="loc-info" onclick="openLocationPicker('pick')">
-        <div class="loc-lbl">نقطة الانطلاق</div>
-        <div class="loc-val">${state.pickArea}، ${state.pickGov}</div>
-      </div>
-      <button class="map-btn" onclick="openMapPicker('pick')">📍</button>
-    </div>
-    
-    <div class="loc-row">
-      <div class="dot red"></div>
-      <div class="loc-info" onclick="openLocationPicker('drop')">
-        <div class="loc-lbl">الوجهة</div>
-        <div class="loc-val">${state.dropArea}، ${state.dropGov}</div>
-      </div>
-      <button class="map-btn" onclick="openMapPicker('drop')">📍</button>
-    </div>
-
-    <h3 style="font-size:15px;font-weight:800;margin:18px 0 10px">اختر السيارة</h3>
-    <div class="cars-grid">
-      ${Object.entries(CARS).map(([k,c])=>`<div class="car-opt ${state.carType===k?'active':''}" onclick="setCarType('${k}')"><div class="ic">${c.icon}</div><div class="nm">${c.name}</div><div class="ml">×${c.mult}</div></div>`).join('')}
-    </div>
-    
-    <div class="summary-card">
-      <div>
-        <div class="lbl">المسافة التقديرية</div>
-        <div class="val" style="font-size:16px">${km.toFixed(1)} كم</div>
-      </div>
-      <div style="text-align:left">
-        <div class="lbl">الكلفة التقديرية</div>
-        <div class="val">${fmt(state.price)}<small> د.ع</small></div>
-      </div>
-    </div>
-    
-    <button class="btn btn-primary" onclick="requestTaxi()">🚕 اطلب التكسي</button>`;
+  if (isOpen) {
+    sheet.style.transform = 'translateY(0)';
+    openBtn.style.display = 'none';
+  } else {
+    sheet.style.transform = 'translateY(100%)';
+    openBtn.style.display = 'block';
+  }
 }
 
-function setCarType(type){ state.carType = type; renderSheet(); }
+/* =========================================================
+   عرض الشاشات (Render Sheet Views)
+   ========================================================= */
+function renderSheet() {
+  if (state.role === 'passenger') {
+    if (state.stage === 'book') renderPassengerBook();
+    if (state.stage === 'searching') renderPassengerSearching();
+    if (state.stage === 'driver_found') renderPassengerDriverFound();
+    if (state.stage === 'in_ride') renderPassengerInRide();
+    if (state.stage === 'done') renderPassengerDone();
+  } else {
+    if (state.stage === 'book') renderDriverBook();
+    if (state.stage === 'driver_ride') renderDriverActiveRide();
+  }
+}
 
-/* ========== نظام الخريطة الكاملة (تثبيت الموقع) ========== */
+/* =========================================================
+   شاشات الراكب (Passenger Views)
+   ========================================================= */
+function renderPassengerBook() {
+  const km = calcDistance(state.pickLat, state.pickLng, state.dropLat, state.dropLng) * 1.35;
+  state.distance = km;
+  state.price = calcPrice(km, state.carType);
+  
+  document.getElementById('bottom-sheet').innerHTML = `
+    <button class="close-sheet-btn" onclick="toggleSheet(false)">✕</button>
+    <div class="sheet-handle"></div>
+    <h2 class="sheet-title">وين نوصلك؟</h2>
+    
+    <div class="location-row">
+      <div class="loc-dot green"></div>
+      <div class="loc-text-area" onclick="openLocationList('pick')">
+        <div class="loc-label">نقطة الانطلاق</div>
+        <div class="loc-value">${state.pickArea}، ${state.pickGov}</div>
+      </div>
+      <button class="loc-map-btn" onclick="openMapPicker('pick')">📍</button>
+    </div>
+    
+    <div class="location-row">
+      <div class="loc-dot red"></div>
+      <div class="loc-text-area" onclick="openLocationList('drop')">
+        <div class="loc-label">الوجهة</div>
+        <div class="loc-value">${state.dropArea}، ${state.dropGov}</div>
+      </div>
+      <button class="loc-map-btn" onclick="openMapPicker('drop')">📍</button>
+    </div>
+
+    <h3 class="section-title">اختر السيارة</h3>
+    <div class="cars-grid">
+      ${Object.entries(CARS).map(([key, car]) => `
+        <div class="car-card ${state.carType === key ? 'active' : ''}" onclick="setCarType('${key}')">
+          <div class="car-icon">${car.icon}</div>
+          <div class="car-name">${car.name}</div>
+          <div class="car-mult">×${car.mult}</div>
+        </div>
+      `).join('')}
+    </div>
+    
+    <div class="price-summary">
+      <div class="price-col">
+        <div class="p-label">المسافة التقريبية</div>
+        <div class="p-value" style="font-size:16px">${km.toFixed(1)} كم</div>
+      </div>
+      <div class="price-col" style="text-align:left">
+        <div class="p-label">الكلفة التقديرية</div>
+        <div class="p-value">${formatNum(state.price)}<small> د.ع</small></div>
+      </div>
+    </div>
+    
+    <button class="btn btn-primary" onclick="requestTaxi()">🚕 اطلب التكسي</button>
+  `;
+}
+
+function setCarType(type) {
+  state.carType = type;
+  renderPassengerBook();
+}
+
+function renderPassengerSearching() {
+  toggleSheet(true);
+  document.getElementById('bottom-sheet').innerHTML = `
+    <div class="sheet-handle"></div>
+    <div class="searching-view">
+      <div class="radar-anim"><span class="emoji">🚕</span></div>
+      <h3>جاري البحث عن سائق...</h3>
+      <p>هذا يأخذ لحظات فقط ⏳</p>
+    </div>
+  `;
+}
+
+function renderPassengerDriverFound() {
+  toggleSheet(true);
+  const d = state.driver;
+  const isArrived = state.arrived;
+  
+  document.getElementById('bottom-sheet').innerHTML = `
+    <div class="sheet-handle"></div>
+    <div style="background:var(--dark); color:var(--white); padding:16px; border-radius:16px; display:flex; justify-content:space-between; align-items:center; margin-bottom:16px">
+      <div>
+        <div style="font-size:13px; opacity:0.7">${isArrived ? 'السائق وصل!' : 'وقت الوصول'}</div>
+        <div style="font-size:22px; font-weight:800; color:var(--primary)">${isArrived ? '🎉' : '5 دقائق'}</div>
+      </div>
+      <div style="font-size:36px">🚕</div>
+    </div>
+    
+    <div class="driver-info-card">
+      <div class="driver-avatar-lg">${d.emoji}</div>
+      <div class="driver-details">
+        <div class="driver-name-lg">${d.name} ⭐ ${d.rating}</div>
+        <div class="driver-car-lg">${d.car}</div>
+        <div class="driver-plate">${d.plate}</div>
+      </div>
+      <button class="loc-map-btn" onclick="window.location.href='tel:${d.phone}'" style="background:var(--green); color:white; border:none">📞</button>
+    </div>
+    
+    <div class="price-summary">
+      <div class="price-col">
+        <div class="p-label">الوجهة</div>
+        <div class="p-value" style="font-size:15px">${state.dropArea}</div>
+      </div>
+      <div class="price-col" style="text-align:left">
+        <div class="p-label">السعر</div>
+        <div class="p-value">${formatNum(state.price)}<small> د.ع</small></div>
+      </div>
+    </div>
+    
+    ${isArrived 
+      ? `<button class="btn btn-primary" onclick="startPassengerRide()">🚀 بدء الرحلة</button>`
+      : `<button class="btn btn-secondary" onclick="cancelPassengerRide()">إلغاء الطلب</button>`
+    }
+  `;
+}
+
+function renderPassengerInRide() {
+  toggleSheet(true);
+  const remain = Math.max(1, Math.round((1 - state.progress / 100) * Math.max(3, state.distance * 2)));
+  
+  document.getElementById('bottom-sheet').innerHTML = `
+    <div class="sheet-handle"></div>
+    <h2 class="sheet-title" style="font-size:18px">🚕 في الطريق إلى ${state.dropArea}</h2>
+    <p style="font-size:14px; color:var(--gray); margin-bottom:12px">الوصول المتوقع بعد ${remain} دقيقة</p>
+    
+    <div class="progress-container">
+      <div class="progress-bar" id="ride-progress" style="width:${state.progress}%"></div>
+    </div>
+    
+    <div class="price-summary" style="margin-top:20px">
+      <div class="price-col">
+        <div class="p-label">الكلفة النهائية</div>
+        <div class="p-value">${formatNum(state.price)}<small> د.ع</small></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderPassengerDone() {
+  toggleSheet(true);
+  document.getElementById('bottom-sheet').innerHTML = `
+    <div class="sheet-handle"></div>
+    <div class="searching-view" style="padding-top:0">
+      <div style="font-size:64px">🎉</div>
+      <h3 style="margin-top:12px">وصلت بالسلامة!</h3>
+      <p>شكراً لاستخدامك تاكسي أحمد</p>
+    </div>
+    
+    <div class="price-summary">
+      <div class="price-col">
+        <div class="p-label">الكلفة الإجمالية</div>
+        <div class="p-value">${formatNum(state.price)}<small> د.ع</small></div>
+      </div>
+      <div class="price-col" style="text-align:left">
+        <div class="p-label">المسافة</div>
+        <div class="p-value" style="font-size:16px">${state.distance.toFixed(1)} كم</div>
+      </div>
+    </div>
+    
+    <div style="text-align:center; font-size:14px; font-weight:800; margin-bottom:8px">قيّم السائق</div>
+    <div class="rating-stars" id="rating-stars">
+      ${[1,2,3,4,5].map(i => `<span data-val="${i}" onclick="setRating(${i})">⭐</span>`).join('')}
+    </div>
+    
+    <button class="btn btn-primary" onclick="finishPassengerRide()" style="margin-top:16px">تم ✅</button>
+  `;
+}
+
+function setRating(val) {
+  document.querySelectorAll('#rating-stars span').forEach(star => {
+    const starVal = Number(star.dataset.val);
+    if (starVal <= val) star.classList.add('active');
+    else star.classList.remove('active');
+  });
+}
+
+/* =========================================================
+   منطق الرحلة للراكب (Passenger Ride Logic)
+   ========================================================= */
+function requestTaxi() {
+  if (state.pickArea === state.dropArea && state.pickGov === state.dropGov) {
+    return showToast('اختر منطقتين مختلفتين', 'error');
+  }
+  
+  state.stage = 'searching';
+  renderPassengerSearching();
+  
+  // حفظ الطلب في قاعدة البيانات (ليشوفه السائق)
+  DB.createRideRequest({
+    passengerName: state.user.name,
+    pickGov: state.pickGov, pickArea: state.pickArea, pickLat: state.pickLat, pickLng: state.pickLng,
+    dropGov: state.dropGov, dropArea: state.dropArea, dropLat: state.dropLat, dropLng: state.dropLng,
+    price: state.price, distance: state.distance, carType: state.carType
+  });
+
+  // رسم المسار على الخريطة الرئيسية
+  drawRouteOnMainMap();
+
+  // محاكاة قبول السائق للطلب بعد 4 ثواني (أو إذا قبل السائق الحقيقي من تبويب آخر)
+  setTimeout(() => {
+    // التحقق إذا الطلب لسا موجود (ما أحد لغاه)
+    const ride = DB.getActiveRide();
+    if (ride && ride.status === 'pending') {
+      DB.updateRideStatus('accepted');
+      state.driver = DRIVERS_DB[Math.floor(Math.random() * DRIVERS_DB.length)];
+      state.stage = 'driver_found';
+      state.arrived = false;
+      renderPassengerDriverFound();
+      
+      // تحريك سيارة السائق نحو الراكب
+      if (mainMap) {
+        const startLat = state.pickLat + 0.02;
+        const startLng = state.pickLng + 0.02;
+        
+        if (carMarker) mainMap.removeLayer(carMarker);
+        carMarker = L.marker([startLat, startLng], { icon: createCarIcon() }).addTo(mainMap);
+        
+        const t0 = Date.now();
+        const dur = 5000;
+        const timer = setInterval(() => {
+          const t = Math.min(1, (Date.now() - t0) / dur);
+          const curLat = startLat + (state.pickLat - startLat) * t;
+          const curLng = startLng + (state.pickLng - startLng) * t;
+          carMarker.setLatLng([curLat, curLng]);
+          
+          if (t >= 1) {
+            clearInterval(timer);
+            state.arrived = true;
+            if (state.stage === 'driver_found') renderPassengerDriverFound();
+            showToast('السائق وصل! 🎉', 'success');
+          }
+        }, 50);
+      }
+    }
+  }, 4000);
+}
+
+async function drawRouteOnMainMap() {
+  try {
+    const url = `https://router.project-osrm.org/route/v1/driving/${state.pickLng},${state.pickLat};${state.dropLng},${state.dropLat}?overview=full&geometries=geojson`;
+    const res = await fetch(url);
+    const data = await res.json();
+    
+    if (data.routes && data.routes[0]) {
+      const dist = data.routes[0].distance / 1000;
+      state.distance = dist;
+      state.price = calcPrice(dist, state.carType);
+      
+      if (mainMap) {
+        if (routePolyline) mainMap.removeLayer(routePolyline);
+        const coords = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+        routePolyline = L.polyline(coords, { color: '#FFC107', weight: 6, opacity: 0.9 }).addTo(mainMap);
+        mainMap.fitBounds(routePolyline.getBounds(), { padding: [80, 80] });
+      }
+    }
+  } catch (e) {
+    console.warn("OSRM failed, using direct line.");
+    if (mainMap) {
+      if (routePolyline) mainMap.removeLayer(routePolyline);
+      routePolyline = L.polyline([[state.pickLat, state.pickLng], [state.dropLat, state.dropLng]], { color: '#FFC107', weight: 6, dashArray: '10, 10' }).addTo(mainMap);
+    }
+  }
+}
+
+function startPassengerRide() {
+  state.stage = 'in_ride';
+  state.progress = 0;
+  renderPassengerInRide();
+  
+  const dur = Math.max(8000, state.distance * 1000);
+  const t0 = Date.now();
+  
+  const timer = setInterval(() => {
+    const t = Math.min(1, (Date.now() - t0) / dur);
+    state.progress = Math.round(t * 100);
+    
+    const bar = document.getElementById('ride-progress');
+    if (bar) bar.style.width = state.progress + '%';
+    
+    // تحريك السيارة على المسار إذا موجود
+    if (routePolyline && carMarker) {
+      const coords = routePolyline.getLatLngs();
+      if (coords.length > 1) {
+        const idx = t * (coords.length - 1);
+        const i = Math.floor(idx);
+        const f = idx - i;
+        if (i < coords.length - 1) {
+          const lat = coords[i].lat + (coords[i+1].lat - coords[i].lat) * f;
+          const lng = coords[i].lng + (coords[i+1].lng - coords[i].lng) * f;
+          carMarker.setLatLng([lat, lng]);
+        }
+      }
+    }
+    
+    if (t >= 1) {
+      clearInterval(timer);
+      state.stage = 'done';
+      DB.clearRide();
+      renderPassengerDone();
+    }
+  }, 100);
+}
+
+function cancelPassengerRide() {
+  state.stage = 'book';
+  DB.clearRide();
+  renderPassengerBook();
+  
+  if (routePolyline) { mainMap.removeLayer(routePolyline); routePolyline = null; }
+  if (carMarker) { mainMap.removeLayer(carMarker); carMarker = null; }
+  
+  updateMainMarkers();
+}
+
+function finishPassengerRide() {
+  const rating = document.querySelectorAll('#rating-stars span.active').length || 5;
+  
+  DB.addRideToHistory(state.user.id, {
+    from: `${state.pickArea}، ${state.pickGov}`,
+    to: `${state.dropArea}، ${state.dropGov}`,
+    price: state.price,
+    km: state.distance.toFixed(1),
+    driver: state.driver ? state.driver.name : 'سائق',
+    rating: rating,
+    date: new Date().toLocaleDateString('en-GB') + ' ' + new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+  });
+  
+  state.stage = 'book';
+  renderPassengerBook();
+  
+  if (routePolyline) { mainMap.removeLayer(routePolyline); routePolyline = null; }
+  if (carMarker) { mainMap.removeLayer(carMarker); carMarker = null; }
+  
+  updateMainMarkers();
+  showToast('شكراً لك! تم حفظ الرحلة 🌟', 'success');
+}
+
+/* =========================================================
+   اختيار الموقع من القائمة (Location List Modal)
+   ========================================================= */
+function openLocationList(target) {
+  pickerTarget = target;
+  pickerStep = 'gov';
+  
+  document.getElementById('loc-list-title').textContent = target === 'pick' ? 'اختر محافظة الانطلاق' : 'اختر محافظة الوجهة';
+  renderLocList();
+  
+  document.getElementById('loc-list-modal').classList.add('show');
+}
+
+function renderLocList() {
+  const list = document.getElementById('loc-list-container');
+  const currentGov = pickerTarget === 'pick' ? state.pickGov : state.dropGov;
+  
+  if (pickerStep === 'gov') {
+    list.innerHTML = GOVS.map(g => `
+      <li class="loc-list-item" onclick="selectGovList('${g.name}')">
+        <span>${g.name}</span>
+        <span class="arrow">◀</span>
+      </li>
+    `).join('');
+  } else {
+    const govData = GOVS.find(g => g.name === currentGov);
+    list.innerHTML = `
+      <li class="loc-list-item" style="background:#f0f0f0; font-size:13px; color:#666" onclick="pickerStep='gov';renderLocList();document.getElementById('loc-list-title').textContent='اختر المحافظة'">
+        <span>🔙 رجوع للمحافظات</span>
+      </li>
+      ${govData.areas.map(a => `
+        <li class="loc-list-item" onclick="selectAreaList('${a}')">
+          <span>${a}</span>
+        </li>
+      `).join('')}
+    `;
+  }
+}
+
+function selectGovList(govName) {
+  if (pickerTarget === 'pick') state.pickGov = govName;
+  else state.dropGov = govName;
+  
+  pickerStep = 'area';
+  document.getElementById('loc-list-title').textContent = 'اختر المنطقة';
+  renderLocList();
+}
+
+function selectAreaList(areaName) {
+  const gov = pickerTarget === 'pick' ? state.pickGov : state.dropGov;
+  const coords = getAreaCoords(gov, areaName);
+  
+  if (pickerTarget === 'pick') {
+    state.pickArea = areaName; state.pickLat = coords.lat; state.pickLng = coords.lng;
+  } else {
+    state.dropArea = areaName; state.dropLat = coords.lat; state.dropLng = coords.lng;
+  }
+  
+  document.getElementById('loc-list-modal').classList.remove('show');
+  updateMainMarkers();
+  drawRouteOnMainMap();
+  renderPassengerBook();
+}
+
+/* =========================================================
+   اختيار الموقع من الخريطة (Full Screen Map Picker)
+   ========================================================= */
 function openMapPicker(target) {
   pickerTarget = target;
-  document.getElementById('mapPickerTitle').textContent = target === 'pick' ? 'حدد نقطة الانطلاق' : 'حدد الوجهة';
-  document.getElementById('mapPickerOverlay').style.display = 'flex';
+  document.getElementById('map-picker-title').textContent = target === 'pick' ? 'حدد نقطة الانطلاق' : 'حدد الوجهة';
+  document.getElementById('full-map-overlay').style.display = 'flex';
 
-  if(!pickerMap) {
-    pickerMap = L.map('pickerMap', { zoomControl: false, attributionControl: false }).setView([33.3152, 44.3661], 14);
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 }).addTo(pickerMap);
-    
-    // حدث حركة الخريطة لتحديث اسم المنطقة
+  if (!pickerMap) {
+    pickerMap = L.map('full-map', { zoomControl: false, attributionControl: false }).setView([33.3152, 44.3661], 14);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(pickerMap);
     pickerMap.on('moveend', updateClosestArea);
   }
 
-  // نضع الخريطة على الإحداثيات الحالية
-  let currentLat = target === 'pick' ? state.pickLat : state.dropLat;
-  let currentLng = target === 'pick' ? state.pickLng : state.dropLng;
-  pickerMap.setView([currentLat, currentLng], 15);
+  let lat = target === 'pick' ? state.pickLat : state.dropLat;
+  let lng = target === 'pick' ? state.pickLng : state.dropLng;
   
-  setTimeout(() => { pickerMap.invalidateSize(); updateClosestArea(); }, 150);
+  pickerMap.setView([lat, lng], 15);
+  
+  setTimeout(() => {
+    pickerMap.invalidateSize();
+    updateClosestArea();
+  }, 200);
 }
 
 function updateClosestArea() {
-  if(!pickerMap) return;
+  if (!pickerMap) return;
+  
   const center = pickerMap.getCenter();
   selectedMapCoords = { lat: center.lat, lng: center.lng };
   
-  // إيجاد أقرب منطقة للدبوس
   let closestDist = Infinity;
-  let closestGov = '', closestArea = '';
+  let closestGov = '';
+  let closestArea = '';
   
-  GOVS.forEach(g => {
-    g.areas.forEach(a => {
-      let ac = areaCoords(g.name, a);
-      let d = haversine({lat: center.lat, lng: center.lng}, ac);
-      if(d < closestDist) {
+  GOVS.forEach(gov => {
+    gov.areas.forEach(area => {
+      const ac = getAreaCoords(gov.name, area);
+      const d = calcDistance(center.lat, center.lng, ac.lat, ac.lng);
+      if (d < closestDist) {
         closestDist = d;
-        closestGov = g.name;
-        closestArea = a;
+        closestGov = gov.name;
+        closestArea = area;
       }
     });
   });
   
-  document.getElementById('closestAreaText').innerText = `${closestArea}، ${closestGov}`;
+  document.getElementById('map-picker-text').innerText = `${closestArea}، ${closestGov}`;
 }
 
 function confirmMapLocation() {
-  if(!selectedMapCoords) return;
+  if (!selectedMapCoords) return;
   
-  const closestArea = document.getElementById('closestAreaText').innerText;
-  const [areaName, govName] = closestArea.split('، ');
-
+  const closestText = document.getElementById('map-picker-text').innerText;
+  const [areaName, govName] = closestText.split('، ');
+  
   if (pickerTarget === 'pick') {
     state.pickGov = govName;
     state.pickArea = areaName;
@@ -576,310 +1990,237 @@ function confirmMapLocation() {
   }
   
   closeMapPicker();
-  updateMarkers();
+  updateMainMarkers();
   
-  // حساب المسافة الحقيقية بالسيارة (عبر OSRM)
-  toast('جاري حساب المسار والكلفة...', 'success');
-  fetchRealRoute();
+  showToast('جاري حساب المسار...', 'success');
+  drawRouteOnMainMap();
+  renderPassengerBook();
 }
 
 function closeMapPicker() {
-  document.getElementById('mapPickerOverlay').style.display = 'none';
+  document.getElementById('full-map-overlay').style.display = 'none';
 }
 
-async function fetchRealRoute() {
-  try {
-    const url = `https://router.project-osrm.org/route/v1/driving/${state.pickLng},${state.pickLat};${state.dropLng},${state.dropLat}?overview=full&geometries=geojson`;
-    const res = await fetch(url);
-    const data = await res.json();
-    
-    if(data.routes && data.routes[0]) {
-      const dist = data.routes[0].distance / 1000; // بالكيلومتر
-      state.distance = dist;
-      state.price = calcPrice(dist, state.carType);
-      
-      // رسم المسار على الخريطة الرئيسية
-      if(map) {
-        if(routeLine) map.removeLayer(routeLine);
-        const coords = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
-        routeLine = L.polyline(coords, {color:'#FFC107', weight:6, opacity:0.9}).addTo(map);
-        map.fitBounds(routeLine.getBounds(), {padding:[80,80]});
-      }
-    }
-  } catch(e) {
-    console.warn("OSRM failed, using direct distance.");
-    // في حال فشل الاتصال، نستخدم المسافة المباشرة
-    const dist = haversine({lat:state.pickLat,lng:state.pickLng}, {lat:state.dropLat,lng:state.dropLng}) * 1.35;
-    state.distance = dist; state.price = calcPrice(dist, state.carType);
-  }
-  renderSheet();
-}
-
-/* ========== اختيار من القائمة ========== */
-function openLocationPicker(target) {
-  pickerTarget = target; pickerStep = 'gov';
-  document.getElementById('locModalTitle').textContent = target === 'pick' ? 'اختر محافظة الانطلاق' : 'اختر محافظة الوجهة';
-  renderPickerList(); document.getElementById('locModal').classList.add('show');
-}
-
-function renderPickerList() {
-  const list = document.getElementById('locModalList');
-  const currentGov = pickerTarget === 'pick' ? state.pickGov : state.dropGov;
-  if (pickerStep === 'gov') {
-    list.innerHTML = GOVS.map(g => `<li class="loc-modal-item" onclick="selectGovFromPicker('${g.name}')"><span>${g.name}</span><span class="arrow">◀</span></li>`).join('');
-  } else {
-    const govData = GOVS.find(g => g.name === currentGov);
-    list.innerHTML = `
-      <li class="loc-modal-item" style="background:#f0f0f0;font-size:13px;color:#666" onclick="pickerStep='gov';renderPickerList();document.getElementById('locModalTitle').textContent='اختر المحافظة'"><span>🔙 رجوع للمحافظات</span></li>
-      ${govData.areas.map(a => `<li class="loc-modal-item" onclick="selectAreaFromPicker('${a}')"><span>${a}</span></li>`).join('')}`;
-  }
-}
-
-function selectGovFromPicker(govName) {
-  if (pickerTarget === 'pick') state.pickGov = govName; else state.dropGov = govName;
-  pickerStep = 'area'; document.getElementById('locModalTitle').textContent = 'اختر المنطقة';
-  renderPickerList();
-}
-
-function selectAreaFromPicker(areaName) {
-  const gov = pickerTarget === 'pick' ? state.pickGov : state.dropGov;
-  const coords = areaCoords(gov, areaName);
+/* =========================================================
+   واجهة السائق (Driver App Logic)
+   ========================================================= */
+function renderDriverBook() {
+  toggleSheet(true);
   
-  if (pickerTarget === 'pick') {
-    state.pickArea = areaName; state.pickLat = coords.lat; state.pickLng = coords.lng;
-  } else {
-    state.dropArea = areaName; state.dropLat = coords.lat; state.dropLng = coords.lng;
-  }
-  document.getElementById('locModal').classList.remove('show');
-  updateMarkers(); fetchRealRoute();
-}
-
-/* ========== باقي دوال الراكب ========== */
-function renderPassengerSearching(){
-  document.getElementById('sheet').innerHTML=`
-    <div class="handle"></div>
-    <div class="searching">
-      <div class="radar"><span class="em">🚕</span></div>
-      <h3>جاري البحث عن سائق...</h3>
-      <p>هذا يأخذ لحظات فقط ⏳</p>
-    </div>`;
-}
-
-function renderPassengerDriver(){
-  const here=state.arrived;
-  document.getElementById('sheet').innerHTML=`
-    <div class="handle"></div>
-    <div class="eta-banner" style="background:var(--dark);padding:14px 18px;border-radius:16px;color:#fff;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <div><div style="font-size:13px;opacity:.7">${here?'السائق وصل':'وقت الوصول'}</div><div style="font-size:20px;font-weight:800;color:var(--primary)">${here?'🎉':'5 دقائق'}</div></div>
-      <div style="font-size:32px">🚕</div>
-    </div>
-    <div class="summary-card">
-      <div><div class="lbl">الوجهة</div><div style="font-weight:800;font-size:15px">${state.dropArea}</div><div class="lbl">${state.dropGov}</div></div>
-      <div style="text-align:left"><div class="lbl">الكلفة</div><div class="val">${fmt(state.price)}<small> د.ع</small></div></div>
-    </div>
-    ${here?`<button class="btn btn-primary" onclick="startPassengerRide()">🚀 بدء الرحلة</button>`:`<button class="btn btn-secondary" onclick="cancelPassengerRide()">إلغاء الطلب</button>`}`;
-}
-
-function renderPassengerRide(){
-  const remain=Math.max(1,Math.round((1-state.progress/100)*Math.max(3,state.distance*2)));
-  document.getElementById('sheet').innerHTML=`
-    <div class="handle"></div>
-    <h2 style="font-size:17px">🚕 في الطريق إلى ${state.dropArea}</h2>
-    <p class="sub">الوصول المتوقع بعد ${remain} دقيقة</p>
-    <div class="progress-bar" style="height:8px;background:var(--bg);border-radius:99px;overflow:hidden;margin:14px 0"><div id="bar" style="height:100%;background:var(--primary);width:${state.progress}%;transition:width .3s;border-radius:99px"></div></div>
-    <div class="summary-card">
-      <div><div class="lbl">الكلفة النهائية</div><div class="val">${fmt(state.price)}<small> د.ع</small></div></div>
-    </div>`;
-}
-
-function renderPassengerDone(){
-  document.getElementById('sheet').innerHTML=`
-    <div class="handle"></div>
-    <div class="searching" style="padding-top:0"><div style="font-size:60px">🎉</div><h3 style="margin-top:10px">وصلت بالسلامة!</h3></div>
-    <div class="summary-card">
-      <div><div class="lbl">الكلفة الإجمالية</div><div class="val">${fmt(state.price)}<small> د.ع</small></div></div>
-      <div style="text-align:left"><div class="lbl">المسافة</div><div class="val" style="font-size:16px">${state.distance.toFixed(1)} كم</div></div>
-    </div>
-    <button class="btn btn-primary" onclick="finishPassengerRide()">تم ✅</button>`;
-}
-
-function requestTaxi(){
-  if(state.pickArea===state.dropArea && state.pickGov===state.dropGov) return toast('اختر منطقتين مختلفتين','error');
-  state.stage='searching'; renderSheet();
-  
-  DB.createRideRequest({
-    passengerName: state.user.name,
-    pickGov: state.pickGov, pickArea: state.pickArea,
-    dropGov: state.dropGov, dropArea: state.dropArea,
-    price: state.price, distance: state.distance
-  });
-
-  setTimeout(()=>{
-    state.stage='driver'; state.arrived=false; renderSheet();
+  document.getElementById('bottom-sheet').innerHTML = `
+    <div class="sheet-handle"></div>
+    <h2 class="sheet-title">مرحباً كابتن ${state.user.name.split(' ')[0]}</h2>
+    <p style="font-size:14px; color:var(--gray); margin-bottom:20px">جاهز لاستلام الطلبات؟</p>
     
-    if(map){
-      const st={lat:state.pickLat+0.02,lng:state.pickLng+0.02};
-      if(carMarker) map.removeLayer(carMarker);
-      carMarker=L.marker([st.lat,st.lng],{icon:carIcon()}).addTo(map);
-      
-      // تحريك السيارة للركب
-      const t0 = Date.now(); const dur = 4000;
-      const tm = setInterval(()=>{
-        const t = Math.min(1,(Date.now()-t0)/dur);
-        carMarker.setLatLng([st.lat + (state.pickLat-st.lat)*t, st.lng + (state.pickLng-st.lng)*t]);
-        if(t>=1) { clearInterval(tm); state.arrived=true; renderSheet(); toast('السائق وصل 🎉','success'); }
-      }, 50);
-    }
-  }, 4000);
-}
-
-function startPassengerRide(){
-  state.stage='ride'; state.progress=0; renderSheet();
-  const dur=Math.max(6000,state.distance*1000); const t0=Date.now();
-  const tm=setInterval(()=>{
-    const t=Math.min(1,(Date.now()-t0)/dur);
-    state.progress=Math.round(t*100);
-    const bar=document.getElementById('bar'); if(bar) bar.style.width=state.progress+'%';
-    if(t>=1){ clearInterval(tm); state.stage='done'; renderSheet(); DB.clearRide(); }
-  },100);
-}
-
-function cancelPassengerRide(){
-  state.stage='book'; DB.clearRide(); renderSheet();
-  try{ if(routeLine && map){ map.removeLayer(routeLine); routeLine=null; } }catch{}
-  try{ if(carMarker && map){ map.removeLayer(carMarker); carMarker=null; } }catch{}
-  updateMarkers();
-}
-
-function finishPassengerRide(){
-  state.stage='book'; renderSheet();
-  try{ if(routeLine && map){ map.removeLayer(routeLine); routeLine=null; } }catch{}
-  try{ if(carMarker && map){ map.removeLayer(carMarker); carMarker=null; } }catch{}
-  updateMarkers();
-}
-
-/* ========== واجهة السائق ========== */
-function renderDriverBook(){
-  document.getElementById('sheet').innerHTML=`
-    <div class="handle"></div>
-    <h2>مرحباً كابتن ${state.user.name.split(' ')[0]}</h2>
-    <p class="sub">جاهز لاستلام الطلبات؟</p>
-    
-    <div class="driver-toggle">
+    <div class="driver-toggle-row">
       <div>
-        <div style="font-weight:800;font-size:16px">حالة الاتصال</div>
-        <div style="font-size:12px;color:var(--gray);margin-top:4px">${state.isOnline?'أنت متصل الآن':'غير متصل'}</div>
+        <div class="toggle-title">حالة الاتصال</div>
+        <div class="toggle-sub">${state.isOnline ? 'أنت متصل الآن' : 'غير متصل'}</div>
       </div>
       <label class="switch">
-        <input type="checkbox" id="onlineToggle" ${state.isOnline?'checked':''} onchange="toggleDriverOnline(this.checked)">
+        <input type="checkbox" id="driver-online-toggle" ${state.isOnline ? 'checked' : ''} onchange="toggleDriverOnline(this.checked)">
         <span class="slider"></span>
       </label>
     </div>
     
     ${state.isOnline ? `
-      <div class="searching" style="padding:10px 0">
-        <div class="radar" style="width:80px;height:80px"><span class="em">📡</span></div>
+      <div class="searching-view">
+        <div class="radar-anim" style="width:80px; height:80px"><span class="emoji" style="font-size:32px">📡</span></div>
         <h3>جاري البحث عن طلبات قريبة...</h3>
         <p>انتظر، سيصلك طلب قريباً</p>
       </div>
     ` : `
-      <div class="empty-state"><div class="ic">💤</div><div>قم بتفعيل الاتصال لتصلك الطلبات</div></div>
-    `}`;
+      <div class="searching-view" style="opacity:0.5">
+        <div style="font-size:48px">💤</div>
+        <h3 style="margin-top:12px">غير متصل</h3>
+        <p>قم بتفعيل الاتصال لتصلك الطلبات</p>
+      </div>
+    `}
+  `;
 }
 
-function toggleDriverOnline(isOnline){
-  state.isOnline = isOnline; renderDriverBook();
-  if(isOnline) {
-    driverInterval = setTimeout(() => {
-      if(!state.isOnline) return;
-      const mockRide = { passengerName: 'راكب تجريبي', pickArea: 'الكرادة', pickGov: 'بغداد', dropArea: 'المنصور', dropGov: 'بغداد', price: 7500, distance: 6.2 };
-      showIncomingRequest(mockRide);
+function toggleDriverOnline(isOnline) {
+  state.isOnline = isOnline;
+  renderDriverBook();
+  
+  if (isOnline) {
+    // مراقبة الطلبات الحقيقية من قاعدة البيانات أو محاكاة طلب
+    driverTimeout = setTimeout(() => {
+      if (!state.isOnline) return;
+      
+      let ride = DB.getActiveRide();
+      
+      // إذا ماكو طلب حقيقي، نصنع طلب وهمي للتجربة
+      if (!ride || ride.status !== 'pending') {
+        ride = {
+          passengerName: 'راكب تجريبي',
+          pickArea: 'الكرادة', pickGov: 'بغداد',
+          dropArea: 'المنصور', dropGov: 'بغداد',
+          price: 8500, distance: 7.5
+        };
+      }
+      
+      showIncomingDriverRequest(ride);
     }, 5000);
   } else {
-    clearTimeout(driverInterval);
+    clearTimeout(driverTimeout);
   }
 }
 
-function showIncomingRequest(ride) {
-  document.getElementById('sheet').innerHTML=`
-    <div class="handle"></div>
-    <h2>🚨 طلب جديد!</h2>
-    <div class="request-card">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div style="font-weight:800;font-size:16px">🙋‍♂️ ${ride.passengerName}</div>
-        <div class="price">${fmt(ride.price)} د.ع</div>
+function showIncomingDriverRequest(ride) {
+  toggleSheet(true);
+  
+  document.getElementById('bottom-sheet').innerHTML = `
+    <div class="sheet-handle"></div>
+    <h2 class="sheet-title">🚨 طلب جديد!</h2>
+    
+    <div class="incoming-request">
+      <div class="req-header">
+        <div class="req-passenger">🙋‍♂️ ${ride.passengerName}</div>
+        <div class="req-price">${formatNum(ride.price)} <span style="font-size:12px">د.ع</span></div>
       </div>
-      <div class="route-info">
+      <div class="req-route">
         <div>📍 من: ${ride.pickArea}، ${ride.pickGov}</div>
         <div>🏁 إلى: ${ride.dropArea}، ${ride.dropGov}</div>
       </div>
-      <div class="route-sub">المسافة: ${ride.distance} كم</div>
+      <div class="req-dist">المسافة: ${ride.distance} كم</div>
     </div>
-    <button class="btn btn-blue" onclick="acceptDriverRequest()" style="margin-bottom:10px">قبول الطلب</button>
-    <button class="btn btn-secondary" onclick="rejectDriverRequest()">تجاهل</button>`;
+    
+    <button class="btn btn-blue" onclick="acceptDriverRequest()" style="margin-bottom:12px">قبول الطلب</button>
+    <button class="btn btn-secondary" onclick="rejectDriverRequest()">تجاهل</button>
+  `;
 }
 
-function acceptDriverRequest(){
-  state.stage = 'driver-ride'; renderDriverActiveRide(); toast('تم قبول الطلب، توجه للراكب', 'success');
+function acceptDriverRequest() {
+  state.stage = 'driver_ride';
+  DB.updateRideStatus('accepted');
+  renderDriverActiveRide();
+  showToast('تم قبول الطلب، توجه للراكب', 'success');
 }
 
-function rejectDriverRequest(){
-  state.stage = 'book'; renderDriverBook(); toast('تم تجاهل الطلب');
+function rejectDriverRequest() {
+  DB.clearRide();
+  state.stage = 'book';
+  renderDriverBook();
+  showToast('تم تجاهل الطلب');
 }
 
-function renderDriverActiveRide(){
-  document.getElementById('sheet').innerHTML=`
-    <div class="handle"></div>
-    <div class="eta-banner" style="background:var(--blue);padding:14px 18px;border-radius:16px;color:#fff;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <div><div style="font-size:13px;opacity:.7">أنت في رحلة</div><div style="font-size:20px;font-weight:800;">جاري التوصيل</div></div>
-      <div style="font-size:32px">🚕</div>
+function renderDriverActiveRide() {
+  toggleSheet(true);
+  
+  document.getElementById('bottom-sheet').innerHTML = `
+    <div class="sheet-handle"></div>
+    <div style="background:var(--blue); color:var(--white); padding:16px; border-radius:16px; display:flex; justify-content:space-between; align-items:center; margin-bottom:16px">
+      <div>
+        <div style="font-size:13px; opacity:0.8">أنت في رحلة</div>
+        <div style="font-size:20px; font-weight:800">جاري التوصيل</div>
+      </div>
+      <div style="font-size:36px">🚕</div>
     </div>
-    <div class="summary-card">
-      <div><div class="lbl">الوجهة</div><div style="font-weight:800;font-size:15px">المنصور، بغداد</div></div>
-      <div style="text-align:left"><div class="lbl">الكلفة</div><div class="val">7,500<small> د.ع</small></div></div>
+    
+    <div class="price-summary">
+      <div class="price-col">
+        <div class="p-label">الوجهة</div>
+        <div class="p-value" style="font-size:15px">المنصور، بغداد</div>
+      </div>
+      <div class="price-col" style="text-align:left">
+        <div class="p-label">الأجرة</div>
+        <div class="p-value">${formatNum(8500)}<small> د.ع</small></div>
+      </div>
     </div>
-    <button class="btn btn-primary" onclick="finishDriverRide()">🏁 إنهاء الرحلة</button>`;
+    
+    <button class="btn btn-primary" onclick="finishDriverRide()">🏁 إنهاء الرحلة</button>
+  `;
 }
 
-function finishDriverRide(){
-  state.stage = 'book'; renderDriverBook(); toast('تم إنهاء الرحلة بنجاح 💸','success');
+function finishDriverRide() {
+  DB.clearRide();
+  state.stage = 'book';
+  renderDriverBook();
+  showToast('تم إنهاء الرحلة بنجاح 💸', 'success');
 }
 
-/* ========== الحساب ========== */
-function showProfile(){
-  const u=state.user;
-  document.getElementById('modalContent').innerHTML=`
-    <div class="handle"></div>
-    <div class="profile-head">
-      <div class="av ${state.role==='driver'?'driver':''}">${initials(u.name)}</div>
-      <div class="nm">${u.name}</div>
-      <div class="ph">📱 ${u.phone}</div>
-      <div class="gov">📍 ${u.gov} | ${state.role==='driver'?'سائق 🚕':'راكب 🙋‍♂️'}</div>
+/* =========================================================
+   الملف الشخصي (Profile Modal)
+   ========================================================= */
+function showProfile() {
+  const u = state.user;
+  const rides = u.rides || [];
+  const totalRides = rides.length;
+  const totalSpent = rides.reduce((sum, r) => sum + r.price, 0);
+  
+  document.getElementById('profile-modal-content').innerHTML = `
+    <div class="sheet-handle"></div>
+    <div class="profile-header">
+      <div class="profile-avatar ${state.role === 'driver' ? 'driver' : ''}">${getInitials(u.name)}</div>
+      <div class="profile-name">${u.name}</div>
+      <div class="profile-phone">📱 ${u.phone}</div>
+      <div class="profile-badge">📍 ${u.gov} | ${state.role === 'driver' ? 'سائق 🚕' : 'راكب 🙋‍♂️'}</div>
     </div>
-    <button class="btn btn-secondary" onclick="logout()">تسجيل الخروج</button>
-    <button class="btn btn-ghost" style="margin-top:8px" onclick="document.getElementById('modal').classList.remove('show')">إغلاق</button>`;
-  document.getElementById('modal').classList.add('show');
+    
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-val">${totalRides}</div>
+        <div class="stat-lbl">رحلة</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">${formatNum(totalSpent)}</div>
+        <div class="stat-lbl">د.ع مصروف</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">${new Date(u.createdAt).toLocaleDateString('en-GB')}</div>
+        <div class="stat-lbl">تاريخ التسجيل</div>
+      </div>
+    </div>
+    
+    <button class="btn btn-secondary" onclick="logoutUser()">تسجيل الخروج</button>
+    <button class="btn btn-ghost" style="margin-top:10px" onclick="document.getElementById('profile-modal').classList.remove('show')">إغلاق</button>
+  `;
+  
+  document.getElementById('profile-modal').classList.add('show');
 }
 
-function logout(){
-  if(!confirm('تريد تسجيل الخروج؟')) return;
-  DB.logout(); state.user=null;
-  document.getElementById('modal').classList.remove('show');
-  showAuth();
+function logoutUser() {
+  if (!confirm('هل تريد تسجيل الخروج؟')) return;
+  
+  DB.logout();
+  state.user = null;
+  
+  document.getElementById('profile-modal').classList.remove('show');
+  
+  if (mainMap) { try { mainMap.remove(); } catch(e) {} mainMap = null; }
+  if (pickerMap) { try { pickerMap.remove(); } catch(e) {} pickerMap = null; }
+  
+  renderAuth();
 }
 
-/* ========== البداية ========== */
-function boot(){
-  if(!localStorage.getItem('ahmed_v6')) { localStorage.clear(); localStorage.setItem('ahmed_v6', 'true'); }
-
-  const user = DB.session();
-  if(user){
-    state.user = user; state.role = user.role; showApp();
-  } else {
-    showAuth();
+/* =========================================================
+   الاستماع لتغيرات قاعدة البيانات (Cross-Tab Sync)
+   ========================================================= */
+window.addEventListener('storage', (e) => {
+  if (e.key === DB.KEY && state.user) {
+    const ride = DB.getActiveRide();
+    
+    // إذا كنت سائق أونلاين وطلع طلب جديد
+    if (state.role === 'driver' && state.isOnline && ride && ride.status === 'pending' && state.stage === 'book') {
+      showIncomingDriverRequest(ride);
+    }
+    
+    // إذا كنت راكب والسائق قبل الطلب من تبويب ثاني
+    if (state.role === 'passenger' && state.stage === 'searching' && ride && ride.status === 'accepted') {
+      state.driver = DRIVERS_DB[Math.floor(Math.random() * DRIVERS_DB.length)];
+      state.stage = 'driver_found';
+      state.arrived = false;
+      renderPassengerDriverFound();
+      showToast('السائق قبل طلبك! 🎉', 'success');
+    }
   }
-}
-boot();
+});
+
+/* =========================================================
+   تشغيل التطبيق
+   ========================================================= */
+initApp();
 </script>
 </body>
 </html>
