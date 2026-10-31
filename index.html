@@ -1,385 +1,333 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#102d55">
-<title>تكسي العراق</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق تكسي</title>
+    
+    <!-- مكتبة الخريطة المجانية Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- مكتبة Supabase لقاعدة البيانات -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<link rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { margin: 0; padding: 0; background-color: #f0f2f5; }
+        .hidden { display: none !important; }
+        
+        /* شاشة تسجيل الدخول */
+        .auth-container { padding: 20px; max-width: 400px; margin: 50px auto; background: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .auth-container h2 { text-align: center; color: #333; }
+        input, select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        button { width: 100%; padding: 12px; background-color: #1976D2; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin-top: 10px; }
+        button:hover { background-color: #1565C0; }
+        .link-btn { background: none; color: #1976D2; margin-top: 15px; text-decoration: underline; font-size: 14px; }
 
-<style>
-*{box-sizing:border-box;font-family:Arial,sans-serif}
-body{margin:0;background:#f4f6f9;color:#142b49}
-header{height:60px;background:#102d55;color:white;
-display:flex;align-items:center;justify-content:center;
-font-size:22px;font-weight:bold}
-header span{color:#e6bd60;margin-left:9px}
-#map{height:calc(100vh - 60px);width:100%}
-.panel{position:fixed;bottom:0;right:0;width:100%;
-background:white;border-radius:24px 24px 0 0;
-padding:20px 17px 25px;z-index:500;
-box-shadow:0 -4px 20px #0002}
-.handle{width:45px;height:5px;background:#ddd;
-border-radius:10px;margin:-8px auto 17px}
-h3{margin:0 0 8px;font-size:21px}
-.small{font-size:14px;color:#777;margin-bottom:15px}
-.destination{width:100%;padding:17px;border:1px solid #ddd;
-border-radius:13px;background:#f5f7fa;text-align:right;
-font-size:16px;color:#18314f}
-button{cursor:pointer}
-.main-btn{width:100%;padding:17px;background:#102d55;
-color:white;border:0;border-radius:13px;font-size:18px;
-font-weight:bold;margin-top:15px}
-.main-btn:disabled{background:#aab3bf}
-.secondary{width:100%;padding:14px;border:0;
-border-radius:12px;background:#edf0f5;color:#102d55;
-font-size:16px;margin-top:10px}
-.location-btn{position:absolute;top:75px;left:15px;
-width:50px;height:50px;border:0;border-radius:13px;
-background:white;font-size:24px;z-index:450}
-.details{display:flex;justify-content:space-between;
-margin-top:15px;font-size:15px}
-.price{color:#bd9135;font-weight:bold;font-size:20px}
-#confirmPanel,#successPanel{display:none}
-#status{text-align:center;font-size:13px;
-color:#777;margin-top:12px}
-.success{text-align:center;color:#236c43;
-background:#e9f7ed;padding:15px;border-radius:12px}
-</style>
+        /* الخريطة والواجهات */
+        #map { height: 50vh; width: 100%; z-index: 1; }
+        .dashboard-container { padding: 15px; background: white; border-radius: 15px 15px 0 0; margin-top: -20px; position: relative; z-index: 2; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); min-height: 50vh;}
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .header h3 { margin: 0; color: #333; }
+        .logout-btn { width: auto; padding: 5px 10px; background-color: #d32f2f; font-size: 14px; margin: 0; }
+        
+        /* قائمة الرحلات للسائق */
+        .ride-card { border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .ride-card p { margin: 2px 0; font-size: 14px; }
+        .accept-btn { width: auto; padding: 8px; background-color: #4CAF50; margin: 0; }
+        
+        .status-msg { text-align: center; color: #1976D2; font-weight: bold; margin: 10px 0; }
+    </style>
 </head>
-
 <body>
 
-<header><span>🚕</span> تكسي العراق</header>
-
-<div id="map"></div>
-
-<button class="location-btn" onclick="getLocation()">📍</button>
-
-<div class="panel" id="mainPanel">
-<div class="handle"></div>
-
-<h3>وين تريد تروح؟</h3>
-<div class="small">حدد وجهتك واحنا نوصلّك بأمان</div>
-
-<button class="destination" onclick="selectDestination()">
-📍 <span id="destinationText">اضغط هنا لتحديد وجهتك</span>
-</button>
-
-<div class="details">
-<span>🚗 المسافة</span>
-<b id="distance">-- كم</b>
-</div>
-
-<div class="details">
-<span>💰 الأجرة التقديرية</span>
-<span class="price" id="price">-- دينار</span>
-</div>
-
-<button class="main-btn" id="orderButton"
-onclick="openConfirmation()" disabled>
-🚕 اطلب تكسي
-</button>
-
-<div id="status">حدد موقعك ووجهتك للبدء</div>
-</div>
-
-<div class="panel" id="confirmPanel">
-<div class="handle"></div>
-<h3>تأكيد الرحلة</h3>
-
-<div class="details">
-<span>موقع الانطلاق</span>
-<b>موقعي الحالي</b>
-</div>
-
-<div class="details">
-<span>الوجهة</span>
-<b id="finalDestination">--</b>
-</div>
-
-<div class="details">
-<span>المسافة</span>
-<b id="finalDistance">--</b>
-</div>
-
-<div class="details">
-<span>الأجرة</span>
-<span class="price" id="finalPrice">--</span>
-</div>
-
-<button class="main-btn" onclick="sendOrder()">
-تأكيد طلب التكسي
-</button>
-
-<button class="secondary" onclick="backHome()">
-رجوع
-</button>
-</div>
-
-<div class="panel" id="successPanel">
-<div class="handle"></div>
-<div class="success">
-<h2>✅ تم تسجيل الطلب</h2>
-<p>تم حفظ طلبك على هذا الجهاز.</p>
-<p>هذه نسخة تجريبية ولا يوجد سائق متصل حالياً.</p>
-</div>
-<button class="main-btn" onclick="newTrip()">
-طلب رحلة جديدة
-</button>
-</div>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<script>
-
-// إعداد الخريطة
-const map = L.map('map').setView([31.057,46.257],14);
-
-L.tileLayer(
-'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-{
-maxZoom:19,
-attribution:'© OpenStreetMap'
-}).addTo(map);
-
-// متغيرات التطبيق
-let currentLocation = null;
-let destination = null;
-let userMarker = null;
-let destinationMarker = null;
-let route = null;
-let distanceKm = 0;
-let fare = 0;
-let selecting = false;
-
-const BASE_PRICE = 1500;
-const KM_PRICE = 500;
-
-// تحديد موقع المستخدم
-function getLocation(){
-
-if(!navigator.geolocation){
-alert('جهازك لا يدعم تحديد الموقع');
-return;
-}
-
-document.getElementById('status').innerText =
-'جارٍ تحديد موقعك...';
-
-navigator.geolocation.getCurrentPosition(
-
-function(position){
-
-currentLocation=[
-position.coords.latitude,
-position.coords.longitude
-];
-
-map.setView(currentLocation,16);
-
-if(userMarker) map.removeLayer(userMarker);
-
-userMarker=L.marker(currentLocation)
-.addTo(map)
-.bindPopup('موقع الانطلاق');
-
-document.getElementById('status').innerText =
-'تم تحديد موقعك بنجاح';
-
-if(destination) calculateFare();
-
-},
-
-function(){
-alert('تعذر تحديد موقعك. فعّل GPS واسمح للمتصفح بالوصول إليه.');
-},
-
-{enableHighAccuracy:true,timeout:15000}
-);
-}
-
-// اختيار الوجهة
-function selectDestination(){
-
-selecting=true;
-
-document.getElementById('destinationText').innerText =
-'اضغط على موقع الوصول في الخريطة';
-
-document.getElementById('status').innerText =
-'اضغط على الخريطة لاختيار الوجهة';
-
-}
-
-// عند الضغط على الخريطة
-map.on('click',function(event){
-
-if(!selecting)return;
-
-destination=[
-event.latlng.lat,
-event.latlng.lng
-];
-
-selecting=false;
-
-if(destinationMarker)map.removeLayer(destinationMarker);
-
-destinationMarker=L.marker(destination)
-.addTo(map)
-.bindPopup('وجهتك');
-
-document.getElementById('destinationText').innerText =
-'تم تحديد الوجهة بنجاح';
-
-if(!currentLocation){
-document.getElementById('status').innerText =
-'حدد موقع الانطلاق أولاً';
-return;
-}
-
-calculateFare();
-
-});
-
-// حساب المسافة بخط مستقيم
-function calculateDistance(a,b){
-
-const R=6371;
-const rad=x=>x*Math.PI/180;
-
-const dLat=rad(b[0]-a[0]);
-const dLon=rad(b[1]-a[1]);
-
-const x=
-Math.sin(dLat/2)**2+
-Math.cos(rad(a[0]))*
-Math.cos(rad(b[0]))*
-Math.sin(dLon/2)**2;
-
-return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
-}
-
-// حساب الأجرة
-function calculateFare(){
-
-distanceKm=calculateDistance(currentLocation,destination);
-
-fare=BASE_PRICE+(distanceKm*KM_PRICE);
-
-document.getElementById('distance').innerText =
-distanceKm.toFixed(1)+' كم';
-
-document.getElementById('price').innerText =
-Math.round(fare).toLocaleString('en-US')+' دينار';
-
-document.getElementById('orderButton').disabled=false;
-
-document.getElementById('status').innerText =
-'تم حساب الأجرة التقديرية';
-
-if(route)map.removeLayer(route);
-
-route=L.polyline(
-[currentLocation,destination],
-{color:'#d2a63f',weight:5,dashArray:'8,8'}
-).addTo(map);
-
-map.fitBounds(route.getBounds(),{padding:[50,50]});
-
-}
-
-// تأكيد الطلب
-function openConfirmation(){
-
-if(!currentLocation||!destination){
-alert('حدد موقع الانطلاق والوجهة');
-return;
-}
-
-document.getElementById('finalDestination').innerText =
-destination.map(x=>x.toFixed(4)).join(', ');
-
-document.getElementById('finalDistance').innerText =
-distanceKm.toFixed(1)+' كم';
-
-document.getElementById('finalPrice').innerText =
-Math.round(fare).toLocaleString('en-US')+' دينار';
-
-showPanel('confirmPanel');
-
-}
-
-// حفظ الطلب محلياً
-function sendOrder(){
-
-const order={
-from:currentLocation,
-to:destination,
-distance:distanceKm.toFixed(2),
-price:Math.round(fare),
-date:new Date().toISOString(),
-status:'بانتظار السائق'
-};
-
-let orders=JSON.parse(localStorage.getItem('taxiOrders')||'[]');
-
-orders.push(order);
-
-localStorage.setItem('taxiOrders',JSON.stringify(orders));
-
-showPanel('successPanel');
-
-}
-
-// الرجوع
-function backHome(){
-showPanel('mainPanel');
-setTimeout(()=>map.invalidateSize(),200);
-}
-
-// رحلة جديدة
-function newTrip(){
-
-destination=null;
-distanceKm=0;
-fare=0;
-
-if(destinationMarker)map.removeLayer(destinationMarker);
-if(route)map.removeLayer(route);
-
-destinationMarker=null;
-route=null;
-
-document.getElementById('destinationText').innerText =
-'اضغط هنا لتحديد وجهتك';
-
-document.getElementById('distance').innerText='-- كم';
-document.getElementById('price').innerText='-- دينار';
-document.getElementById('orderButton').disabled=true;
-
-showPanel('mainPanel');
-setTimeout(()=>map.invalidateSize(),200);
-
-}
-
-// تبديل الشاشات
-function showPanel(id){
-
-['mainPanel','confirmPanel','successPanel'].forEach(panel=>{
-document.getElementById(panel).style.display='none';
-});
-
-document.getElementById(id).style.display='block';
-
-setTimeout(()=>map.invalidateSize(),200);
-
-}
-
-</script>
+    <!-- ================= واجهة تسجيل الدخول / الحساب ================= -->
+    <div id="auth-screen" class="auth-container">
+        <h2 id="auth-title">تسجيل الدخول</h2>
+        
+        <input type="text" id="fullName" placeholder="الاسم الكامل" class="hidden">
+        <input type="text" id="phone" placeholder="رقم الهاتف">
+        <input type="password" id="password" placeholder="كلمة السر">
+        
+        <select id="role" class="hidden">
+            <option value="rider">راكب (زبون)</option>
+            <option value="driver">سائق</option>
+        </select>
+        
+        <input type="text" id="carPlate" placeholder="رقم لوحة السيارة" class="hidden">
+
+        <button onclick="handleAuth()" id="auth-btn">دخول</button>
+        <button class="link-btn" onclick="toggleAuthMode()" id="toggle-btn">ليس لديك حساب؟ سجل الآن</button>
+        <p id="auth-error" style="color: red; text-align: center; font-size: 14px;"></p>
+    </div>
+
+    <!-- ================= واجهة الراكب ================= -->
+    <div id="rider-dashboard" class="hidden">
+        <div id="map"></div>
+        <div class="dashboard-container">
+            <div class="header">
+                <h3>واجهة الراكب</h3>
+                <button class="logout-btn" onclick="logout()">خروج</button>
+            </div>
+            <p id="rider-name"></p>
+            <p class="status-msg" id="rider-status">جاهز لطلب التاكسي</p>
+            <button onclick="requestTaxi()" id="request-btn">اطلب تاكسي الآن</button>
+        </div>
+    </div>
+
+    <!-- ================= واجهة السائق ================= -->
+    <div id="driver-dashboard" class="hidden">
+        <div id="map-driver"></div>
+        <div class="dashboard-container">
+            <div class="header">
+                <h3>واجهة السائق</h3>
+                <button class="logout-btn" onclick="logout()">خروج</button>
+            </div>
+            <p id="driver-name"></p>
+            <button onclick="loadRides()" style="background-color: #FF9800; margin-bottom: 15px;">تحديث الطلبات المتاحة</button>
+            <div id="rides-list"></div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. إعدادات قاعدة البيانات (Supabase)
+        // ==========================================
+        // ضع هنا الرابط والمفتاح اللذان نسختهما من موقع Supabase
+        const SUPABASE_URL = 'https://ukyibwlibvhccqdghiva.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ضع_باقي_المفتاح_هنا';
+        
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // متغيرات عامة
+        let isLogin = true;
+        let currentUser = null;
+        let currentRole = null;
+        let map = null;
+        let marker = null;
+        let userLat = 33.3152; // بغداد كموقع افتراضي
+        let userLng = 44.3661;
+
+        // ==========================================
+        // 2. دوال المصادقة (تسجيل ودخول)
+        // ==========================================
+        function toggleAuthMode() {
+            isLogin = !isLogin;
+            document.getElementById('auth-title').innerText = isLogin ? 'تسجيل الدخول' : 'إنشاء حساب';
+            document.getElementById('auth-btn').innerText = isLogin ? 'دخول' : 'تسجيل';
+            document.getElementById('toggle-btn').innerText = isLogin ? 'ليس لديك حساب؟ سجل الآن' : 'لديك حساب؟ سجل دخول';
+            
+            // إظهار/إخفاء الحقول
+            document.getElementById('fullName').classList.toggle('hidden', isLogin);
+            document.getElementById('role').classList.toggle('hidden', isLogin);
+            if(document.getElementById('role').value === 'rider' || isLogin) {
+                document.getElementById('carPlate').classList.add('hidden');
+            }
+            document.getElementById('auth-error').innerText = '';
+        }
+
+        // إظهار خانة لوحة السيارة إذا اختار سائق
+        document.getElementById('role').addEventListener('change', function(e) {
+            if (e.target.value === 'driver') {
+                document.getElementById('carPlate').classList.remove('hidden');
+            } else {
+                document.getElementById('carPlate').classList.add('hidden');
+            }
+        });
+
+        async function handleAuth() {
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const fullName = document.getElementById('fullName').value;
+            const role = document.getElementById('role').value;
+            const carPlate = document.getElementById('carPlate').value;
+            const errorEl = document.getElementById('auth-error');
+
+            if (!phone || !password) {
+                errorEl.innerText = 'الرجاء إدخال رقم الهاتف وكلمة السر';
+                return;
+            }
+
+            // Supabase يتطلب إيميل، لذلك نستخدم رقم الهاتف كإيميل وهمي
+            const email = `${phone}@taxi.app`;
+
+            try {
+                errorEl.innerText = 'جاري المعالجة...';
+                
+                if (isLogin) {
+                    // تسجيل الدخول
+                    const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+                    if (error) throw error;
+                    
+                    // جلب بيانات المستخدم
+                    const { data: profile } = await _supabase.from('profiles').select('*').eq('id', data.user.id).single();
+                    loginSuccess(profile);
+                } else {
+                    // إنشاء حساب
+                    const { data, error } = await _supabase.auth.signUp({ email, password });
+                    if (error) throw error;
+                    
+                    // إضافة البيانات لجدول profiles
+                    const { error: profileError } = await _supabase.from('profiles').insert([{
+                        id: data.user.id,
+                        full_name: fullName,
+                        phone: phone,
+                        role: role,
+                        car_plate: role === 'driver' ? carPlate : null
+                    }]);
+                    if (profileError) throw profileError;
+                    
+                    const { data: newProfile } = await _supabase.from('profiles').select('*').eq('id', data.user.id).single();
+                    loginSuccess(newProfile);
+                }
+            } catch (error) {
+                errorEl.innerText = 'خطأ: ' + error.message;
+            }
+        }
+
+        function loginSuccess(profile) {
+            currentUser = profile;
+            currentRole = profile.role;
+            
+            document.getElementById('auth-screen').classList.add('hidden');
+            
+            if (currentRole === 'rider') {
+                document.getElementById('rider-dashboard').classList.remove('hidden');
+                document.getElementById('rider-name').innerText = `مرحباً: ${profile.full_name}`;
+                initMap('map');
+            } else {
+                document.getElementById('driver-dashboard').classList.remove('hidden');
+                document.getElementById('driver-name').innerText = `السائق: ${profile.full_name} | لوحة: ${profile.car_plate}`;
+                initMap('map-driver');
+                loadRides();
+            }
+        }
+
+        async function logout() {
+            await _supabase.auth.signOut();
+            location.reload(); // إعادة تحميل الصفحة لتصفير كل شيء
+        }
+
+        // ==========================================
+        // 3. دوال الخريطة
+        // ==========================================
+        function initMap(mapId) {
+            // تحديد الموقع الحقيقي للمستخدم
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    userLat = position.coords.latitude;
+                    userLng = position.coords.longitude;
+                    setupLeaflet(mapId);
+                }, () => {
+                    setupLeaflet(mapId); // في حال رفض المستخدم للموقع، نستخدم الافتراضي
+                });
+            } else {
+                setupLeaflet(mapId);
+            }
+        }
+
+        function setupLeaflet(mapId) {
+            map = L.map(mapId).setView([userLat, userLng], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap'
+            }).addTo(map);
+            
+            marker = L.marker([userLat, userLng]).addTo(map)
+                .bindPopup(currentRole === 'rider' ? 'موقعك' : 'موقعك كسائق').openPopup();
+        }
+
+        // ==========================================
+        // 4. دوال الراكب (طلب تاكسي)
+        // ==========================================
+        async function requestTaxi() {
+            const statusEl = document.getElementById('rider-status');
+            const btn = document.getElementById('request-btn');
+            
+            statusEl.innerText = 'جاري إرسال الطلب...';
+            btn.disabled = true;
+
+            try {
+                const { error } = await _supabase.from('rides').insert([{
+                    rider_id: currentUser.id,
+                    pickup_lat: userLat,
+                    pickup_lng: userLng,
+                    drop_lat: userLat + 0.01, // وجهة وهمية
+                    drop_lng: userLng + 0.01,
+                    status: 'requested'
+                }]);
+
+                if (error) throw error;
+                
+                statusEl.innerText = 'تم الطلب بنجاح! في انتظار السائق...';
+                statusEl.style.color = 'green';
+                
+                // تغيير الزر لإلغاء الطلب
+                btn.innerText = 'إلغاء الطلب';
+                btn.style.backgroundColor = '#d32f2f';
+                btn.disabled = false;
+                btn.onclick = () => location.reload(); // لإعادة التصفير
+
+            } catch (error) {
+                statusEl.innerText = 'خطأ: ' + error.message;
+                statusEl.style.color = 'red';
+                btn.disabled = false;
+            }
+        }
+
+        // ==========================================
+        // 5. دوال السائق (جلب وقبول الرحلات)
+        // ==========================================
+        async function loadRides() {
+            const listEl = document.getElementById('rides-list');
+            listEl.innerHTML = 'جاري التحميل...';
+
+            try {
+                const { data: rides, error } = await _supabase.from('rides')
+                    .select('*')
+                    .eq('status', 'requested');
+
+                if (error) throw error;
+
+                if (rides.length === 0) {
+                    listEl.innerHTML = '<p style="text-align:center;">لا توجد رحلات متاحة حالياً</p>';
+                    return;
+                }
+
+                listEl.innerHTML = '';
+                rides.forEach(ride => {
+                    const card = document.createElement('div');
+                    card.className = 'ride-card';
+                    card.innerHTML = `
+                        <div>
+                            <p><strong>رحلة #${ride.id}</strong></p>
+                            <p>من: ${ride.pickup_lat.toFixed(4)}, ${ride.pickup_lng.toFixed(4)}</p>
+                        </div>
+                        <button class="accept-btn" onclick="acceptRide(${ride.id})">قبول</button>
+                    `;
+                    listEl.appendChild(card);
+                });
+
+            } catch (error) {
+                listEl.innerHTML = `<p style="color:red;">خطأ: ${error.message}</p>`;
+            }
+        }
+
+        async function acceptRide(rideId) {
+            try {
+                const { error } = await _supabase.from('rides').update({
+                    driver_id: currentUser.id,
+                    status: 'accepted'
+                }).eq('id', rideId);
+
+                if (error) throw error;
+                alert('تم قبول الرحلة بنجاح!');
+                loadRides(); // تحديث القائمة
+
+            } catch (error) {
+                alert('فشل القبول: ' + error.message);
+            }
+        }
+    </script>
 </body>
 </html>
