@@ -16,21 +16,66 @@
     align-items:center; justify-content:center; gap:14px;
     background:radial-gradient(circle at 50% 0%, #2b3140, #14171f 70%);
     color:#e8e8e8; font-family:system-ui, "Segoe UI", Tahoma, sans-serif;
-    padding:16px;
+    padding:16px; overflow-x:hidden;
   }
-  h1{margin:0; font-size:22px; font-weight:600; letter-spacing:1px; color:#f0d9b5}
+  
+  h1{margin:0; font-size:26px; font-weight:600; letter-spacing:1px; color:#f0d9b5}
+
+  /* ------------------ الواجهة الرئيسية ------------------ */
+  #menu {
+    display: flex; flex-direction: column; align-items: center; gap: 20px;
+    background: #00000050; padding: 30px; border-radius: 20px;
+    border: 1px solid #ffffff20; box-shadow: 0 10px 30px #000a;
+    width: min(95vw, 400px);
+  }
+  
+  .theme-section {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    width: 100%; background: #ffffff0a; padding: 15px; border-radius: 12px;
+  }
+  
+  .theme-buttons { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  
+  .theme-btn {
+    width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff4;
+    cursor: pointer; transition: transform 0.2s;
+  }
+  .theme-btn:hover { transform: scale(1.1); border-color: #fff; }
+  
+  input[type="color"] {
+    width: 50px; height: 40px; border: none; background: none; cursor: pointer;
+  }
+
+  .start-btn {
+    padding: 12px 40px; font-size: 20px; font-weight: bold; font-family: inherit;
+    border-radius: 12px; border: 1px solid #ffffff40;
+    background: linear-gradient(#5b4636,#3d2e23); color:#f0d9b5;
+    cursor: pointer; transition: 0.2s; margin-top: 10px;
+    box-shadow: 0 4px 15px #0006;
+  }
+  .start-btn:hover { filter: brightness(1.2); }
+
+  /* ------------------ واجهة اللعب ------------------ */
+  #game { display: none; flex-direction: column; align-items: center; gap: 14px; }
+  
   #status{
     font-size:17px; min-height:26px; padding:6px 16px; border-radius:20px;
     background:#00000045; border:1px solid #ffffff20;
   }
+  
   #board{
-    direction:ltr;                 /* مهم: عشان ترتيب المربعات ما ينقلب */
+    direction:ltr;
     width:min(92vmin, 560px); aspect-ratio:1;
     display:grid; grid-template-columns:repeat(8,1fr);
     border:8px solid #4a3527; border-radius:10px;
     box-shadow:0 18px 45px #000a, inset 0 0 0 2px #00000040;
     overflow:hidden;
+    /* لمسة 3D خفيفة */
+    transform: perspective(1000px) rotateX(10deg);
+    transition: transform 0.5s ease;
   }
+  
+  /* .sq (بقية تنسيقات المربعات كما هي) */
   .sq{
     position:relative; display:flex; align-items:center; justify-content:center;
     font-size:min(9.5vmin,60px); line-height:1; cursor:pointer;
@@ -41,11 +86,8 @@
   .sq.light{background:var(--light)}
   .sq.dark {background:var(--dark)}
   .sq:hover{filter:brightness(1.06)}
-
-  /* لون القطع */
   .sq.w{color:#fbfbfb; -webkit-text-stroke:1.6px #2f2f2f; text-shadow:0 2px 3px #0006}
   .sq.b{color:#1e1e1e; -webkit-text-stroke:1.2px #000; text-shadow:0 2px 3px #0004}
-
   .sq.sel{box-shadow:inset 0 0 0 4px #f5c518}
   .sq.move::after{
     content:""; position:absolute; width:26%; height:26%; border-radius:50%;
@@ -55,25 +97,79 @@
     content:""; position:absolute; inset:6%; border-radius:50%;
     border:6px solid #00000055;
   }
-  button{
-    padding:10px 26px; font-size:16px; font-family:inherit; cursor:pointer;
+
+  .game-actions { display: flex; gap: 10px; margin-top: 10px; }
+  .game-actions button{
+    padding:8px 20px; font-size:15px; font-family:inherit; cursor:pointer;
     border-radius:10px; border:1px solid #ffffff25;
     background:linear-gradient(#5b4636,#3d2e23); color:#f0d9b5;
     transition:transform .1s;
   }
-  button:active{transform:scale(.96)}
+  .game-actions button:active{transform:scale(.96)}
 </style>
 </head>
 <body>
 
-  <h1>♞ شطرنج</h1>
-  <div id="status">دور الأبيض</div>
-  <div id="board"></div>
-  <button id="reset">↻ إعادة اللعب</button>
+  <!-- الواجهة الرئيسية -->
+  <div id="menu">
+    <h1>♞ شطرنج</h1>
+    
+    <div class="theme-section">
+      <label style="font-size:16px;">🎨 اختر قاعدة الشطرنج (مثل يلا لودو):</label>
+      
+      <!-- ألوان جاهزة -->
+      <div class="theme-buttons">
+        <div class="theme-btn" style="background: #a97a55;" onclick="setTheme('#eeddc0', '#a97a55')" title="خشبي"></div>
+        <div class="theme-btn" style="background: #769656;" onclick="setTheme('#eeeed2', '#769656')" title="أخضر"></div>
+        <div class="theme-btn" style="background: #4b7399;" onclick="setTheme('#e8edf9', '#4b7399')" title="أزرق"></div>
+        <div class="theme-btn" style="background: #7a7a7a;" onclick="setTheme('#ebebeb', '#7a7a7a')" title="رمادي"></div>
+        <div class="theme-btn" style="background: #b58863;" onclick="setTheme('#f0d9b5', '#b58863')" title="كلاسيكي"></div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+        <label style="font-size:14px;">أو اختر لون مخصص:</label>
+        <input type="color" id="customColor" value="#a97a55" onchange="setTheme('#eeddc0', this.value)">
+      </div>
+    </div>
+
+    <button class="start-btn" onclick="startGame()">ابدأ اللعب 🏁</button>
+  </div>
+
+  <!-- واجهة اللعب -->
+  <div id="game">
+    <div id="status">دور الأبيض</div>
+    <div id="board"></div>
+    
+    <div class="game-actions">
+      <button id="reset">↻ إعادة اللعب</button>
+      <button onclick="goToMenu()">🏠 القائمة الرئيسية</button>
+    </div>
+  </div>
 
 <script>
 /* ============================================================
-   أدوات مساعدة
+   أدوات التحكم بالواجهة
+   ============================================================ */
+function startGame() {
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('game').style.display = 'flex';
+  reset(); // نبدأ لعبة جديدة
+}
+
+function goToMenu() {
+  document.getElementById('game').style.display = 'none';
+  document.getElementById('menu').style.display = 'flex';
+}
+
+function setTheme(lightColor, darkColor) {
+  document.documentElement.style.setProperty('--light', lightColor);
+  document.documentElement.style.setProperty('--dark', darkColor);
+  // تحديث لون الحواف ليتماشى مع اللون الجديد
+  document.querySelector('#board').style.borderColor = darkColor;
+}
+
+/* ============================================================
+   أدوات اللعبة
    ============================================================ */
 const inside = (r, c) => r >= 0 && r < 8 && c >= 0 && c < 8;
 const other  = c => (c === 'w' ? 'b' : 'w');
@@ -87,51 +183,35 @@ const DIRS = {
 
 const GLYPH = { K:'♚', Q:'♛', R:'♜', B:'♝', N:'♞', P:'♟' };
 
-/* ============================================================
-   الحالة الابتدائية
-   ============================================================ */
 const START = [
-  'rnbqkbnr',
-  'pppppppp',
-  '........',
-  '........',
-  '........',
-  '........',
-  'PPPPPPPP',
-  'RNBQKBNR'
+  'rnbqkbnr', 'pppppppp', '........', '........',
+  '........', '........', 'PPPPPPPP', 'RNBQKBNR'
 ];
 
 function freshState() {
   return {
     board: START.map(row => row.split('').map(ch => (ch === '.' ? null : ch))),
     turn: 'w',
-    castling: { wK:true, wQ:true, bK:true, bQ:true }, // حقوق التبييت
-    ep: null                                           // مربع الأون باسان
+    castling: { wK:true, wQ:true, bK:true, bQ:true },
+    ep: null
   };
 }
 
 let state, sel, legal, gameOver;
 
-/* ============================================================
-   هل المربع مُهاجَم؟
-   ============================================================ */
 function isAttacked(b, r, c, by) {
-  // البيادق
   const pr = r + (by === 'w' ? 1 : -1);
   for (const dc of [-1, 1]) {
     if (inside(pr, c + dc) && b[pr][c + dc] === (by === 'w' ? 'P' : 'p')) return true;
   }
-  // الأحصنة
   for (const [dr, dc] of DIRS.N) {
     const rr = r + dr, cc = c + dc;
     if (inside(rr, cc) && b[rr][cc] === (by === 'w' ? 'N' : 'n')) return true;
   }
-  // الملك
   for (const [dr, dc] of DIRS.R.concat(DIRS.B)) {
     const rr = r + dr, cc = c + dc;
     if (inside(rr, cc) && b[rr][cc] === (by === 'w' ? 'K' : 'k')) return true;
   }
-  // الرخ + الوزير (خطوط مستقيمة)
   for (const [dr, dc] of DIRS.R) {
     let rr = r + dr, cc = c + dc;
     while (inside(rr, cc)) {
@@ -143,7 +223,6 @@ function isAttacked(b, r, c, by) {
       rr += dr; cc += dc;
     }
   }
-  // الفيل + الوزير (أقطار)
   for (const [dr, dc] of DIRS.B) {
     let rr = r + dr, cc = c + dc;
     while (inside(rr, cc)) {
@@ -171,13 +250,9 @@ function inCheck(b, color) {
   return k ? isAttacked(b, k[0], k[1], other(color)) : false;
 }
 
-/* ============================================================
-   توليد الحركات (بدون التحقق من الكش)
-   ============================================================ */
 function genMoves(st, r, c) {
   const b = st.board, p = b[r][c];
   if (!p) return [];
-
   const me = colorOf(p);
   const type = p.toUpperCase();
   const moves = [];
@@ -206,13 +281,12 @@ function genMoves(st, r, c) {
   };
 
   if (type === 'P') {
-    const dir      = me === 'w' ? -1 : 1;
+    const dir = me === 'w' ? -1 : 1;
     const startRow = me === 'w' ? 6 : 1;
     const promoRow = me === 'w' ? 0 : 7;
 
     const pawnAdd = (tr, tc, extra) => {
       if (tr === promoRow) {
-        // ترقية: نولّد الخيارات الأربعة (الافتراضي وزير)
         for (const pr of ['Q','R','B','N'])
           add(tr, tc, { ...(extra || {}), promo: me === 'w' ? pr : pr.toLowerCase() });
       } else add(tr, tc, extra);
@@ -237,8 +311,6 @@ function genMoves(st, r, c) {
   else if (type === 'Q') slide(DIRS.R.concat(DIRS.B));
   else if (type === 'K') {
     step(DIRS.R.concat(DIRS.B));
-
-    // التبييت
     const home = me === 'w' ? 7 : 0;
     const rook = me === 'w' ? 'R' : 'r';
     const kR = me === 'w' ? 'wK' : 'bK';
@@ -258,28 +330,19 @@ function genMoves(st, r, c) {
   return moves;
 }
 
-/* ============================================================
-   تطبيق الحركة على لوحة (نسخة جديدة)
-   ============================================================ */
 function applyMove(b, m) {
   const nb = b.map(row => row.slice());
   const [fr, fc] = m.from;
   const [tr, tc] = m.to;
   const p = nb[fr][fc];
-
   nb[fr][fc] = null;
-  if (m.ep) nb[fr][tc] = null;          // أكل البيدق في الأون باسان
+  if (m.ep) nb[fr][tc] = null;
   nb[tr][tc] = m.promo || p;
-
   if (m.castle === 'K') { nb[tr][5] = nb[tr][7]; nb[tr][7] = null; }
   if (m.castle === 'Q') { nb[tr][3] = nb[tr][0]; nb[tr][0] = null; }
-
   return nb;
 }
 
-/* ============================================================
-   الحركات القانونية (بعد استبعاد ما يترك الملك في كش)
-   ============================================================ */
 function legalMoves(st, r, c) {
   const p = st.board[r][c];
   if (!p) return [];
@@ -297,15 +360,11 @@ function allLegalMoves(st) {
   return res;
 }
 
-/* ============================================================
-   تنفيذ الحركة وتحديث الحالة
-   ============================================================ */
 function makeMove(st, m) {
   const [fr, fc] = m.from;
   const [tr, tc] = m.to;
   const p = st.board[fr][fc];
   const me = colorOf(p);
-
   const nb = applyMove(st.board, m);
   const castling = { ...st.castling };
 
@@ -313,12 +372,10 @@ function makeMove(st, m) {
     if (me === 'w') { castling.wK = castling.wQ = false; }
     else            { castling.bK = castling.bQ = false; }
   }
-  // تحرّك رخ
   if (fr === 7 && fc === 0) castling.wQ = false;
   if (fr === 7 && fc === 7) castling.wK = false;
   if (fr === 0 && fc === 0) castling.bQ = false;
   if (fr === 0 && fc === 7) castling.bK = false;
-  // أكل رخ
   if (tr === 7 && tc === 0) castling.wQ = false;
   if (tr === 7 && tc === 7) castling.wK = false;
   if (tr === 0 && tc === 0) castling.bQ = false;
@@ -330,10 +387,7 @@ function makeMove(st, m) {
   return { board: nb, turn: other(me), castling, ep };
 }
 
-/* ============================================================
-   الواجهة
-   ============================================================ */
-const boardEl  = document.getElementById('board');
+const boardEl = document.getElementById('board');
 const statusEl = document.getElementById('status');
 
 function render() {
@@ -342,18 +396,14 @@ function render() {
     for (let c = 0; c < 8; c++) {
       const sq = document.createElement('div');
       sq.className = 'sq ' + (((r + c) % 2 === 0) ? 'light' : 'dark');
-
       const p = state.board[r][c];
       if (p) {
         sq.textContent = GLYPH[p.toUpperCase()];
         sq.classList.add(colorOf(p));
       }
-
       if (sel && sel[0] === r && sel[1] === c) sq.classList.add('sel');
-
       const target = legal.find(m => m.to[0] === r && m.to[1] === c);
       if (target) sq.classList.add((p || target.ep) ? 'capture' : 'move');
-
       sq.addEventListener('click', () => onSquareClick(r, c));
       boardEl.appendChild(sq);
     }
@@ -365,7 +415,6 @@ function updateStatus() {
   const me = state.turn;
   const moves = allLegalMoves(state);
   const check = inCheck(state.board, me);
-
   if (moves.length === 0) {
     gameOver = true;
     statusEl.textContent = check
@@ -378,11 +427,9 @@ function updateStatus() {
 
 function onSquareClick(r, c) {
   if (gameOver) return;
-
   if (sel) {
     const m = legal.find(x => x.to[0] === r && x.to[1] === c);
     if (m) {
-      // لو فيه ترقية، نختار الوزير تلقائيًا (أول خيار)
       state = makeMove(state, m);
       sel = null;
       legal = [];
@@ -390,7 +437,6 @@ function onSquareClick(r, c) {
       return;
     }
   }
-
   const p = state.board[r][c];
   if (p && colorOf(p) === state.turn) {
     sel = [r, c];
@@ -411,7 +457,6 @@ function reset() {
 }
 
 document.getElementById('reset').addEventListener('click', reset);
-reset();
 </script>
 </body>
 </html>
