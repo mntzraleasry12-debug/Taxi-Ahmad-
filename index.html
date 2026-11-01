@@ -1,333 +1,691 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق تكسي</title>
-    
-    <!-- مكتبة الخريطة المجانية Leaflet -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
-    <!-- مكتبة Supabase لقاعدة البيانات -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>🐾 شطرنج الغابة</title>
+<style>
+  :root{
+    --cell: min(11.5vw, 6.8vh, 56px);
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+  html,body{ height:100%; }
+  body{
+    margin:0; padding:8px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:10px;
+    background: radial-gradient(circle at 50% -10%, #2f5d43 0%, #14291e 45%, #08120d 100%);
+    color:#e9f5ec;
+    font-family:"Segoe UI", Tahoma, "Noto Kufi Arabic", sans-serif;
+    overflow:hidden;
+    user-select:none;
+  }
 
-    <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { margin: 0; padding: 0; background-color: #f0f2f5; }
-        .hidden { display: none !important; }
-        
-        /* شاشة تسجيل الدخول */
-        .auth-container { padding: 20px; max-width: 400px; margin: 50px auto; background: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .auth-container h2 { text-align: center; color: #333; }
-        input, select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
-        button { width: 100%; padding: 12px; background-color: #1976D2; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin-top: 10px; }
-        button:hover { background-color: #1565C0; }
-        .link-btn { background: none; color: #1976D2; margin-top: 15px; text-decoration: underline; font-size: 14px; }
+  h1{
+    margin:0; font-size: clamp(15px, 4.4vw, 22px); font-weight:900; letter-spacing:.5px;
+    background: linear-gradient(90deg,#a8e6a3,#4fc3f7 60%,#ffd54f);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-align:center;
+  }
 
-        /* الخريطة والواجهات */
-        #map { height: 50vh; width: 100%; z-index: 1; }
-        .dashboard-container { padding: 15px; background: white; border-radius: 15px 15px 0 0; margin-top: -20px; position: relative; z-index: 2; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); min-height: 50vh;}
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .header h3 { margin: 0; color: #333; }
-        .logout-btn { width: auto; padding: 5px 10px; background-color: #d32f2f; font-size: 14px; margin: 0; }
-        
-        /* قائمة الرحلات للسائق */
-        .ride-card { border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .ride-card p { margin: 2px 0; font-size: 14px; }
-        .accept-btn { width: auto; padding: 8px; background-color: #4CAF50; margin: 0; }
-        
-        .status-msg { text-align: center; color: #1976D2; font-weight: bold; margin: 10px 0; }
-    </style>
+  .status{
+    padding:7px 20px; border-radius:999px; font-weight:800;
+    font-size: clamp(12px, 3.4vw, 15px);
+    background: rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.15);
+    transition: all .3s ease;
+    min-width:190px; text-align:center;
+  }
+  .status.red { background:linear-gradient(90deg,#b71c1c,#e53935); border-color:#ff8a80; box-shadow:0 0 18px rgba(229,57,53,.5); }
+  .status.blue{ background:linear-gradient(90deg,#0d47a1,#1e88e5); border-color:#82b1ff; box-shadow:0 0 18px rgba(30,136,229,.5); }
+  .status.gold{ background:linear-gradient(90deg,#b8860b,#ffd54f); border-color:#fff59d; color:#3e2723; box-shadow:0 0 22px rgba(255,213,79,.6); }
+
+  .board{
+    direction:ltr;
+    display:grid;
+    grid-template-columns: repeat(7, var(--cell));
+    grid-template-rows: repeat(9, var(--cell));
+    gap:3px; padding:8px;
+    border-radius:16px;
+    background: linear-gradient(160deg,#2d5c3f,#16301f);
+    box-shadow: 0 12px 34px rgba(0,0,0,.6), inset 0 0 0 2px rgba(255,255,255,.07);
+  }
+
+  .cell{
+    position:relative; width:var(--cell); height:var(--cell);
+    border-radius:8px;
+    display:flex; align-items:center; justify-content:center;
+    background: linear-gradient(160deg,#c3e6b2,#8fc47f);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.10);
+    cursor:pointer;
+    transition: box-shadow .15s ease, filter .15s ease;
+  }
+  .cell.water{
+    background: linear-gradient(160deg,#63b3ed,#2b6cb0);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.18);
+  }
+  .cell.water::after{
+    content:''; position:absolute; inset:0; border-radius:8px; pointer-events:none;
+    background: repeating-linear-gradient(45deg, rgba(255,255,255,.14) 0 5px, transparent 5px 11px);
+  }
+  .cell.trap-red{
+    background: linear-gradient(160deg,#f0b98a,#d1874a);
+    box-shadow: inset 0 0 0 2px rgba(120,50,0,.35);
+  }
+  .cell.trap-blue{
+    background: linear-gradient(160deg,#a9c9ea,#7aa3cc);
+    box-shadow: inset 0 0 0 2px rgba(0,40,90,.35);
+  }
+  .cell.den-red{
+    background: radial-gradient(circle,#ffd54f,#e6a100);
+    box-shadow: inset 0 0 0 2px rgba(120,70,0,.55);
+  }
+  .cell.den-blue{
+    background: radial-gradient(circle,#ffd54f,#e6a100);
+    box-shadow: inset 0 0 0 2px rgba(120,70,0,.55);
+  }
+
+  .cell.last{ box-shadow: inset 0 0 0 2px rgba(255,235,59,.95), 0 0 10px rgba(255,235,59,.5); }
+  .cell.selected{ box-shadow: inset 0 0 0 3px #ffd54f, 0 0 16px #ffd54f; z-index:6; }
+  .cell.capture{ box-shadow: inset 0 0 0 3px #ff1744, 0 0 14px rgba(255,23,68,.85); z-index:5; }
+
+  .hint{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; }
+  .hint::before{
+    content:''; width:30%; height:30%; border-radius:50%;
+    background: rgba(20,80,20,.6);
+    box-shadow: 0 0 8px rgba(0,0,0,.45);
+  }
+
+  .deco{
+    position:absolute; font-size: calc(var(--cell)*0.42);
+    opacity:.35; pointer-events:none; z-index:1; line-height:1;
+  }
+
+  .piece{
+    position:relative; z-index:2;
+    width:82%; height:82%; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size: calc(var(--cell)*0.50); line-height:1;
+    box-shadow: 0 3px 6px rgba(0,0,0,.45), inset 0 -3px 6px rgba(0,0,0,.18);
+    animation: pop .18s ease-out;
+  }
+  @keyframes pop{ from{ transform:scale(.6); opacity:.4 } to{ transform:scale(1); opacity:1 } }
+
+  .piece.red { background: radial-gradient(circle at 33% 28%, #ff9a8f, #c62828 75%); border:2px solid #7f0000; }
+  .piece.blue{ background: radial-gradient(circle at 33% 28%, #9ec6ff, #1565c0 75%); border:2px solid #00204f; }
+
+  .piece .rank{
+    position:absolute; bottom:-3px; left:-3px;
+    width:1.55em; height:1.55em;
+    display:flex; align-items:center; justify-content:center;
+    font-size: calc(var(--cell)*0.235); font-weight:900;
+    color:#fff; background:rgba(0,0,0,.78);
+    border-radius:50%; border:1px solid rgba(255,255,255,.35);
+  }
+
+  .controls{ display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+  button{
+    font-family:inherit; font-weight:800; cursor:pointer;
+    font-size: clamp(11px, 3.1vw, 14px);
+    padding: 9px 16px; border-radius:12px;
+    color:#eaf7ee; background: rgba(255,255,255,.09);
+    border:1px solid rgba(255,255,255,.18);
+    transition: all .18s ease;
+  }
+  button:hover{ background: rgba(255,255,255,.18); transform:translateY(-1px); }
+  button:active{ transform:translateY(1px) scale(.98); }
+  button.active{ background: linear-gradient(90deg,#2e7d32,#66bb6a); border-color:#a5d6a7; box-shadow:0 0 14px rgba(102,187,106,.5); }
+
+  /* نافذة القواعد */
+  .modal{
+    position:fixed; inset:0; z-index:100;
+    background: rgba(0,0,0,.75); backdrop-filter: blur(4px);
+    display:none; align-items:center; justify-content:center; padding:16px;
+  }
+  .modal.show{ display:flex; }
+  .modal-box{
+    max-width:460px; max-height:85vh; overflow:auto;
+    background: linear-gradient(160deg,#1e3a2b,#0f2318);
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:18px; padding:20px 22px;
+    box-shadow:0 20px 60px rgba(0,0,0,.7);
+    line-height:1.85; font-size:14px;
+  }
+  .modal-box h2{ margin:0 0 12px; font-size:19px; color:#ffd54f; }
+  .modal-box ul{ padding-inline-start:20px; margin:0 0 16px; }
+  .modal-box li{ margin-bottom:7px; }
+  .modal-box b{ color:#8ee08a; }
+</style>
 </head>
 <body>
 
-    <!-- ================= واجهة تسجيل الدخول / الحساب ================= -->
-    <div id="auth-screen" class="auth-container">
-        <h2 id="auth-title">تسجيل الدخول</h2>
-        
-        <input type="text" id="fullName" placeholder="الاسم الكامل" class="hidden">
-        <input type="text" id="phone" placeholder="رقم الهاتف">
-        <input type="password" id="password" placeholder="كلمة السر">
-        
-        <select id="role" class="hidden">
-            <option value="rider">راكب (زبون)</option>
-            <option value="driver">سائق</option>
-        </select>
-        
-        <input type="text" id="carPlate" placeholder="رقم لوحة السيارة" class="hidden">
+  <h1>🐾 شطرنج الغابة 🐾</h1>
+  <div class="status red" id="status">دور 🔴 الأحمر</div>
 
-        <button onclick="handleAuth()" id="auth-btn">دخول</button>
-        <button class="link-btn" onclick="toggleAuthMode()" id="toggle-btn">ليس لديك حساب؟ سجل الآن</button>
-        <p id="auth-error" style="color: red; text-align: center; font-size: 14px;"></p>
+  <div class="board" id="board"></div>
+
+  <div class="controls">
+    <button id="newGame">🔄 لعبة جديدة</button>
+    <button id="modeBtn" class="active">🤖 ضد الحاسوب</button>
+    <button id="helpBtn">❔ القواعد</button>
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="modal-box">
+      <h2>📜 قواعد شطرنج الغابة</h2>
+      <ul>
+        <li><b>الهدف:</b> إدخال أي قطعة إلى <b>عرين الخصم</b> 🏠 أو القضاء على جميع قطعه أو تحييد حركته.</li>
+        <li><b>الترتيب:</b> فيل (٨) &gt; أسد (٧) &gt; نمر (٦) &gt; فهد (٥) &gt; ذئب (٤) &gt; كلب (٣) &gt; قط (٢) &gt; فأر (١).</li>
+        <li><b>القتل:</b> القطعة الأعلى رتبة تأكل الأقل. القطع المتساوية لا تأكل بعضها.</li>
+        <li><b>الفأر:</b> يستطيع أكل <b>الفيل</b>، لكن الفيل لا يستطيع أكل الفأر.</li>
+        <li><b>الماء:</b> الفأر وحده من يسبح في الماء. الفأر في الماء لا يأكل خارج الماء ولا يُؤكل من خارجه.</li>
+        <li><b>الأسد والنمر:</b> يقفزان فوق الماء (أفقياً وعمودياً) إلى أول مربع أرضي بعد الماء، لكن الفأر الموجود في الماء يقطع القفزة.</li>
+        <li><b>الفخ ✳:</b> أي قطعة تقف في فخ الخصم تصبح رتبتها صفر، فيأكلها أي شيء.</li>
+        <li><b>العرين 🏠:</b> لا يمكنك دخول عرينك، ومن يدخل عرين الخصم يفوز فوراً.</li>
+      </ul>
+      <button id="closeModal" style="width:100%">فهمت 👍</button>
     </div>
+  </div>
 
-    <!-- ================= واجهة الراكب ================= -->
-    <div id="rider-dashboard" class="hidden">
-        <div id="map"></div>
-        <div class="dashboard-container">
-            <div class="header">
-                <h3>واجهة الراكب</h3>
-                <button class="logout-btn" onclick="logout()">خروج</button>
-            </div>
-            <p id="rider-name"></p>
-            <p class="status-msg" id="rider-status">جاهز لطلب التاكسي</p>
-            <button onclick="requestTaxi()" id="request-btn">اطلب تاكسي الآن</button>
-        </div>
-    </div>
+<script>
+(function(){
+  'use strict';
 
-    <!-- ================= واجهة السائق ================= -->
-    <div id="driver-dashboard" class="hidden">
-        <div id="map-driver"></div>
-        <div class="dashboard-container">
-            <div class="header">
-                <h3>واجهة السائق</h3>
-                <button class="logout-btn" onclick="logout()">خروج</button>
-            </div>
-            <p id="driver-name"></p>
-            <button onclick="loadRides()" style="background-color: #FF9800; margin-bottom: 15px;">تحديث الطلبات المتاحة</button>
-            <div id="rides-list"></div>
-        </div>
-    </div>
+  /* ===================== الإعدادات ===================== */
+  const ROWS = 9, COLS = 7;
+  const RED = 'red', BLUE = 'blue';
 
-    <script>
-        // ==========================================
-        // 1. إعدادات قاعدة البيانات (Supabase)
-        // ==========================================
-        // ضع هنا الرابط والمفتاح اللذان نسختهما من موقع Supabase
-        const SUPABASE_URL = 'https://ukyibwlibvhccqdghiva.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ضع_باقي_المفتاح_هنا';
-        
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const PIECES = {
+    rat:      { rank:1, emoji:'🐀', name:'فأر'      },
+    cat:      { rank:2, emoji:'🐈', name:'قط'       },
+    dog:      { rank:3, emoji:'🐕', name:'كلب'      },
+    wolf:     { rank:4, emoji:'🐺', name:'ذئب'      },
+    leopard:  { rank:5, emoji:'🐆', name:'فهد'      },
+    tiger:    { rank:6, emoji:'🐅', name:'نمر'      },
+    lion:     { rank:7, emoji:'🦁', name:'أسد'      },
+    elephant: { rank:8, emoji:'🐘', name:'فيل'      }
+  };
 
-        // متغيرات عامة
-        let isLogin = true;
-        let currentUser = null;
-        let currentRole = null;
-        let map = null;
-        let marker = null;
-        let userLat = 33.3152; // بغداد كموقع افتراضي
-        let userLng = 44.3661;
+  const VALUE = { rat:55, cat:20, dog:30, wolf:40, leopard:50, tiger:65, lion:75, elephant:85 };
 
-        // ==========================================
-        // 2. دوال المصادقة (تسجيل ودخول)
-        // ==========================================
-        function toggleAuthMode() {
-            isLogin = !isLogin;
-            document.getElementById('auth-title').innerText = isLogin ? 'تسجيل الدخول' : 'إنشاء حساب';
-            document.getElementById('auth-btn').innerText = isLogin ? 'دخول' : 'تسجيل';
-            document.getElementById('toggle-btn').innerText = isLogin ? 'ليس لديك حساب؟ سجل الآن' : 'لديك حساب؟ سجل دخول';
-            
-            // إظهار/إخفاء الحقول
-            document.getElementById('fullName').classList.toggle('hidden', isLogin);
-            document.getElementById('role').classList.toggle('hidden', isLogin);
-            if(document.getElementById('role').value === 'rider' || isLogin) {
-                document.getElementById('carPlate').classList.add('hidden');
-            }
-            document.getElementById('auth-error').innerText = '';
+  // مربعات الماء
+  const WATER = new Set();
+  [[3,1],[3,2],[3,4],[3,5],
+   [4,1],[4,2],[4,4],[4,5],
+   [5,1],[5,2],[5,4],[5,5]].forEach(function(p){ WATER.add(p[0]+','+p[1]); });
+
+  // الفخاخ (مملوكة للطرف)
+  const TRAPS = {};
+  TRAPS['0,2']=BLUE; TRAPS['0,4']=BLUE; TRAPS['1,3']=BLUE;
+  TRAPS['8,2']=RED;  TRAPS['8,4']=RED;  TRAPS['7,3']=RED;
+
+  // العرائن
+  const DENS = {};
+  DENS['0,3']=BLUE;
+  DENS['8,3']=RED;
+
+  // التوزيع الابتدائي
+  const LAYOUT = [
+    ['lion',      null,  null,      null, null,      null, 'tiger'   ],
+    [null,       'dog',  null,      null, null,     'cat',  null      ],
+    ['rat',       null, 'leopard',  null,'wolf',     null, 'elephant' ],
+    [null,null,null,null,null,null,null],
+    [null,null,null,null,null,null,null],
+    [null,null,null,null,null,null,null],
+    ['elephant',  null, 'wolf',     null,'leopard',  null, 'rat'     ],
+    [null,       'cat',  null,      null, null,     'dog',  null      ],
+    ['tiger',     null,  null,      null, null,      null, 'lion'    ]
+  ];
+
+  /* ===================== الحالة ===================== */
+  let board, turn, selected, legalMoves, gameOver, winner, lastMove;
+  let mode = 'ai';           // 'ai' أو 'pvp'
+  let aiBusy = false;
+  let statusMsg = '', statusClass = 'red';
+
+  const boardEl  = document.getElementById('board');
+  const statusEl = document.getElementById('status');
+
+  /* ===================== أدوات مساعدة ===================== */
+  function other(p){ return p === RED ? BLUE : RED; }
+  function inBoard(r,c){ return r >= 0 && r < ROWS && c >= 0 && c < COLS; }
+  function k(r,c){ return r + ',' + c; }
+  function isWater(r,c){ return WATER.has(k(r,c)); }
+  function trapOwner(r,c){ return TRAPS[k(r,c)] || null; }
+  function denOwner(r,c){ return DENS[k(r,c)] || null; }
+  function opposite(p){ return p === RED ? BLUE : RED; }
+
+  /* الرتبة الفعّالة (صفر داخل فخ الخصم) */
+  function effRank(piece, r, c){
+    const t = trapOwner(r,c);
+    if (t && t !== piece.owner) return 0;
+    return PIECES[piece.type].rank;
+  }
+
+  /* هل يمكن للمهاجم أكل المدافع؟ */
+  function canCapture(atk, ar, ac, def, dr, dc){
+    const aw = isWater(ar,ac), dw = isWater(dr,dc);
+    if (aw !== dw) return false;                       // الماء يفصل القتل
+
+    const aR = effRank(atk, ar, ac);
+    const dR = effRank(def, dr, dc);
+
+    if (aR === 0) return false;                        // قطعة محاصرة في فخ لا تأكل
+    if (aR === 1 && PIECES[def.type].rank === 8) return true;   // الفأر يأكل الفيل
+    if (PIECES[atk.type].rank === 8 && dR === 1) return false;  // الفيل لا يأكل الفأر
+    return aR > dR;
+  }
+
+  /* توليد الحركات القانونية لقطعة */
+  function getMoves(b, r, c){
+    const piece = b[r][c];
+    if (!piece) return [];
+    const out = [];
+    const dirs = [[-1,0],[1,0],[0,-1],[0,1]];
+
+    for (let i = 0; i < dirs.length; i++){
+      const dr = dirs[i][0], dc = dirs[i][1];
+      let nr = r + dr, nc = c + dc;
+      if (!inBoard(nr,nc)) continue;
+
+      // لا يمكن دخول العرين الخاص
+      const dn = denOwner(nr,nc);
+      if (dn === piece.owner) continue;
+
+      const target = b[nr][nc];
+      const water  = isWater(nr,nc);
+
+      /* --- الفأر --- */
+      if (piece.type === 'rat'){
+        if (!target || (target.owner !== piece.owner && canCapture(piece, r, c, target, nr, nc)))
+          out.push([nr,nc]);
+        continue;
+      }
+
+      /* --- الماء (قفز الأسد والنمر) --- */
+      if (water){
+        if (piece.type === 'lion' || piece.type === 'tiger'){
+          let jr = nr, jc = nc, blocked = false;
+          while (inBoard(jr,jc) && isWater(jr,jc)){
+            if (b[jr][jc]) { blocked = true; break; }   // فأر في الماء يقطع القفزة
+            jr += dr; jc += dc;
+          }
+          if (blocked || !inBoard(jr,jc)) continue;
+
+          const d2 = denOwner(jr,jc);
+          if (d2 === piece.owner) continue;
+
+          const t2 = b[jr][jc];
+          if (!t2 || (t2.owner !== piece.owner && canCapture(piece, r, c, t2, jr, jc)))
+            out.push([jr,jc]);
+        }
+        continue;
+      }
+
+      /* --- حركة عادية --- */
+      if (!target || (target.owner !== piece.owner && canCapture(piece, r, c, target, nr, nc)))
+        out.push([nr,nc]);
+    }
+    return out;
+  }
+
+  function getAllMoves(b, owner){
+    const out = [];
+    for (let r = 0; r < ROWS; r++){
+      for (let c = 0; c < COLS; c++){
+        const p = b[r][c];
+        if (!p || p.owner !== owner) continue;
+        const mv = getMoves(b, r, c);
+        for (let i = 0; i < mv.length; i++)
+          out.push({ from:[r,c], to:mv[i] });
+      }
+    }
+    return out;
+  }
+
+  function hasAnyMove(owner){
+    for (let r = 0; r < ROWS; r++)
+      for (let c = 0; c < COLS; c++){
+        const p = board[r][c];
+        if (p && p.owner === owner && getMoves(board, r, c).length) return true;
+      }
+    return false;
+  }
+
+  /* ===================== الرسم ===================== */
+  function render(){
+    boardEl.innerHTML = '';
+
+    for (let r = 0; r < ROWS; r++){
+      for (let c = 0; c < COLS; c++){
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.dataset.r = r;
+        cell.dataset.c = c;
+
+        if (isWater(r,c)) cell.classList.add('water');
+
+        const tr = trapOwner(r,c);
+        if (tr) cell.classList.add('trap-' + tr);
+
+        const dn = denOwner(r,c);
+        if (dn) cell.classList.add('den-' + dn);
+
+        if (lastMove){
+          const f = lastMove.from, t = lastMove.to;
+          if ((f[0]===r && f[1]===c) || (t[0]===r && t[1]===c))
+            cell.classList.add('last');
         }
 
-        // إظهار خانة لوحة السيارة إذا اختار سائق
-        document.getElementById('role').addEventListener('change', function(e) {
-            if (e.target.value === 'driver') {
-                document.getElementById('carPlate').classList.remove('hidden');
-            } else {
-                document.getElementById('carPlate').classList.add('hidden');
-            }
-        });
+        if (selected && selected[0]===r && selected[1]===c)
+          cell.classList.add('selected');
 
-        async function handleAuth() {
-            const phone = document.getElementById('phone').value;
-            const password = document.getElementById('password').value;
-            const fullName = document.getElementById('fullName').value;
-            const role = document.getElementById('role').value;
-            const carPlate = document.getElementById('carPlate').value;
-            const errorEl = document.getElementById('auth-error');
+        const isMove = legalMoves.some(function(m){ return m[0]===r && m[1]===c; });
+        if (isMove) cell.classList.add(board[r][c] ? 'capture' : 'hint');
 
-            if (!phone || !password) {
-                errorEl.innerText = 'الرجاء إدخال رقم الهاتف وكلمة السر';
-                return;
-            }
-
-            // Supabase يتطلب إيميل، لذلك نستخدم رقم الهاتف كإيميل وهمي
-            const email = `${phone}@taxi.app`;
-
-            try {
-                errorEl.innerText = 'جاري المعالجة...';
-                
-                if (isLogin) {
-                    // تسجيل الدخول
-                    const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
-                    if (error) throw error;
-                    
-                    // جلب بيانات المستخدم
-                    const { data: profile } = await _supabase.from('profiles').select('*').eq('id', data.user.id).single();
-                    loginSuccess(profile);
-                } else {
-                    // إنشاء حساب
-                    const { data, error } = await _supabase.auth.signUp({ email, password });
-                    if (error) throw error;
-                    
-                    // إضافة البيانات لجدول profiles
-                    const { error: profileError } = await _supabase.from('profiles').insert([{
-                        id: data.user.id,
-                        full_name: fullName,
-                        phone: phone,
-                        role: role,
-                        car_plate: role === 'driver' ? carPlate : null
-                    }]);
-                    if (profileError) throw profileError;
-                    
-                    const { data: newProfile } = await _supabase.from('profiles').select('*').eq('id', data.user.id).single();
-                    loginSuccess(newProfile);
-                }
-            } catch (error) {
-                errorEl.innerText = 'خطأ: ' + error.message;
-            }
+        // زخرفة العرين / الفخ
+        if (dn){
+          const d = document.createElement('div');
+          d.className = 'deco';
+          d.textContent = '🏠';
+          cell.appendChild(d);
+        } else if (tr){
+          const d = document.createElement('div');
+          d.className = 'deco';
+          d.textContent = '✳';
+          cell.appendChild(d);
         }
 
-        function loginSuccess(profile) {
-            currentUser = profile;
-            currentRole = profile.role;
-            
-            document.getElementById('auth-screen').classList.add('hidden');
-            
-            if (currentRole === 'rider') {
-                document.getElementById('rider-dashboard').classList.remove('hidden');
-                document.getElementById('rider-name').innerText = `مرحباً: ${profile.full_name}`;
-                initMap('map');
-            } else {
-                document.getElementById('driver-dashboard').classList.remove('hidden');
-                document.getElementById('driver-name').innerText = `السائق: ${profile.full_name} | لوحة: ${profile.car_plate}`;
-                initMap('map-driver');
-                loadRides();
-            }
+        // القطعة
+        const piece = board[r][c];
+        if (piece){
+          const el = document.createElement('div');
+          el.className = 'piece ' + piece.owner;
+          const info = PIECES[piece.type];
+          el.innerHTML =
+            '<span class="emoji">' + info.emoji + '</span>' +
+            '<span class="rank">' + info.rank + '</span>';
+          cell.appendChild(el);
         }
 
-        async function logout() {
-            await _supabase.auth.signOut();
-            location.reload(); // إعادة تحميل الصفحة لتصفير كل شيء
+        // نقطة الحركة المتاحة
+        if (isMove && !board[r][c]){
+          const h = document.createElement('div');
+          h.className = 'hint';
+          cell.appendChild(h);
         }
 
-        // ==========================================
-        // 3. دوال الخريطة
-        // ==========================================
-        function initMap(mapId) {
-            // تحديد الموقع الحقيقي للمستخدم
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    userLat = position.coords.latitude;
-                    userLng = position.coords.longitude;
-                    setupLeaflet(mapId);
-                }, () => {
-                    setupLeaflet(mapId); // في حال رفض المستخدم للموقع، نستخدم الافتراضي
-                });
-            } else {
-                setupLeaflet(mapId);
-            }
+        cell.addEventListener('click', (function(rr,cc){
+          return function(){ onCellClick(rr,cc); };
+        })(r,c));
+
+        boardEl.appendChild(cell);
+      }
+    }
+  }
+
+  function updateStatus(){
+    statusEl.textContent = statusMsg;
+    statusEl.className = 'status ' + statusClass;
+  }
+
+  /* ===================== التفاعل ===================== */
+  function onCellClick(r,c){
+    if (gameOver) return;
+    if (mode === 'ai' && turn === BLUE) return;
+    if (aiBusy) return;
+
+    const piece = board[r][c];
+
+    if (selected){
+      // تنفيذ حركة
+      for (let i = 0; i < legalMoves.length; i++){
+        if (legalMoves[i][0] === r && legalMoves[i][1] === c){
+          makeMove(selected, [r,c]);
+          return;
         }
+      }
+      // اختيار قطعة أخرى
+      if (piece && piece.owner === turn){
+        selected = [r,c];
+        legalMoves = getMoves(board, r, c);
+        render();
+        return;
+      }
+      // إلغاء التحديد
+      selected = null;
+      legalMoves = [];
+      render();
+      return;
+    }
 
-        function setupLeaflet(mapId) {
-            map = L.map(mapId).setView([userLat, userLng], 15);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap'
-            }).addTo(map);
-            
-            marker = L.marker([userLat, userLng]).addTo(map)
-                .bindPopup(currentRole === 'rider' ? 'موقعك' : 'موقعك كسائق').openPopup();
-        }
+    if (piece && piece.owner === turn){
+      selected = [r,c];
+      legalMoves = getMoves(board, r, c);
+      render();
+    }
+  }
 
-        // ==========================================
-        // 4. دوال الراكب (طلب تاكسي)
-        // ==========================================
-        async function requestTaxi() {
-            const statusEl = document.getElementById('rider-status');
-            const btn = document.getElementById('request-btn');
-            
-            statusEl.innerText = 'جاري إرسال الطلب...';
-            btn.disabled = true;
+  /* ===================== تنفيذ الحركة ===================== */
+  function makeMove(from, to){
+    if (gameOver) return;
 
-            try {
-                const { error } = await _supabase.from('rides').insert([{
-                    rider_id: currentUser.id,
-                    pickup_lat: userLat,
-                    pickup_lng: userLng,
-                    drop_lat: userLat + 0.01, // وجهة وهمية
-                    drop_lng: userLng + 0.01,
-                    status: 'requested'
-                }]);
+    const r = from[0], c = from[1];
+    const nr = to[0],  nc = to[1];
+    const piece = board[r][c];
+    if (!piece) return;
 
-                if (error) throw error;
-                
-                statusEl.innerText = 'تم الطلب بنجاح! في انتظار السائق...';
-                statusEl.style.color = 'green';
-                
-                // تغيير الزر لإلغاء الطلب
-                btn.innerText = 'إلغاء الطلب';
-                btn.style.backgroundColor = '#d32f2f';
-                btn.disabled = false;
-                btn.onclick = () => location.reload(); // لإعادة التصفير
+    const mover = piece.owner;
 
-            } catch (error) {
-                statusEl.innerText = 'خطأ: ' + error.message;
-                statusEl.style.color = 'red';
-                btn.disabled = false;
-            }
-        }
+    board[nr][nc] = piece;
+    board[r][c] = null;
 
-        // ==========================================
-        // 5. دوال السائق (جلب وقبول الرحلات)
-        // ==========================================
-        async function loadRides() {
-            const listEl = document.getElementById('rides-list');
-            listEl.innerHTML = 'جاري التحميل...';
+    lastMove = { from: from.slice(), to: to.slice() };
+    selected = null;
+    legalMoves = [];
 
-            try {
-                const { data: rides, error } = await _supabase.from('rides')
-                    .select('*')
-                    .eq('status', 'requested');
+    // فوز بدخول العرين
+    const dn = denOwner(nr,nc);
+    if (dn && dn !== mover){
+      gameOver = true;
+      winner = mover;
+      statusMsg = (mover === RED ? '🔴 الأحمر' : '🔵 الأزرق') + ' فاز بدخول العرين! 🏆';
+      statusClass = 'gold';
+      render(); updateStatus();
+      return;
+    }
 
-                if (error) throw error;
+    turn = other(mover);
 
-                if (rides.length === 0) {
-                    listEl.innerHTML = '<p style="text-align:center;">لا توجد رحلات متاحة حالياً</p>';
-                    return;
-                }
+    // هل تبقى للخصم قطع؟
+    let count = 0;
+    for (let i = 0; i < ROWS; i++)
+      for (let j = 0; j < COLS; j++){
+        const p = board[i][j];
+        if (p && p.owner === turn) count++;
+      }
 
-                listEl.innerHTML = '';
-                rides.forEach(ride => {
-                    const card = document.createElement('div');
-                    card.className = 'ride-card';
-                    card.innerHTML = `
-                        <div>
-                            <p><strong>رحلة #${ride.id}</strong></p>
-                            <p>من: ${ride.pickup_lat.toFixed(4)}, ${ride.pickup_lng.toFixed(4)}</p>
-                        </div>
-                        <button class="accept-btn" onclick="acceptRide(${ride.id})">قبول</button>
-                    `;
-                    listEl.appendChild(card);
-                });
+    if (count === 0){
+      gameOver = true; winner = mover;
+      statusMsg = '🏆 ' + (mover === RED ? '🔴 الأحمر' : '🔵 الأزرق') + ' فاز! لم يتبقَّ للخصم قطع';
+      statusClass = 'gold';
+      render(); updateStatus(); return;
+    }
 
-            } catch (error) {
-                listEl.innerHTML = `<p style="color:red;">خطأ: ${error.message}</p>`;
-            }
-        }
+    if (!hasAnyMove(turn)){
+      gameOver = true; winner = mover;
+      statusMsg = '🏆 ' + (mover === RED ? '🔴 الأحمر' : '🔵 الأزرق') + ' فاز! الخصم محاصَر';
+      statusClass = 'gold';
+      render(); updateStatus(); return;
+    }
 
-        async function acceptRide(rideId) {
-            try {
-                const { error } = await _supabase.from('rides').update({
-                    driver_id: currentUser.id,
-                    status: 'accepted'
-                }).eq('id', rideId);
+    render();
+    setTurnStatus();
 
-                if (error) throw error;
-                alert('تم قبول الرحلة بنجاح!');
-                loadRides(); // تحديث القائمة
+    if (mode === 'ai' && turn === BLUE) setTimeout(aiPlay, 320);
+  }
 
-            } catch (error) {
-                alert('فشل القبول: ' + error.message);
-            }
-        }
-    </script>
+  function setTurnStatus(){
+    if (turn === RED){
+      statusMsg = 'دور 🔴 الأحمر';
+      statusClass = 'red';
+    } else {
+      statusMsg = (mode === 'ai') ? 'دور الحاسوب 🤖 (الأزرق)' : 'دور 🔵 الأزرق';
+      statusClass = 'blue';
+    }
+    updateStatus();
+  }
+
+  /* ===================== الذكاء الاصطناعي ===================== */
+  function doMove(b, from, to){
+    const r = from[0], c = from[1], nr = to[0], nc = to[1];
+    const piece = b[r][c];
+    const captured = b[nr][nc];
+    b[nr][nc] = piece;
+    b[r][c] = null;
+    const dn = denOwner(nr,nc);
+    return { captured: captured, denWin: !!dn && dn !== piece.owner };
+  }
+
+  function undoMove(b, from, to, info){
+    const r = from[0], c = from[1], nr = to[0], nc = to[1];
+    b[r][c] = b[nr][nc];
+    b[nr][nc] = info.captured;
+  }
+
+  function evaluate(b, me){
+    const opp = other(me);
+    let s = 0;
+    for (let r = 0; r < ROWS; r++){
+      for (let c = 0; c < COLS; c++){
+        const p = b[r][c];
+        if (!p) continue;
+
+        let v = VALUE[p.type];
+
+        const tr = trapOwner(r,c);
+        if (tr && tr !== p.owner) v -= 30;                 // محاصر في فخ
+
+        const enemyDen = (p.owner === RED) ? [0,3] : [8,3];
+        const d = Math.abs(r - enemyDen[0]) + Math.abs(c - enemyDen[1]);
+        v += Math.max(0, 12 - d) * 0.8;                    // القرب من عرين الخصم
+
+        if (isWater(r,c)) v -= 3;
+
+        s += (p.owner === me ? v : -v);
+      }
+    }
+    return s;
+  }
+
+  function negamax(b, depth, alpha, beta, player){
+    if (depth <= 0) return evaluate(b, player);
+
+    const moves = getAllMoves(b, player);
+    if (moves.length === 0) return -900000;   // خسارة (محاصَر)
+
+    let best = -Infinity;
+    for (let i = 0; i < moves.length; i++){
+      const mv = moves[i];
+      const info = doMove(b, mv.from, mv.to);
+      let sc;
+      if (info.denWin) sc = 900000;
+      else sc = -negamax(b, depth - 1, -beta, -alpha, other(player));
+      undoMove(b, mv.from, mv.to, info);
+
+      if (sc > best) best = sc;
+      if (best > alpha) alpha = best;
+      if (alpha >= beta) break;
+    }
+    return best;
+  }
+
+  function chooseAIMove(){
+    const me = BLUE;
+    const moves = getAllMoves(board, me);
+    if (!moves.length) return null;
+
+    let best = -Infinity;
+    let bestMoves = [];
+
+    for (let i = 0; i < moves.length; i++){
+      const mv = moves[i];
+      const info = doMove(board, mv.from, mv.to);
+      let sc;
+      if (info.denWin) sc = 1000000;
+      else sc = -negamax(board, 2, -Infinity, Infinity, RED);
+      undoMove(board, mv.from, mv.to, info);
+
+      if (sc > best + 1e-9){ best = sc; bestMoves = [mv]; }
+      else if (Math.abs(sc - best) <= 1e-9) bestMoves.push(mv);
+    }
+
+    return bestMoves[Math.floor(Math.random() * bestMoves.length)];
+  }
+
+  function aiPlay(){
+    if (gameOver || mode !== 'ai' || turn !== BLUE || aiBusy) return;
+    aiBusy = true;
+    setTimeout(function(){
+      const mv = chooseAIMove();
+      aiBusy = false;
+      if (mv) makeMove(mv.from, mv.to);
+    }, 20);
+  }
+
+  /* ===================== بدء لعبة جديدة ===================== */
+  function newGame(){
+    board = LAYOUT.map(function(row, r){
+      return row.map(function(type){
+        if (!type) return null;
+        return { type: type, owner: (r <= 2 ? BLUE : RED) };
+      });
+    });
+
+    turn = RED;
+    selected = null;
+    legalMoves = [];
+    gameOver = false;
+    winner = null;
+    lastMove = null;
+    aiBusy = false;
+
+    render();
+    setTurnStatus();
+  }
+
+  /* ===================== الأزرار ===================== */
+  document.getElementById('newGame').addEventListener('click', newGame);
+
+  const modeBtn = document.getElementById('modeBtn');
+  modeBtn.addEventListener('click', function(){
+    if (mode === 'ai'){
+      mode = 'pvp';
+      modeBtn.textContent = '👥 لاعبين';
+      modeBtn.classList.remove('active');
+    } else {
+      mode = 'ai';
+      modeBtn.textContent = '🤖 ضد الحاسوب';
+      modeBtn.classList.add('active');
+    }
+    newGame();
+  });
+
+  const modal = document.getElementById('modal');
+  document.getElementById('helpBtn').addEventListener('click', function(){
+    modal.classList.add('show');
+  });
+  document.getElementById('closeModal').addEventListener('click', function(){
+    modal.classList.remove('show');
+  });
+  modal.addEventListener('click', function(e){
+    if (e.target === modal) modal.classList.remove('show');
+  });
+
+  /* ===================== انطلاق ===================== */
+  newGame();
+
+})();
+</script>
 </body>
 </html>
