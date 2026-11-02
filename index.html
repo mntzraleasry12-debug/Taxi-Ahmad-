@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#111111">
-<title>ROYAL TAXI</title>
+<meta name="theme-color" content="#111216">
+<title>ROYAL TAXI | رويال تاكسي</title>
 
 <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -16,7 +16,8 @@
   --gold: #ffc400;
   --gold-hover: #e0ac00;
   --bg: #111216;
-  --card: #202127;
+  --card: #1b1c22;
+  --card-border: #2a2b33;
   --green: #16c784;
   --red: #d94444;
 }
@@ -40,11 +41,12 @@ button, input {
 button {
   cursor: pointer;
   border: 0;
-  transition: opacity 0.2s, background-color 0.2s;
+  transition: all 0.2s ease;
 }
 
 button:active {
-  opacity: 0.8;
+  transform: scale(0.98);
+  opacity: 0.9;
 }
 
 .app {
@@ -52,7 +54,9 @@ button:active {
   margin: auto;
   min-height: 100vh;
   background: #111216;
-  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  box-shadow: 0 0 30px rgba(0,0,0,0.8);
+  position: relative;
+  overflow: hidden;
 }
 
 .hidden {
@@ -61,17 +65,18 @@ button:active {
 
 header {
   background: #191a20;
-  padding: 18px;
+  padding: 18px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--card-border);
 }
 
 .logo {
-  font-size: 25px;
+  font-size: 24px;
   font-weight: 900;
   color: var(--gold);
+  letter-spacing: 0.5px;
 }
 
 .logo span {
@@ -79,145 +84,238 @@ header {
 }
 
 .sub {
-  color: #aaa;
-  font-size: 12px;
+  color: #888;
+  font-size: 11px;
+  margin-top: 2px;
 }
 
 main {
-  padding: 17px;
+  padding: 20px;
 }
 
 h2 {
-  margin: 5px 0 12px;
+  margin: 5px 0 15px;
+  font-weight: 800;
 }
 
 h3 {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
+  font-weight: 700;
 }
 
 p {
-  color: #aaa;
+  color: #999;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .card {
   background: var(--card);
-  padding: 16px;
-  border-radius: 17px;
-  margin: 14px 0;
-  border: 1px solid #34353b;
+  padding: 20px;
+  border-radius: 20px;
+  margin: 16px 0;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
+/* ======================================
+   واجهة البداية الفخمة (Landing / Welcome Screen)
+   ====================================== */
+#welcome-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 35px 25px;
+  background: radial-gradient(circle at center, #25200b 0%, #111216 70%);
+  text-align: center;
+}
+
+.welcome-brand .big-icon {
+  font-size: 85px;
+  margin-bottom: 15px;
+  filter: drop-shadow(0 0 20px rgba(255, 196, 0, 0.4));
+  animation: floatCar 3s ease-in-out infinite;
+}
+
+@keyframes floatCar {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.welcome-brand h1 {
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--gold);
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.welcome-brand h1 span {
+  color: #fff;
+}
+
+.welcome-brand p {
+  color: #aaa;
+  font-size: 15px;
+  margin-top: 10px;
+}
+
+.welcome-features {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+.feat-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--card-border);
+  padding: 15px;
+  border-radius: 16px;
+  width: 30%;
+}
+
+.feat-item span {
+  font-size: 24px;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.feat-item b {
+  font-size: 12px;
+  color: #ddd;
+}
+
+.welcome-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ======================================
+   باقي العناصر والتصميم
+   ====================================== */
 .hero {
   text-align: center;
-  background: linear-gradient(145deg, #382c08, #1d1e23);
-  padding: 24px;
-  border-radius: 20px;
-  margin-bottom: 18px;
+  background: linear-gradient(145deg, #382c08, #16171c);
+  padding: 25px;
+  border-radius: 22px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 196, 0, 0.15);
 }
 
-.car {
-  font-size: 65px;
+.hero .car {
+  font-size: 55px;
+  margin-bottom: 5px;
 }
 
 .hero h2 {
   color: var(--gold);
+  font-size: 22px;
 }
 
 .field {
-  margin: 13px 0;
+  margin: 15px 0;
 }
 
 .field label {
   display: block;
-  margin-bottom: 7px;
-  color: #ddd;
-  font-size: 14px;
+  margin-bottom: 8px;
+  color: #ccc;
+  font-size: 13px;
+  font-weight: 500;
 }
 
 input {
   width: 100%;
-  padding: 14px;
+  padding: 15px;
   background: #111216;
   color: #fff;
-  border: 1px solid #444;
-  border-radius: 11px;
+  border: 1px solid #333;
+  border-radius: 14px;
   font-size: 15px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
 }
 
 input:focus {
   border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(255, 196, 0, 0.15);
 }
 
 .btn {
   width: 100%;
-  padding: 14px;
+  padding: 15px;
   background: var(--gold);
   color: #111;
-  border-radius: 12px;
+  border-radius: 14px;
   font-weight: 900;
   font-size: 16px;
   margin: 6px 0;
+  box-shadow: 0 4px 15px rgba(255, 196, 0, 0.2);
 }
 
 .btn.dark {
-  background: #34353b;
+  background: #282a33;
   color: #fff;
+  box-shadow: none;
+  border: 1px solid #3d3f4a;
 }
 
 .btn.green {
   background: var(--green);
   color: #07170f;
+  box-shadow: 0 4px 15px rgba(22, 199, 132, 0.2);
 }
 
 .btn.red {
   background: var(--red);
   color: #fff;
+  box-shadow: 0 4px 15px rgba(217, 68, 68, 0.2);
 }
 
 .roles {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+  margin-bottom: 10px;
 }
 
 .role {
-  background: #24252b;
-  border: 2px solid #414149;
-  padding: 20px;
+  background: #16171c;
+  border: 2px solid var(--card-border);
+  padding: 18px;
   text-align: center;
-  border-radius: 15px;
+  border-radius: 16px;
   color: #fff;
 }
 
 .role.active {
   border-color: var(--gold);
-  background: #2b271a;
+  background: #241f0a;
 }
 
 .role div {
-  font-size: 35px;
+  font-size: 32px;
+  margin-bottom: 5px;
 }
 
 .role b {
-  display: block;
-  margin-top: 8px;
+  font-size: 14px;
 }
 
 #map {
-  height: 320px;
+  height: 300px;
   width: 100%;
-  border-radius: 13px;
+  border-radius: 16px;
   z-index: 1;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  border: 1px solid var(--card-border);
 }
 
 .search {
   display: flex;
-  gap: 7px;
+  gap: 8px;
   margin: 12px 0;
 }
 
@@ -228,29 +326,33 @@ input:focus {
 
 .search button {
   background: var(--gold);
-  border-radius: 10px;
-  padding: 0 18px;
-  font-weight: 700;
+  border-radius: 12px;
+  padding: 0 20px;
+  font-weight: 800;
+  color: #111;
 }
 
 .quick {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
+  margin-top: 15px;
 }
 
 .quick button {
-  background: #292a30;
+  background: var(--card);
+  border: 1px solid var(--card-border);
   color: #fff;
-  padding: 17px;
-  border-radius: 14px;
-  font-size: 15px;
+  padding: 16px;
+  border-radius: 16px;
+  font-size: 14px;
   text-align: center;
+  font-weight: 600;
 }
 
-.quick span {
+.quick button span {
   display: block;
-  font-size: 25px;
+  font-size: 24px;
   margin-bottom: 6px;
 }
 
@@ -259,7 +361,7 @@ input:focus {
   justify-content: space-between;
   align-items: center;
   gap: 8px;
-  margin: 6px 0;
+  margin: 8px 0;
 }
 
 .gold {
@@ -267,37 +369,51 @@ input:focus {
 }
 
 .trip {
-  padding: 14px;
-  background: #292a30;
-  border-radius: 13px;
-  margin: 10px 0;
-  border: 1px solid #3d3f47;
+  padding: 16px;
+  background: #16171c;
+  border-radius: 16px;
+  margin: 12px 0;
+  border: 1px solid var(--card-border);
 }
 
 .small {
   font-size: 12px;
-  color: #aaa;
+  color: #888;
 }
 
 #message {
   position: fixed;
-  top: 12px;
-  left: 10px;
-  right: 10px;
-  max-width: 490px;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  max-width: 480px;
   margin: auto;
-  background: #282a30;
+  background: #1d1e26;
   border: 1px solid var(--gold);
-  border-radius: 12px;
-  padding: 13px;
+  border-radius: 14px;
+  padding: 14px 20px;
   z-index: 9999;
   text-align: center;
   display: none;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .status {
   color: var(--green);
+  font-weight: 700;
+}
+
+.back-link {
+  background: none;
+  color: var(--gold);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
 }
 </style>
 </head>
@@ -307,17 +423,46 @@ input:focus {
 
 <div class="app">
 
-<!-- LOGIN SECTION -->
-<section id="login">
+<!-- 🌟 الواجهة الرئيسية الفخمة (WELCOME / LANDING SCREEN) -->
+<section id="welcome-screen">
+  <div class="welcome-brand">
+    <div class="big-icon">🚖</div>
+    <h1>ROYAL <span>TAXI</span></h1>
+    <p>تطبيق النقل الذكي الأكثر راحة وأماناً في خدمتك دائماً</p>
+  </div>
+
+  <div class="welcome-features">
+    <div class="feat-item">
+      <span>⚡</span>
+      <b>سرعة بالطلب</b>
+    </div>
+    <div class="feat-item">
+      <span>🛡️</span>
+      <b>رحلات آمنة</b>
+    </div>
+    <div class="feat-item">
+      <span>💎</span>
+      <b>خدمة ملكية</b>
+    </div>
+  </div>
+
+  <div class="welcome-actions">
+    <button type="button" class="btn" onclick="openAuth('login')">تسجيل الدخول</button>
+    <button type="button" class="btn dark" onclick="openAuth('register')">إنشاء حساب جديد</button>
+  </div>
+</section>
+
+<!-- LOGIN / REGISTER SECTION -->
+<section id="auth-screen" class="hidden">
 <header>
- <div><div class="logo">ROYAL <span>TAXI</span></div><div class="sub">رحلتك بأمان وراحة</div></div>
- <div style="font-size:35px">🚕</div>
+ <div><div class="logo">ROYAL <span>TAXI</span></div><div class="sub" id="authHeaderSub">تسجيل الدخول إلى حسابك</div></div>
+ <button type="button" class="btn dark" style="width:auto; margin:0; padding:8px 14px; font-size:13px;" onclick="goToWelcome()">الرئيسية</button>
 </header>
 <main>
  <div class="hero">
-  <div class="car">🚖</div>
-  <h2>ROYAL TAXI</h2>
-  <p>أهلاً بك في عالم الراحة والأمان</p>
+  <div class="car">🚕</div>
+  <h2 id="authScreenTitle">تسجيل الدخول</h2>
+  <p id="authScreenDesc">أدخل بياناتك للمتابعة فوراً</p>
  </div>
 
  <h2>اختر نوع الحساب</h2>
@@ -344,14 +489,13 @@ input:focus {
    <div class="field"><label>الاسم الكامل</label><input id="name" placeholder="اسمك الكامل"></div>
    <div id="carFields" class="hidden">
     <div class="field"><label>نوع السيارة</label><input id="carType" placeholder="تويوتا كورولا"></div>
-    <div class="field"><label>رقم اللوحة</label><input id="plate" placeholder="رقم اللوحة"></div>
-    <div class="field"><label>لون السيارة</label><input id="carColor" placeholder="أبيض"></div>
+    <div class="field"><label>رقم اللوحة</label><input id="plate" placeholder="رقم اللوحة (مثال: بغداد 12345)"></div>
+    <div class="field"><label>لون السيارة</label><input id="carColor" placeholder="أبيض / أسود"></div>
    </div>
   </div>
 
-  <button type="button" class="btn" onclick="submitAuth()">دخول</button>
-  <button type="button" class="btn dark" id="registerBtn" onclick="toggleRegister()">إنشاء حساب جديد</button>
-  <p class="small" id="authHint" style="text-align:center; margin-top:10px;">حساب خاص بالزبائن</p>
+  <button type="button" class="btn" id="authSubmitBtn" onclick="submitAuth()">تسجيل الدخول</button>
+  <button type="button" class="back-link" id="authToggleModeBtn" onclick="toggleAuthMode()">ليس لديك حساب؟ إنشاء حساب جديد</button>
  </div>
 </main>
 </section>
@@ -360,42 +504,42 @@ input:focus {
 <section id="customer" class="hidden">
 <header>
  <div><div class="logo">ROYAL <span>TAXI</span></div><div class="sub">حساب الزبون</div></div>
- <button type="button" class="btn dark" style="width:auto;margin:0" onclick="logout()">خروج</button>
+ <button type="button" class="btn dark" style="width:auto;margin:0;padding:8px 14px;font-size:13px;" onclick="logout()">خروج</button>
 </header>
 <main id="customerMain">
  <div class="hero">
   <div class="car">🚕</div>
-  <h2>أهلاً بك <span id="welcome"></span></h2>
-  <p>أين تريد الذهاب اليوم؟</p>
+  <h2>أهلاً بك <span id="welcome" class="gold"></span></h2>
+  <p>إلى أين ترغب في الذهاب اليوم؟</p>
  </div>
 
  <div class="card">
   <div class="row"><b>📍 موقع الانطلاق</b><span class="gold">GPS</span></div>
-  <p id="locationText">لم يتم تحديد الموقع</p>
-  <button type="button" class="btn dark" onclick="getLocation()">تحديد موقعي الحالي</button>
+  <p id="locationText">لم يتم تحديد موقعك الحالي بعد</p>
+  <button type="button" class="btn dark" onclick="getLocation()">تحديد موقعي الحالي بدقة</button>
  </div>
 
  <div class="card">
-  <h3>🗺️ اختر وجهتك</h3>
+  <h3>🗺️ اختر وجهتك على الخريطة</h3>
   <div class="search">
-   <input id="searchPlace" placeholder="اسم المنطقة أو الشارع">
+   <input id="searchPlace" placeholder="ابحث عن منطقة أو شارع...">
    <button type="button" onclick="searchPlace()">بحث</button>
   </div>
   <div id="map"></div>
-  <p class="small">اضغط على الخريطة لتحديد وجهتك أو استخدم البحث.</p>
-  <div class="field">
+  <p class="small">💡 انقر مباشرة على الخريطة لتحديد وجهتك بدقة.</p>
+  <div class="field" style="margin-top:12px;">
    <label>الوجهة المثبتة</label>
-   <input id="destination" readonly placeholder="اختر وجهتك من الخريطة">
+   <input id="destination" readonly placeholder="لم يتم اختيار وجهة بعد">
   </div>
-  <div class="row"><span>المسافة</span><b class="gold" id="distance">--</b></div>
+  <div class="row"><span>المسافة المقدرة</span><b class="gold" id="distance">--</b></div>
   <div class="row"><span>المدة التقريبية</span><b class="gold" id="duration">--</b></div>
   <div class="row"><span>التكلفة التقديرية</span><b class="gold" id="price">--</b></div>
-  <button type="button" class="btn" onclick="orderRide()">🚕 اطلب تاكسي الآن</button>
+  <button type="button" class="btn" style="margin-top:10px;" onclick="orderRide()">🚕 اطلب تاكسي الآن</button>
  </div>
 
  <div class="quick">
-  <button type="button" onclick="customerTrips()"><span>🧾</span>رحلاتي</button>
-  <button type="button" onclick="customerTracking()"><span>🚖</span>أين سيارتي؟</button>
+  <button type="button" onclick="customerTrips()"><span>🧾</span>سجل رحلاتي</button>
+  <button type="button" onclick="customerTracking()"><span>🚖</span>متابعة الطلب</button>
   <button type="button" onclick="customerWallet()"><span>💳</span>محفظتي</button>
   <button type="button" onclick="customerSupport()"><span>🎧</span>الدعم الفني</button>
  </div>
@@ -407,40 +551,40 @@ input:focus {
 <section id="driver" class="hidden">
 <header>
  <div><div class="logo">ROYAL <span>TAXI</span></div><div class="sub">لوحة السائق</div></div>
- <button type="button" class="btn dark" style="width:auto;margin:0" onclick="logout()">خروج</button>
+ <button type="button" class="btn dark" style="width:auto;margin:0;padding:8px 14px;font-size:13px;" onclick="logout()">خروج</button>
 </header>
 <main>
  <div class="hero">
   <div class="car">🚖</div>
-  <h2>مرحباً كابتن</h2>
-  <p id="driverWelcome"></p>
+  <h2>مرحباً بك كابتن</h2>
+  <p id="driverWelcome" class="gold"></p>
  </div>
 
  <div class="card">
   <div class="row">
-   <div><b>حالة العمل</b><p id="onlineText" style="margin:4px 0 0; color:#ff5555;">غير متصل</p></div>
-   <button type="button" class="btn" style="width:auto; padding:10px 20px" id="onlineBtn" onclick="toggleOnline()">بدء العمل</button>
+   <div><b>حالة العمل</b><p id="onlineText" style="margin:4px 0 0; color:#ff5555; font-weight:700;">غير متصل</p></div>
+   <button type="button" class="btn" style="width:auto; padding:10px 22px" id="onlineBtn" onclick="toggleOnline()">بدء العمل</button>
   </div>
  </div>
 
  <div class="card">
-  <h3>🚘 بيانات السيارة</h3>
-  <p id="carInfo"></p>
+  <h3>🚘 بيانات المركبة</h3>
+  <p id="carInfo" style="color:#fff; font-weight:500;"></p>
  </div>
 
  <div class="card">
-  <h3>📥 طلبات الزبائن</h3>
-  <div id="requests"><p>فعّل الاتصال لاستقبال الطلبات</p></div>
+  <h3>📥 طلبات الزبائن الواردة</h3>
+  <div id="requests"><p>قم بتفعيل حالة الاتصال أعلاه لاستقبال الطلبات القريبة...</p></div>
  </div>
 
  <div class="card">
-  <h3>🚕 رحلتي الحالية</h3>
-  <div id="activeRide"><p>لا توجد رحلة حالية</p></div>
+  <h3>🚕 الرحلة الحالية النشطة</h3>
+  <div id="activeRide"><p>لا توجد رحلة قيد التنفيذ حالياً.</p></div>
  </div>
 
  <div class="card">
-  <h3>📊 إحصائياتي</h3>
-  <p>الرحلات المكتملة: <b id="tripCount" class="gold">0</b></p>
+  <h3>📊 إحصائيات الأداء</h3>
+  <p>الرحلات المكتملة بنجاح: <b id="tripCount" class="gold">0</b></p>
  </div>
 </main>
 </section>
@@ -452,10 +596,6 @@ input:focus {
 
 <script>
 "use strict";
-
-// ======================================
-// أدوات عامة وأمان
-// ======================================
 
 const el = id => document.getElementById(id);
 
@@ -498,26 +638,56 @@ function users() { return read('royal_users', []); }
 function rides() { return read('royal_rides', []); }
 
 // ======================================
-// إدارة الحسابات
+// إدارة التنقل بين الواجهات
 // ======================================
 
 let role = 'customer';
-let registering = false;
+let isRegisterMode = false;
 let me = null;
+
+function goToWelcome() {
+  el('welcome-screen').classList.remove('hidden');
+  el('auth-screen').classList.add('hidden');
+  el('customer').classList.add('hidden');
+  el('driver').classList.add('hidden');
+}
+
+function openAuth(mode) {
+  isRegisterMode = (mode === 'register');
+  el('welcome-screen').classList.add('hidden');
+  el('auth-screen').classList.remove('hidden');
+  updateAuthUI();
+}
 
 function selectRole(value) {
   role = value;
   el('roleCustomer').classList.toggle('active', role === 'customer');
   el('roleDriver').classList.toggle('active', role === 'driver');
-  el('carFields').classList.toggle('hidden', role !== 'driver' || !registering);
-  el('authHint').textContent = role === 'driver' ? 'حساب خاص بالسائقين' : 'حساب خاص بالزبائن';
+  updateAuthUI();
 }
 
-function toggleRegister() {
-  registering = !registering;
-  el('extra').classList.toggle('hidden', !registering);
-  el('carFields').classList.toggle('hidden', !registering || role !== 'driver');
-  el('registerBtn').textContent = registering ? 'العودة لتسجيل الدخول' : 'إنشاء حساب جديد';
+function toggleAuthMode() {
+  isRegisterMode = !isRegisterMode;
+  updateAuthUI();
+}
+
+function updateAuthUI() {
+  el('extra').classList.toggle('hidden', !isRegisterMode);
+  el('carFields').classList.toggle('hidden', !isRegisterMode || role !== 'driver');
+  
+  if (isRegisterMode) {
+    el('authScreenTitle').textContent = 'إنشاء حساب جديد';
+    el('authScreenDesc').textContent = 'انضم إلى عائلة رويال تاكسي الآن';
+    el('authSubmitBtn').textContent = 'إنشاء الحساب';
+    el('authToggleModeBtn').textContent = 'لديك حساب بالفعل؟ تسجيل الدخول';
+    el('authHeaderSub').textContent = 'تسجيل حساب جديد';
+  } else {
+    el('authScreenTitle').textContent = 'تسجيل الدخول';
+    el('authScreenDesc').textContent = 'أدخل بياناتك للمتابعة فوراً';
+    el('authSubmitBtn').textContent = 'دخول';
+    el('authToggleModeBtn').textContent = 'ليس لديك حساب؟ إنشاء حساب جديد';
+    el('authHeaderSub').textContent = 'تسجيل الدخول إلى حسابك';
+  }
 }
 
 function submitAuth() {
@@ -525,18 +695,18 @@ function submitAuth() {
   const password = el('password').value;
 
   if (!phone || !password) {
-    notify('أدخل رقم الهاتف وكلمة المرور');
+    notify('يرجى إدخال رقم الهاتف وكلمة المرور');
     return;
   }
 
   let list = users();
   let found = list.find(u => u.phone === phone && u.role === role);
 
-  if (registering) {
-    if (found) { notify('الحساب موجود مسبقاً'); return; }
+  if (isRegisterMode) {
+    if (found) { notify('هذا الحساب مسجل مسبقاً، يرجى تسجيل الدخول'); return; }
 
     const name = el('name').value.trim();
-    if (!name) { notify('أدخل الاسم الكامل'); return; }
+    if (!name) { notify('يرجى إدخال الاسم الكامل'); return; }
 
     const user = {
       id: String(Date.now()) + Math.random().toString(16).slice(2),
@@ -548,17 +718,17 @@ function submitAuth() {
     };
 
     if (role === 'driver' && (!user.carType || !user.plate)) {
-      notify('أدخل نوع السيارة ورقم اللوحة');
+      notify('يرجى ادخال نوع السيارة ورقم اللوحة');
       return;
     }
 
     list.push(user);
     write('royal_users', list);
     me = user;
-    notify('تم إنشاء الحساب بنجاح');
+    notify('تم إنشاء حسابك بنجاح! أهلاً بك');
   } else {
     if (!found || found.password !== password) {
-      notify('بيانات الدخول غير صحيحة');
+      notify('رقم الهاتف أو كلمة المرور غير صحيحة');
       return;
     }
     me = found;
@@ -569,18 +739,19 @@ function submitAuth() {
 }
 
 function showApp() {
-  el('login').classList.add('hidden');
+  el('welcome-screen').classList.add('hidden');
+  el('auth-screen').classList.add('hidden');
   el('customer').classList.add('hidden');
   el('driver').classList.add('hidden');
 
   if (me.role === 'customer') {
     el('customer').classList.remove('hidden');
     el('welcome').textContent = safeText(me.name);
-    setTimeout(initMap, 200);
+    setTimeout(initMap, 250);
   } else {
     el('driver').classList.remove('hidden');
     el('driverWelcome').textContent = safeText(me.name);
-    el('carInfo').textContent = safeText(`${me.carType} - ${me.carColor} - ${me.plate}`);
+    el('carInfo').textContent = safeText(`${me.carType} | لون ${me.carColor} | لوحة: ${me.plate}`);
     refreshDriver();
   }
 }
@@ -588,14 +759,12 @@ function showApp() {
 function logout() {
   me = null;
   write('royal_session', null);
-  el('customer').classList.add('hidden');
-  el('driver').classList.add('hidden');
-  el('login').classList.remove('hidden');
-  notify('تم تسجيل الخروج');
+  goToWelcome();
+  notify('تم تسجيل الخروج بنجاح');
 }
 
 // ======================================
-// الخريطة والتوجيه
+// الخريطة والتوجيه (Leaflet & OSRM)
 // ======================================
 
 let map = null;
@@ -607,16 +776,12 @@ let routeLine = null;
 let mapBusy = false;
 
 function initMap() {
-  if (!window.L) {
-    notify('تعذر تحميل الخريطة. تحقق من الاتصال بالإنترنت.');
-    return;
-  }
-
+  if (!window.L) return;
   const mapEl = el('map');
   if (!mapEl) return;
 
   if (!map) {
-    map = L.map('map').setView([31.0579, 46.2573], 13); // الموقع الافتراضي
+    map = L.map('map').setView([33.3152, 44.3661], 13); // الافتراضي (بغداد)
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -632,7 +797,7 @@ function initMap() {
 
 function getLocation() {
   if (!navigator.geolocation) {
-    notify('المتصفح لا يدعم تحديد الموقع');
+    notify('المتصفح الخاص بك لا يدعم تحديد الموقع الجغرافي');
     return;
   }
 
@@ -644,7 +809,7 @@ function getLocation() {
       lng: pos.coords.longitude
     };
 
-    el('locationText').textContent = 'تم تحديد الموقع بنجاح 📍';
+    el('locationText').textContent = 'تم تحديد موقع الانطلاق بنجاح 📍';
     initMap();
 
     if (map) {
@@ -664,19 +829,19 @@ function setDestination(lat, lng, name) {
 
   if (map) {
     if (endMarker) map.removeLayer(endMarker);
-    endMarker = L.marker([lat, lng]).addTo(map).bindPopup('الوجهة').openPopup();
+    endMarker = L.marker([lat, lng]).addTo(map).bindPopup('الوجهة المطلوبة').openPopup();
   }
 
   if (pickup) {
     calculateRoute();
   } else {
-    notify('تم تثبيت الوجهة. حدد موقع الانطلاق لحساب التكلفة والمسار.');
+    notify('تم تثبيت الوجهة. يرجى تحديد موقع الانطلاق (GPS).');
   }
 }
 
 async function searchPlace() {
   const query = el('searchPlace').value.trim();
-  if (!query) { notify('اكتب اسم المنطقة أو الشارع'); return; }
+  if (!query) { notify('يرجى كتابة اسم المنطقة أو الشارع للبحث'); return; }
 
   if (mapBusy) return;
   mapBusy = true;
@@ -684,160 +849,4 @@ async function searchPlace() {
   try {
     const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`;
     const response = await fetch(url);
-    if (!response.ok) throw new Error('Search failed');
-
-    const data = await response.json();
-    if (!data.length) { notify('لم يتم العثور على المكان'); return; }
-
-    const place = data[0];
-    const lat = Number(place.lat);
-    const lng = Number(place.lon);
-
-    if (map) map.setView([lat, lng], 15);
-    setDestination(lat, lng, place.display_name.split(',')[0]);
-
-  } catch(e) {
-    notify('تعذر البحث حالياً، يمكنك النقر يدويًا على الخريطة');
-  } finally {
-    mapBusy = false;
-  }
-}
-
-async function calculateRoute() {
-  if (!pickup || !destination) return;
-
-  try {
-    const url = `https://router.project-osrm.org/route/v1/driving/${pickup.lng},${pickup.lat};${destination.lng},${destination.lat}?overview=full&geometries=geojson`;
-
-    const response = await fetch(url);
-    if (!response.ok) throw new Error('Route failed');
-
-    const data = await response.json();
-    if (!data.routes || !data.routes.length) {
-      notify('لم نجد مساراً مطابضاً بين الموقعين');
-      return;
-    }
-
-    const r = data.routes[0];
-    const distKm = (r.distance / 1000).toFixed(1);
-    const durationMin = Math.ceil(r.duration / 60);
-
-    // حساب تقديري للسعر (مثال: 3000 د.ع كحد أدنى + 500 د.ع لكل كم)
-    const estimatedPrice = Math.max(3000, Math.round(distKm * 500 + 2000));
-
-    el('distance').textContent = distKm + ' كم';
-    el('duration').textContent = durationMin + ' دقيقة';
-    el('price').textContent = estimatedPrice.toLocaleString('ar-IQ') + ' د.ع';
-
-    if (map) {
-      if (routeLine) map.removeLayer(routeLine);
-      routeLine = L.geoJSON(r.geometry, {
-        style: { color: '#ffc400', weight: 5, opacity: 0.8 }
-      }).addTo(map);
-
-      map.fitBounds(routeLine.getBounds(), { padding: [30, 30] });
-    }
-
-  } catch(e) {
-    notify('تعذر حساب تفاصيل المسار تلقائياً');
-  }
-}
-
-// ======================================
-// طلب الرحلات (الزبون)
-// ======================================
-
-function orderRide() {
-  if (!pickup) { notify('حدد موقع الانطلاق أولاً عبر الـ GPS'); return; }
-  if (!destination) { notify('اختر وجهتك من الخريطة أو البحث أولاً'); return; }
-
-  const list = rides();
-
-  if (list.some(r => r.customerId === me.id && ['pending', 'accepted'].includes(r.status))) {
-    notify('لديك رحلة جارية بالفعل!');
-    return;
-  }
-
-  const ride = {
-    id: String(Date.now()),
-    customerId: me.id,
-    customerName: me.name,
-    phone: me.phone,
-    pickup,
-    destination,
-    destinationName: destination.name,
-    distance: el('distance').textContent,
-    duration: el('duration').textContent,
-    price: el('price').textContent,
-    status: 'pending',
-    driverId: null,
-    driverName: null,
-    createdAt: new Date().toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit' })
-  };
-
-  list.push(ride);
-  write('royal_rides', list);
-  notify('تم إرسال طلبك للسائقين بنجاح 🚖');
-  customerTracking();
-}
-
-function cancelRide(id) {
-  let list = rides();
-  const ride = list.find(r => r.id === id);
-  if (ride && ride.status === 'pending') {
-    ride.status = 'cancelled';
-    write('royal_rides', list);
-    notify('تم إلغاء الطلب');
-    customerTracking();
-  }
-}
-
-// ======================================
-// لوحة التحكم والطلبات (السائق)
-// ======================================
-
-let online = false;
-
-function toggleOnline() {
-  online = !online;
-  const list = users();
-  const idx = list.findIndex(u => u.id === me.id);
-
-  if (idx !== -1) {
-    list[idx].online = online;
-    write('royal_users', list);
-    me = list[idx];
-  }
-
-  el('onlineText').textContent = online ? 'متصل ويستقبل الطلبات' : 'غير متصل';
-  el('onlineText').style.color = online ? '#16c784' : '#ff5555';
-  el('onlineBtn').textContent = online ? 'إيقاف العمل' : 'بدء العمل';
-
-  refreshDriver();
-}
-
-function refreshDriver() {
-  if (!me || me.role !== 'driver') return;
-
-  const list = rides();
-  const requests = list.filter(r => r.status === 'pending');
-  const active = list.filter(r => r.driverId === me.id && r.status === 'accepted');
-  const completed = list.filter(r => r.driverId === me.id && r.status === 'completed');
-
-  el('tripCount').textContent = completed.length;
-
-  const container = el('requests');
-  container.innerHTML = '';
-
-  if (!online) {
-    container.innerHTML = '<p>قم بتفعيل حالة الاتصال لبدء استقبال الطلبات.</p>';
-  } else if (!requests.length) {
-    container.innerHTML = '<p>لا توجد طلبات جارية بالقرب منك...</p>';
-  } else {
-    requests.forEach(r => {
-      const div = document.createElement('div');
-      div.className = 'trip';
-      div.innerHTML = `
-        <b>طلب رحلة جديد 🚕</b>
-        <p>الزبون: <b>${safeText(r.customerName)}</b> (${safeText(r.phone)})</p>
-    
+    if (!response.ok) throw new Error('S
