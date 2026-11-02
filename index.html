@@ -3,82 +3,110 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>عالم العباقرة 3D</title>
-
-<script type="importmap">
-{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}
-</script>
 
 <style>
 *{box-sizing:border-box}
 body{
- margin:0;
- font-family:Tahoma,Arial;
- color:white;
- text-align:center;
- background:linear-gradient(140deg,#111b42,#34236c,#633d94);
+ margin:0;font-family:Tahoma,Arial,sans-serif;
+ background:linear-gradient(150deg,#101b46,#243b80,#512b79);
+ color:white;min-height:100vh;
 }
-header{padding:20px;background:#111a3b}
-h1{color:#ffdf59;margin:5px}
-.stats{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:15px}
-.stat{background:#ffffff20;padding:12px;border-radius:14px}
-#menu{
- display:grid;
- grid-template-columns:repeat(2,minmax(0,1fr));
- gap:12px;
- max-width:750px;
- margin:auto;
- padding:15px;
+header{
+ padding:17px;text-align:center;
+ background:#111b3ddd;
+ border-bottom:2px solid #ffffff22;
 }
-.game-card{
- background:linear-gradient(145deg,#5149ae,#272e76);
- border:2px solid #ffffff40;
- border-radius:20px;
- padding:18px 5px;
- color:white;
- font-size:17px;
- cursor:pointer;
- min-height:115px;
+header h1{margin:0;color:#ffe66d;font-size:26px}
+header p{margin:7px 0 0;color:#dce7ff}
+.container{max-width:1100px;margin:auto;padding:14px}
+.panel{
+ background:#ffffff12;border:1px solid #ffffff25;
+ border-radius:20px;padding:15px;margin-bottom:15px;
+ box-shadow:0 8px 25px #0003;
 }
-.emoji{display:block;font-size:38px;margin-bottom:10px}
-#play{display:none;max-width:750px;margin:auto;padding:15px}
-#scene{
- height:290px;
- width:100%;
- border-radius:20px;
- overflow:hidden;
- background:#a4e1ff;
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+button,select{
+ border:0;border-radius:13px;padding:12px 16px;
+ font-size:16px;font-weight:bold;cursor:pointer;
 }
-#question{font-size:21px;color:#ffe477;margin:20px 5px}
-#answers{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.answer{
- padding:16px 5px;
- border:2px solid #ffffff50;
- border-radius:15px;
- background:#5447ad;
- color:white;
- font-size:20px;
- cursor:pointer;
+button{background:#ffe66d;color:#222}
+button:active{transform:scale(.96)}
+.secondary{background:#42d6c5;color:#102b39}
+.danger{background:#ff7777;color:#fff}
+.small{font-size:13px;padding:8px}
+select{background:white;color:#222}
+.stats{
+ display:grid;grid-template-columns:repeat(3,1fr);
+ gap:9px;text-align:center;
 }
-.btn{
- background:#ffcf43;
- color:#242424;
- border:0;
- border-radius:14px;
- padding:13px 18px;
- font-weight:bold;
- font-size:16px;
- margin:5px;
- cursor:pointer;
+.stat{
+ background:#ffffff18;padding:12px;border-radius:15px;
 }
-#message{min-height:35px;font-size:19px;margin:15px}
-#buildControls{display:none;margin:15px}
-#buildStatus{font-size:19px;color:#ffdf59;margin:10px}
-footer{padding:20px;color:#b9c5ff}
-@media(max-width:380px){
- #scene{height:235px}
- .answer{font-size:17px}
+.stat strong{display:block;font-size:24px;color:#ffe66d}
+.section-title{color:#ffe66d;margin:10px 0}
+.grid{
+ display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+ gap:10px;
+}
+.game-card,.world-card{
+ background:linear-gradient(145deg,#ffffff25,#ffffff0b);
+ border:1px solid #ffffff30;border-radius:17px;
+ padding:15px;text-align:center;cursor:pointer;
+ min-height:115px;transition:.2s;
+}
+.game-card:active,.world-card:active{transform:scale(.96)}
+.game-card .emoji,.world-card .emoji{font-size:35px;display:block;margin-bottom:8px}
+.game-card strong,.world-card strong{font-size:15px}
+#gameScreen{display:none}
+#homeScreen{display:block}
+#threeBox{
+ width:100%;height:270px;border-radius:18px;
+ overflow:hidden;background:linear-gradient(#81d7ff,#d7f4ff);
+ position:relative;
+}
+#threeBox canvas{display:block;width:100%;height:100%}
+.question{
+ text-align:center;font-size:22px;font-weight:bold;
+ color:#ffe66d;line-height:1.8;margin:15px 0;
+}
+#choices{
+ display:grid;grid-template-columns:repeat(2,1fr);
+ gap:10px;
+}
+.choice{
+ min-height:65px;font-size:21px;
+ background:#fff;color:#20294b;
+ border:4px solid transparent;
+}
+.choice.correct{background:#65e6a2;border-color:#fff}
+.choice.wrong{background:#ff8585}
+#feedback{text-align:center;font-size:19px;min-height:30px;margin:12px}
+#teacher{
+ background:#ffe66d;color:#222;border-radius:16px;
+ padding:12px;margin:12px 0;display:flex;
+ gap:10px;align-items:center;
+}
+#teacher span{font-size:32px}
+#teacherText{font-weight:bold;line-height:1.6}
+.hidden{display:none!important}
+footer{text-align:center;padding:20px;color:#cbd7ff;font-size:12px}
+.progress{
+ background:#ffffff25;height:12px;border-radius:20px;overflow:hidden;
+ margin:10px 0;
+}
+#progressBar{height:100%;background:#ffe66d;width:0;transition:.3s}
+.badge{
+ display:inline-block;background:#ffe66d;color:#222;
+ border-radius:20px;padding:7px 12px;margin:4px;font-weight:bold;
+}
+#parentPanel{display:none}
+@media(max-width:500px){
+ header h1{font-size:22px}
+ .question{font-size:19px}
+ #threeBox{height:220px}
+ button,select{font-size:14px}
 }
 </style>
 </head>
@@ -86,639 +114,516 @@ footer{padding:20px;color:#b9c5ff}
 <body>
 
 <header>
-<h1>🧠 عالم العباقرة 3D</h1>
-<p>نتعلم ونلعب ونصبح أذكى!</p>
-<div class="stats">
- <div class="stat">⭐ النقاط: <span id="score">0</span></div>
- <div class="stat">🏆 المستوى: <span id="level">1</span></div>
- <div class="stat">🎮 الألعاب: 10</div>
-</div>
+ <h1>🌟 عالم العباقرة 3D</h1>
+ <p>نتعلم ونلعب ونكتشف العالم معاً</p>
 </header>
 
-<section id="menu">
+<div class="container">
 
-<button class="game-card" onclick="startGame(0)">
-<span class="emoji">🧩</span>تركيب الأشكال
-</button>
+<!-- الصفحة الرئيسية -->
+<div id="homeScreen">
 
-<button class="game-card" onclick="startGame(1)">
-<span class="emoji">🎨</span>تعلم الألوان
-</button>
+ <div class="panel">
+  <h2 class="section-title">👋 أهلاً بك أيها العبقري!</h2>
+  <div class="row">
+   <label>اختر عمر الطفل:</label>
+   <select id="ageSelect" onchange="changeAge()">
+    <option value="3-5">من 3 إلى 5 سنوات</option>
+    <option value="6-8" selected>من 6 إلى 8 سنوات</option>
+    <option value="9-10">من 9 إلى 10 سنوات</option>
+   </select>
+   <button class="secondary" onclick="speak('مرحباً بك في عالم العباقرة، هيا نتعلم ونلعب!')">🔊 المعلم الصوتي</button>
+  </div>
+ </div>
 
-<button class="game-card" onclick="startGame(2)">
-<span class="emoji">🔢</span>تعلم الأرقام
-</button>
+ <div class="panel stats">
+  <div class="stat">⭐ النجوم<strong id="stars">0</strong></div>
+  <div class="stat">🏆 المستوى<strong id="level">1</strong></div>
+  <div class="stat">🎮 الألعاب<strong id="played">0</strong></div>
+ </div>
 
-<button class="game-card" onclick="startGame(3)">
-<span class="emoji">🐘</span>عالم الحيوانات
-</button>
+ <div class="panel">
+  <h3 class="section-title">🌍 عوالمنا التعليمية</h3>
+  <div class="grid" id="worlds">
+   <div class="world-card" onclick="filterWorld('numbers')"><span class="emoji">🔢</span><strong>جزيرة الأرقام</strong></div>
+   <div class="world-card" onclick="filterWorld('shapes')"><span class="emoji">🔺</span><strong>مدينة الأشكال</strong></div>
+   <div class="world-card" onclick="filterWorld('animals')"><span class="emoji">🦁</span><strong>غابة الحيوانات</strong></div>
+   <div class="world-card" onclick="filterWorld('puzzles')"><span class="emoji">🧩</span><strong>قلعة الألغاز</strong></div>
+   <div class="world-card" onclick="filterWorld('building')"><span class="emoji">🏗️</span><strong>مصنع المكعبات</strong></div>
+  </div>
+ </div>
 
-<button class="game-card" onclick="startGame(4)">
-<span class="emoji">🧠</span>لعبة الذاكرة
-</button>
+ <div class="panel">
+  <h3 class="section-title">🎮 اختر لعبتك</h3>
+  <div class="grid" id="games"></div>
+ </div>
 
-<button class="game-card" onclick="startGame(5)">
-<span class="emoji">🔷</span>الشكل المختلف
-</button>
+ <div class="panel">
+  <h3 class="section-title">🏅 إنجازاتك</h3>
+  <div id="badges">ابدأ اللعب لتحصل على النجوم والشارات!</div>
+  <div class="progress"><div id="progressBar"></div></div>
+  <small id="progressText">0% من التقدم</small>
+ </div>
 
-<button class="game-card" onclick="startGame(6)">
-<span class="emoji">🔤</span>الحروف العربية
-</button>
-
-<button class="game-card" onclick="startGame(7)">
-<span class="emoji">➕</span>الحساب
-</button>
-
-<button class="game-card" onclick="startGame(8)">
-<span class="emoji">🧱</span>تركيب المكعبات 3D
-</button>
-
-<button class="game-card" onclick="startGame(9)">
-<span class="emoji">💡</span>الألغاز
-</button>
-
-</section>
-
-<section id="play">
-
-<div id="scene"></div>
-
-<div id="question"></div>
-
-<button class="btn" onclick="repeatVoice()">🔊 اسمع السؤال</button>
-
-<div id="answers"></div>
-
-<div id="buildControls">
- <div id="buildStatus">ابنِ برجاً من 3 مكعبات!</div>
- <button class="btn" onclick="addBuildCube()">🧱 أضف مكعباً</button>
- <button class="btn" onclick="removeBuildCube()">↩️ أزل مكعباً</button>
- <button class="btn" onclick="resetBuild()">🔄 ابدأ من جديد</button>
+ <div class="row">
+  <button class="secondary" onclick="openParents()">👨‍👩‍👧 لوحة الأهل</button>
+  <button class="danger" onclick="resetProgress()">إعادة التقدم</button>
+ </div>
 </div>
 
-<div id="message"></div>
+<!-- شاشة اللعبة -->
+<div id="gameScreen">
+ <div class="panel">
+  <div class="row" style="justify-content:space-between">
+   <button class="small secondary" onclick="goHome()">⬅ الرئيسية</button>
+   <span id="gameTitle">اللعبة</span>
+   <span>⭐ <b id="gameStars">0</b></span>
+  </div>
+  <div id="threeBox"></div>
+  <div id="teacher">
+   <span>🧑‍🏫</span>
+   <div id="teacherText">أنا معلمك، هيا نبدأ!</div>
+  </div>
+  <div class="question" id="question"></div>
+  <div id="choices"></div>
+  <div id="feedback"></div>
+  <div class="row" style="justify-content:center">
+   <button class="secondary" onclick="repeatQuestion()">🔊 كرر السؤال</button>
+   <button onclick="nextQuestion()">السؤال التالي ➜</button>
+  </div>
+ </div>
+</div>
 
-<button class="btn" onclick="nextQuestion()">السؤال التالي ➡️</button>
-<button class="btn" onclick="goHome()" style="background:#ff7777">القائمة الرئيسية</button>
+<!-- لوحة الأهل -->
+<div id="parentPanel" class="panel">
+ <h2>👨‍👩‍👧 لوحة متابعة الأهل</h2>
+ <p>عدد الألعاب المكتملة: <b id="parentPlayed">0</b></p>
+ <p>مجموع النجوم: <b id="parentStars">0</b></p>
+ <p>المستوى الحالي: <b id="parentLevel">1</b></p>
+ <p>العمر المحدد: <b id="parentAge">6-8</b></p>
+ <p>هذه البيانات محفوظة على هذا الجهاز.</p>
+ <button onclick="closeParents()">إغلاق</button>
+</div>
 
-</section>
+</div>
 
-<footer>عالم العباقرة 3D © 2026</footer>
+<footer>عالم العباقرة 3D © 2026 — التعلم متعة</footer>
 
-<script type="module">
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
-import * as THREE from "three";
+<script>
+// ====================================
+// بيانات وحفظ التقدم
+// ====================================
 
-const $=id=>document.getElementById(id);
+let saved=JSON.parse(localStorage.getItem("genius3d")||"{}");
 
-let score=0;
-let level=1;
-let currentGame=0;
-let currentAnswer="";
+let data={
+ stars:saved.stars||0,
+ played:saved.played||0,
+ level:saved.level||1,
+ age:saved.age||"6-8",
+ completed:saved.completed||[]
+};
+
+let currentGame=null;
+let currentQuestion=null;
+let questionIndex=0;
+let gameCorrect=0;
 let answered=false;
-let buildCount=0;
-let buildCompleted=false;
-let questionNumber=0;
+let scene,camera,renderer,objects=[];
+let currentWorld="all";
+let cubeCount=0;
 
-const scene=new THREE.Scene();
-scene.background=new THREE.Color(0x9cddff);
+const games=[
+ {id:1,name:"تعرف على الأشكال",emoji:"🔺",world:"shapes",type:"shape"},
+ {id:2,name:"تعرف على الألوان",emoji:"🎨",world:"shapes",type:"color"},
+ {id:3,name:"عد الأشياء",emoji:"🔢",world:"numbers",type:"count"},
+ {id:4,name:"الحيوانات",emoji:"🦁",world:"animals",type:"animal"},
+ {id:5,name:"اكتشف الشكل المختلف",emoji:"🔍",world:"shapes",type:"different"},
+ {id:6,name:"الذاكرة",emoji:"🧠",world:"puzzles",type:"memory"},
+ {id:7,name:"الحروف العربية",emoji:"أ",world:"numbers",type:"letters"},
+ {id:8,name:"الجمع",emoji:"➕",world:"numbers",type:"math"},
+ {id:9,name:"بناء المكعبات",emoji:"🧱",world:"building",type:"building"},
+ {id:10,name:"الألغاز",emoji:"❓",world:"puzzles",type:"riddle"},
+ {id:11,name:"تركيب الصور",emoji:"🧩",world:"puzzles",type:"puzzle"},
+ {id:12,name:"المتاهة",emoji:"🏃",world:"puzzles",type:"maze"},
+ {id:13,name:"أكمل التسلسل",emoji:"🔄",world:"numbers",type:"sequence"},
+ {id:14,name:"مطابقة الظلال",emoji:"🌑",world:"shapes",type:"shadow"},
+ {id:15,name:"فرز الأشياء",emoji:"🧺",world:"animals",type:"sorting"}
+];
 
-const camera=new THREE.PerspectiveCamera(45,1,.1,100);
-camera.position.set(0,3,8);
-camera.lookAt(0,0,0);
-
-const renderer=new THREE.WebGLRenderer({antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-renderer.shadowMap.enabled=true;
-$("scene").appendChild(renderer.domElement);
-
-scene.add(new THREE.HemisphereLight(0xffffff,0x778899,2));
-
-const light=new THREE.DirectionalLight(0xffffff,3);
-light.position.set(4,8,5);
-light.castShadow=true;
-scene.add(light);
-
-let objects=[];
-let clock=new THREE.Clock();
-
-function resize(){
- const w=$("scene").clientWidth;
- const h=$("scene").clientHeight;
- camera.aspect=w/h;
- camera.updateProjectionMatrix();
- renderer.setSize(w,h);
+function save(){
+ data.level=Math.floor(data.stars/10)+1;
+ localStorage.setItem("genius3d",JSON.stringify(data));
+ updateStats();
 }
-window.addEventListener("resize",resize);
 
-function clear3D(){
- objects.forEach(o=>scene.remove(o));
+function updateStats(){
+ document.getElementById("stars").textContent=data.stars;
+ document.getElementById("level").textContent=data.level;
+ document.getElementById("played").textContent=data.played;
+ document.getElementById("gameStars").textContent=data.stars;
+ let percent=Math.min(100,data.completed.length/games.length*100);
+ document.getElementById("progressBar").style.width=percent+"%";
+ document.getElementById("progressText").textContent=Math.round(percent)+"% من الألعاب المكتملة";
+ let badges="";
+ if(data.stars>=1)badges+="<span class='badge'>⭐ أول نجمة</span>";
+ if(data.stars>=10)badges+="<span class='badge'>🏅 العبقري الصغير</span>";
+ if(data.stars>=30)badges+="<span class='badge'>🏆 بطل المعرفة</span>";
+ if(data.stars>=60)badges+="<span class='badge'>👑 ملك العباقرة</span>";
+ document.getElementById("badges").innerHTML=badges||"ابدأ اللعب لتحصل على الشارات!";
+}
+
+function renderGames(){
+ let box=document.getElementById("games");
+ box.innerHTML="";
+ games.filter(g=>currentWorld==="all"||g.world===currentWorld).forEach(g=>{
+  let div=document.createElement("div");
+  div.className="game-card";
+  div.innerHTML=`<span class="emoji">${g.emoji}</span><strong>${g.name}</strong>`;
+  div.onclick=()=>startGame(g);
+  box.appendChild(div);
+ });
+}
+function filterWorld(w){currentWorld=w;renderGames();}
+function changeAge(){
+ data.age=document.getElementById("ageSelect").value;
+ save();
+}
+
+// ====================================
+// المعلم الصوتي العربي
+// ====================================
+
+function speak(text){
+ document.getElementById("teacherText").textContent=text;
+ if(!("speechSynthesis" in window))return;
+ speechSynthesis.cancel();
+ let msg=new SpeechSynthesisUtterance(text);
+ msg.lang="ar-SA";
+ msg.rate=0.85;
+ msg.pitch=1.1;
+ let voices=speechSynthesis.getVoices();
+ let arabic=voices.find(v=>v.lang.startsWith("ar"));
+ if(arabic)msg.voice=arabic;
+ speechSynthesis.speak(msg);
+}
+
+function repeatQuestion(){
+ if(currentQuestion)speak(currentQuestion.question);
+}
+
+// ====================================
+// محرك 3D
+// ====================================
+
+function init3D(){
+ let box=document.getElementById("threeBox");
+ box.innerHTML="";
  objects=[];
+ if(!window.THREE){
+  box.innerHTML="<div style='padding:30px;text-align:center;color:#222'>تعذر تحميل محرك 3D. تحقق من الإنترنت.</div>";
+  return;
+ }
+ scene=new THREE.Scene();
+ scene.background=new THREE.Color(0x9de3ff);
+ camera=new THREE.PerspectiveCamera(45,box.clientWidth/box.clientHeight,.1,100);
+ camera.position.set(4,4,7);
+ camera.lookAt(0,0,0);
+ renderer=new THREE.WebGLRenderer({antialias:true});
+ renderer.setSize(box.clientWidth,box.clientHeight);
+ renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+ box.appendChild(renderer.domElement);
+ scene.add(new THREE.HemisphereLight(0xffffff,0x778899,2));
+ let light=new THREE.DirectionalLight(0xffffff,2);
+ light.position.set(5,8,5);
+ scene.add(light);
+ let floor=new THREE.Mesh(
+  new THREE.PlaneGeometry(20,20),
+  new THREE.MeshStandardMaterial({color:0x74c99a})
+ );
+ floor.rotation.x=-Math.PI/2;
+ floor.position.y=-1;
+ scene.add(floor);
+ let grid=new THREE.GridHelper(20,20,0xffffff,0xffffff);
+ grid.position.y=-.98;
+ scene.add(grid);
+ animate3D();
 }
 
-function addObject(mesh){
- mesh.castShadow=true;
- mesh.receiveShadow=true;
- scene.add(mesh);
- objects.push(mesh);
+function animate3D(){
+ if(!renderer)return;
+ objects.forEach(o=>{if(o.userData.spin)o.rotation.y+=.01});
+ renderer.render(scene,camera);
+ requestAnimationFrame(animate3D);
+}
+
+function addShape(type,color,x=0,y=0,z=0){
+ let geometry;
+ if(type==="sphere")geometry=new THREE.SphereGeometry(.7,32,24);
+ else if(type==="cone")geometry=new THREE.ConeGeometry(.7,1.4,3);
+ else if(type==="cylinder")geometry=new THREE.CylinderGeometry(.6,.6,1.1,32);
+ else if(type==="torus")geometry=new THREE.TorusGeometry(.6,.18,12,40);
+ else geometry=new THREE.BoxGeometry(1,1,1);
+ let material=new THREE.MeshStandardMaterial({color,roughness:.35});
+ let mesh=new THREE.Mesh(geometry,material);
+ mesh.position.set(x,y,z);
+ mesh.userData.spin=true;
+ scene.add(mesh);objects.push(mesh);
  return mesh;
 }
 
-function ground(){
- const floor=new THREE.Mesh(
-  new THREE.BoxGeometry(20,.2,20),
-  new THREE.MeshStandardMaterial({color:0x83cb80})
- );
- floor.position.y=-.4;
- scene.add(floor);
- objects.push(floor);
-}
-
-function shape(type,color,x=0,z=0,y=.7){
- let geometry;
-
- if(type==="cube")
-  geometry=new THREE.BoxGeometry(1,1,1);
-
- else if(type==="sphere")
-  geometry=new THREE.SphereGeometry(.8,32,32);
-
- else if(type==="cone")
-  geometry=new THREE.ConeGeometry(.8,1.5,4);
-
- else if(type==="cylinder")
-  geometry=new THREE.CylinderGeometry(.7,.7,1.3,32);
-
- else if(type==="torus")
-  geometry=new THREE.TorusGeometry(.7,.25,16,40);
-
- else
-  geometry=new THREE.OctahedronGeometry(.9);
-
- const material=new THREE.MeshStandardMaterial({
-  color,
-  roughness:.35,
-  metalness:.12
- });
-
- const mesh=new THREE.Mesh(geometry,material);
- mesh.position.set(x,y,z);
- return addObject(mesh);
-}
-
-function show3D(type,color=0xffcc44){
- clear3D();
- ground();
- shape(type,color);
- camera.position.set(0,3,8);
- camera.lookAt(0,0,0);
-}
-
-function showMany(type,color,count){
- clear3D();
- ground();
- for(let i=0;i<count;i++){
-  shape(type,color,(i-(count-1)/2)*1.15);
- }
- camera.position.set(0,3,9);
- camera.lookAt(0,0,0);
-}
-
-function shuffle(arr){
- return [...arr].sort(()=>Math.random()-.5);
-}
-
-function randomItem(arr){
- return arr[Math.floor(Math.random()*arr.length)];
-}
-
-// الصوت العربي
-
-let arabicVoice=null;
-
-function loadArabicVoice(){
- if(!("speechSynthesis" in window))return;
-
- let voices=speechSynthesis.getVoices();
-
- arabicVoice=
- voices.find(v=>v.lang==="ar-IQ")||
- voices.find(v=>v.lang==="ar-SA")||
- voices.find(v=>v.lang.startsWith("ar"))||
- null;
-}
-
-if("speechSynthesis" in window){
- loadArabicVoice();
- speechSynthesis.onvoiceschanged=loadArabicVoice;
-}
-
-function speakArabic(text){
- if(!("speechSynthesis" in window))return;
-
- speechSynthesis.cancel();
-
- const speech=new SpeechSynthesisUtterance(text);
- speech.lang=arabicVoice?.lang||"ar";
- speech.rate=.85;
- speech.pitch=1.15;
- speech.volume=1;
-
- if(arabicVoice)speech.voice=arabicVoice;
-
- speechSynthesis.speak(speech);
-}
-
-window.repeatVoice=function(){
- speakArabic($("question").textContent);
-};
-
-// المؤثرات الصوتية
-
-function playEffect(correct){
- const AC=window.AudioContext||window.webkitAudioContext;
- if(!AC)return;
-
- const ctx=new AC();
- const notes=correct?[523,659,784]:[250,190];
-
- notes.forEach((frequency,i)=>{
-  const oscillator=ctx.createOscillator();
-  const gain=ctx.createGain();
-
-  oscillator.frequency.value=frequency;
-  oscillator.type="sine";
-
-  gain.gain.setValueAtTime(.12,ctx.currentTime+i*.13);
-  gain.gain.exponentialRampToValueAtTime(
-   .001,ctx.currentTime+i*.13+.2
-  );
-
-  oscillator.connect(gain);
-  gain.connect(ctx.destination);
-
-  oscillator.start(ctx.currentTime+i*.13);
-  oscillator.stop(ctx.currentTime+i*.13+.2);
+function showObjects(items){
+ init3D();
+ items.forEach((item,i)=>{
+  addShape(item.type||"box",item.color||0xffcc44,(i-(items.length-1)/2)*1.8,.2,0);
  });
 }
 
-// الأسئلة والإجابات
+// ====================================
+// توليد الأسئلة
+// ====================================
 
-function makeQuestion(q,answers,correct){
- $("question").textContent=q;
- $("answers").innerHTML="";
- $("message").textContent="";
- currentAnswer=String(correct);
- answered=false;
-
- answers=shuffle(answers);
-
- answers.forEach(answer=>{
-  const btn=document.createElement("button");
-  btn.className="answer";
-  btn.textContent=answer;
-  btn.onclick=()=>checkAnswer(answer);
-  $("answers").appendChild(btn);
- });
-
- setTimeout(()=>speakArabic(q),500);
-}
-
-function checkAnswer(answer){
- if(answered)return;
- answered=true;
-
- if(String(answer)===currentAnswer){
-  score+=10;
-  $("message").textContent="🎉 أحسنت! إجابة صحيحة!";
-  $("message").style.color="#a4ff9e";
-  playEffect(true);
-  speakArabic("أحسنت! إجابة صحيحة! أنت بطل!");
- }else{
-  $("message").textContent="😊 حاول مرة أخرى! الإجابة: "+currentAnswer;
-  $("message").style.color="#ffb5b5";
-  playEffect(false);
-  speakArabic("لا بأس! حاول مرة أخرى يا بطل!");
- }
-
- $("score").textContent=score;
- level=Math.floor(score/100)+1;
- $("level").textContent=level;
-}
-
-// بيانات الألعاب
+const shapeNames=[
+ {name:"المكعب",type:"box",emoji:"🟦",color:0x3498db},
+ {name:"الكرة",type:"sphere",emoji:"⚽",color:0xff5252},
+ {name:"المخروط",type:"cone",emoji:"🔺",color:0xffc107},
+ {name:"الأسطوانة",type:"cylinder",emoji:"🛢️",color:0x9b59b6}
+];
 
 const colors=[
- {name:"أحمر",value:0xff3333},
- {name:"أزرق",value:0x2266ff},
- {name:"أصفر",value:0xffdd00},
- {name:"أخضر",value:0x22bb55},
- {name:"بنفسجي",value:0xaa44dd}
+ {name:"الأحمر",color:0xff3333},
+ {name:"الأزرق",color:0x3388ff},
+ {name:"الأخضر",color:0x22bb77},
+ {name:"الأصفر",color:0xffd633},
+ {name:"البنفسجي",color:0x9944cc}
 ];
 
-const shapes=[
- {name:"مكعب",type:"cube"},
- {name:"كرة",type:"sphere"},
- {name:"مخروط",type:"cone"},
- {name:"أسطوانة",type:"cylinder"},
- {name:"حلقة",type:"torus"},
- {name:"شكل ماسي",type:"diamond"}
-];
+function makeQuestion(g){
+ let q={question:"اختر الإجابة الصحيحة",choices:[],answer:"",visual:[]};
+ let age=data.age;
+ let max=age==="3-5"?5:age==="6-8"?10:20;
 
-const animals=[
- {name:"أسد",emoji:"🦁",letter:"أ"},
- {name:"فيل",emoji:"🐘",letter:"ف"},
- {name:"قطة",emoji:"🐱",letter:"ق"},
- {name:"كلب",emoji:"🐶",letter:"ك"},
- {name:"أرنب",emoji:"🐰",letter:"أ"},
- {name:"سمكة",emoji:"🐟",letter:"س"}
-];
+ switch(g.type){
 
-const riddles=[
- {q:"ما الشيء الذي له أسنان ولا يعض؟",a:"المشط",o:["المشط","الكتاب","الكرسي","الباب"]},
- {q:"ما الذي نراه في الليل في السماء؟",a:"النجوم",o:["النجوم","الشمس","البحر","البيت"]},
- {q:"كم عدد أرجل العنكبوت؟",a:"8",o:["4","6","8","10"]},
- {q:"ما الحيوان الذي يسمى ملك الغابة؟",a:"الأسد",o:["الفيل","الأسد","القطة","الحصان"]}
-];
+ case "shape":{
+  let s=shapeNames[Math.floor(Math.random()*shapeNames.length)];
+  q.question="ما اسم هذا الشكل؟";
+  q.answer=s.name;
+  q.choices=shuffle(shapeNames.map(x=>x.name)).slice(0,4);
+  q.visual=[s];break;
+ }
 
-// اللعبة الأولى
+ case "color":{
+  let c=colors[Math.floor(Math.random()*colors.length)];
+  q.question="ما لون الشكل الذي تراه؟";
+  q.answer=c.name;
+  q.choices=shuffle(colors.map(x=>x.name)).slice(0,4);
+  q.visual=[{type:"sphere",color:c.color}];break;
+ }
 
-function game0(){
- let s=randomItem(shapes);
- show3D(s.type,0xffa833);
- makeQuestion(
-  "ما اسم هذا الشكل؟",
-  [s.name,...shapes.filter(x=>x.name!==s.name).slice(0,3).map(x=>x.name)],
-  s.name
- );
+ case "count":{
+  let n=1+Math.floor(Math.random()*max);
+  q.question="كم شكلاً تراه؟";
+  q.answer=String(n);
+  q.choices=shuffle([n,n+1,n+2,Math.max(1,n-1)].map(String));
+  q.visual=Array.from({length:n},()=>({type:"sphere",color:0xffc107}));
+  break;
+ }
+
+ case "animal":{
+  let animals=[
+   ["الأسد","🦁"],["الفيل","🐘"],["القطة","🐱"],
+   ["الأرنب","🐰"],["الأسد","🦁"],["الكلب","🐶"]
+  ];
+  let a=animals[Math.floor(Math.random()*animals.length)];
+  q.question="ما اسم هذا الحيوان؟ "+a[1];
+  q.answer=a[0];
+  q.choices=shuffle(["الأسد","الفيل","القطة","الأرنب","الكلب"]).slice(0,4);
+  q.visual=[{type:"sphere",color:0xffaa44}];
+  break;
+ }
+
+ case "different":{
+  let patterns=[
+   {items:["مثلث","مربع","مربع","مثلث"],answer:"مربع"},
+   {items:["دائرة","مربع","دائرة","دائرة"],answer:"مربع"},
+   {items:["نجمة","نجمة","قلب","نجمة"],answer:"قلب"},
+   {items:["أحمر","أزرق","أحمر","أحمر"],answer:"أزرق"}
+  ];
+  let p=patterns[Math.floor(Math.random()*patterns.length)];
+  q.question="انظر إلى التسلسل: "+p.items.join(" ، ")+" — ما المختلف؟";
+  q.answer=p.answer;
+  q.choices=shuffle([...new Set([...p.items,p.answer])]).slice(0,4);
+  q.visual=p.items.map(x=>({type:"box",color:x==="أحمر"?0xff3333:x==="أزرق"?0x3388ff:0xffcc33}));
+  break;
+ }
+
+ case "memory":{
+  let n=1+Math.floor(Math.random()*4);
+  q.question="تذكر الرقم الذي أمامك!";
+  q.answer=String(n);
+  q.choices=shuffle(["1","2","3","4","5"]);
+  q.visual=[{type:"sphere",color:0x33aaff}];
+  break;
+ }
+
+ case "letters":{
+  let letters=["أ","ب","ت","ث","ج","ح","خ","د"];
+  let a=letters[Math.floor(Math.random()*letters.length)];
+  q.question="اختر الحرف: "+a;
+  q.answer=a;
+  q.choices=shuffle(letters).slice(0,4);
+  break;
+ }
+
+ case "math":{
+  let a=1+Math.floor(Math.random()*max);
+  let b=1+Math.floor(Math.random()*max);
+  q.question=`كم يساوي ${a} + ${b} ؟`;
+  q.answer=String(a+b);
+  q.choices=shuffle([a+b,a+b+1,Math.max(0,a+b-1),a+b+2].map(String));
+  q.visual=[{type:"sphere",color:0xffcc33},{type:"sphere",color:0x33aaff}];
+  break;
+ }
+
+ case "building":{
+  q.question="ساعد المهندس في بناء برج من المكعبات!";
+  q.answer="بناء";
+  q.choices=["بناء"];
+  q.visual=Array.from({length:3},()=>({type:"box",color:0x33aaff}));
+  break;
+ }
+
+ case "riddle":{
+  let riddles=[
+   ["ما الشيء الذي له أربع أرجل ولا يمشي؟","الكرسي",["الكرسي","الطائر","الكتاب","السمكة"]],
+   ["ما الشيء الذي نراه في السماء ليلاً؟","القمر",["القمر","الباب","الحذاء","الكرسي"]],
+   ["ما الحيوان الذي يعطي الحليب؟","البقرة",["البقرة","الأسد","النمر","الذئب"]]
+  ];
+  let r=riddles[Math.floor(Math.random()*riddles.length)];
+  q.question=r[0];q.answer=r[1];q.choices=shuffle(r[2]);
+  break;
+ }
+
+ case "puzzle":{
+  q.question="أي جزء يكمل الصورة؟ اختر المثلث!";
+  q.answer="مثلث";
+  q.choices=shuffle(["مربع","مثلث","دائرة","نجمة"]);
+  q.visual=[{type:"cone",color:0xffcc33}];
+  break;
+ }
+
+ case "maze":{
+  let paths=["يمين","يسار","أمام","خلف"];
+  q.question="أنت في المتاهة. الطريق الصحيح هو أمام!";
+  q.answer="أمام";q.choices=shuffle(paths);
+  q.visual=[{type:"box",color:0x22bb77}];
+  break;
+ }
+
+ case "sequence":{
+  let sequences=[
+   {s:"2 ، 4 ، 6 ، ؟",a:"8"},
+   {s:"1 ، 2 ، 3 ، ؟",a:"4"},
+   {s:"5 ، 10 ، 15 ، ؟",a:"20"},
+   {s:"أ ، ب ، ت ، ؟",a:"ث"}
+  ];
+  let s=sequences[Math.floor(Math.random()*sequences.length)];
+  q.question="أكمل التسلسل: "+s.s;
+  q.answer=s.a;q.choices=shuffle([s.a,"7","9","10"]);
+  break;
+ }
+
+ case "shadow":{
+  let s=shapeNames[Math.floor(Math.random()*shapeNames.length)];
+  q.question="أي شكل يطابق الشكل الظاهر؟";
+  q.answer=s.name;
+  q.choices=shuffle(shapeNames.map(x=>x.name));
+  q.visual=[{...s,color:0x333344}];
+  break;
+ }
+
+ case "sorting":{
+  let sets=[
+   ["تفاحة","موزة","برتقالة","قطة"],
+   ["كلب","أسد","فيل","سيارة"],
+   ["سيارة","حافلة","دراجة","تفاحة"]
+  ];
+  let set=sets[Math.floor(Math.random()*sets.length)];
+  q.question="أي عنصر لا ينتمي إلى المجموعة؟";
+  q.answer=set[set.length-1];
+  q.choices=shuffle(set);
+  break;
+ }
+ }
+ return q;
 }
 
-// اللعبة الثانية
-
-function game1(){
- let c=randomItem(colors);
- show3D("sphere",c.value);
- makeQuestion(
-  "ما لون الكرة؟",
-  [c.name,...colors.filter(x=>x.name!==c.name).slice(0,3).map(x=>x.name)],
-  c.name
- );
+function shuffle(a){
+ return [...a].sort(()=>Math.random()-.5);
 }
 
-// اللعبة الثالثة
+// ====================================
+// بدء اللعبة
+// ====================================
 
-function game2(){
- let n=Math.floor(Math.random()*8)+2;
- showMany("sphere",0xffa72b,n);
- makeQuestion(
-  "كم كرة أمامك؟",
-  [n,n+1,n-1,n+2].map(String),
-  n
- );
+function startGame(g){
+ currentGame=g;questionIndex=0;gameCorrect=0;
+ document.getElementById("homeScreen").style.display="none";
+ document.getElementById("parentPanel").style.display="none";
+ document.getElementById("gameScreen").style.display="block";
+ document.getElementById("gameTitle").textContent=g.emoji+" "+g.name;
+ nextQuestion();
 }
 
-// اللعبة الرابعة
-
-function game3(){
- let a=randomItem(animals);
- show3D("sphere",0xffcc77);
- makeQuestion(
-  "ما اسم هذا الحيوان؟ "+a.emoji,
-  [a.name,...animals.filter(x=>x.name!==a.name).slice(0,3).map(x=>x.name)],
-  a.name
- );
-}
-
-// اللعبة الخامسة
-
-function game4(){
- const sequence=shuffle(colors).slice(0,3);
- clear3D();
- ground();
-
- sequence.forEach((c,i)=>{
-  shape("sphere",c.value,(i-1)*2);
+function nextQuestion(){
+ if(!currentGame)return;
+ answered=false;
+ questionIndex++;
+ currentQuestion=makeQuestion(currentGame);
+ document.getElementById("feedback").textContent="";
+ document.getElementById("choices").innerHTML="";
+ document.getElementById("question").textContent=currentQuestion.question;
+ showObjects(currentQuestion.visual||[]);
+ currentQuestion.choices.forEach(choice=>{
+  let b=document.createElement("button");
+  b.className="choice";
+  b.textContent=choice;
+  b.onclick=()=>answerQuestion(choice,b);
+  document.getElementById("choices").appendChild(b);
  });
-
- let target=randomItem(sequence);
-
- makeQuestion(
-  "أي لون شاهدت بين الكرات؟",
-  [target.name,...colors.filter(c=>!sequence.includes(c)).slice(0,3).map(c=>c.name)],
-  target.name
- );
+ speak(currentQuestion.question);
 }
 
-// اللعبة السادسة
-
-function game5(){
- let different=randomItem(shapes);
- let same=shapes.find(s=>s.name!==different.name);
-
- clear3D();
- ground();
-
- for(let i=0;i<4;i++){
-  shape(
-   i===3?different.type:same.type,
-   i===3?0xff3333:0x2266ff,
-   (i-1.5)*1.5
-  );
+function answerQuestion(choice,button){
+ if(answered)return;
+ answered=true;
+ if(choice===currentQuestion.answer){
+  gameCorrect++;
+  data.stars+=2;
+  document.getElementById("feedback").textContent="🎉 أحسنت! إجابة صحيحة";
+  button.classList.add("correct");
+  speak("ممتاز! إجابة صحيحة. أنت عبقري!");
+ }else{
+  document.getElementById("feedback").textContent="💪 حاول مرة أخرى في السؤال القادم";
+  button.classList.add("wrong");
+  speak("لا بأس، حاول مرة أخرى. أنت تستطيع!");
+  document.querySelectorAll(".choice").forEach(b=>{
+   if(b.textContent===currentQuestion.answer)b.classList.add("correct");
+  });
  }
+ document.querySelectorAll(".choice").forEach(b=>b.disabled=true);
+ save();
 
- makeQuestion(
-  "أي شكل مختلف عن البقية؟",
-  [different.name,same.name,"كرة","مكعب"],
-  different.name
- );
-}
-
-// اللعبة السابعة
-
-function game6(){
- let a=randomItem(animals);
- show3D("cube",0xffcc33);
- makeQuestion(
-  "بأي حرف يبدأ اسم "+a.name+"؟",
-  [a.letter,"ب","م","س","ت"],
-  a.letter
- );
-}
-
-// اللعبة الثامنة
-
-function game7(){
- let a=Math.floor(Math.random()*10)+1;
- let b=Math.floor(Math.random()*10)+1;
- let result=a+b;
-
- showMany("cube",0x3388ff,Math.min(a,6));
-
- makeQuestion(
-  "احسب: "+a+" زائد "+b,
-  [result,result+1,result-1,result+2].map(String),
-  result
- );
-}
-
-// اللعبة التاسعة: تركيب المكعبات 3D
-
-function game8(){
- clear3D();
- ground();
-
- buildCount=0;
- buildCompleted=false;
-
- $("answers").innerHTML="";
- $("buildControls").style.display="block";
-
- $("question").textContent="🧱 ابنِ برجاً من ثلاثة مكعبات!";
- $("buildStatus").textContent="المكعبات: 0 من 3";
- $("message").textContent="اضغط أضف مكعباً حتى تكمل البرج.";
-
- camera.position.set(4,4,8);
- camera.lookAt(0,1,0);
-
- speakArabic("هيا يا بطل! ابنِ برجاً من ثلاثة مكعبات. اضغط زر أضف مكعباً.");
-}
-
-function addBuildCube(){
- if(currentGame!==8||buildCompleted)return;
-
- const colors3D=[
-  0xff4444,
-  0xffd52e,
-  0x3388ff
- ];
-
- const cube=new THREE.Mesh(
-  new THREE.BoxGeometry(1.25,1.25,1.25),
-  new THREE.MeshStandardMaterial({
-   color:colors3D[buildCount],
-   roughness:.3
-  })
- );
-
- cube.position.set(0,.3+buildCount*1.25,0);
- addObject(cube);
-
- buildCount++;
-
- $("buildStatus").textContent=
-  "المكعبات: "+buildCount+" من 3";
-
- speakArabic(
-  buildCount===3?
-  "رائع! أكملت بناء البرج!":
-  "أحسنت! ضع المكعب التالي."
- );
-
- if(buildCount===3){
-  buildCompleted=true;
-  score+=20;
-  level=Math.floor(score/100)+1;
-
-  $("score").textContent=score;
-  $("level").textContent=level;
-
-  $("message").textContent="🏆 رائع! بنيت البرج بنجاح! +20 نقطة";
-  $("message").style.color="#a4ff9e";
-
-  playEffect(true);
-  speakArabic("مبروك! أنت مهندس صغير وذكي!");
+ if(currentGame.type==="building"&&choice==="بناء"){
+  cubeCount++;
+  addShape("box",0xffaa22,(cubeCount%3-1)*1.1,1+(cubeCount%4)*.7,0);
+  document.getElementById("feedback").textContent="🏗️ أضفت مكعباً إلى برجك!";
  }
 }
 
-function removeBuildCube(){
- if(currentGame!==8||buildCompleted)return;
- if(buildCount<=0)return;
-
- const cube=objects.pop();
- scene.remove(cube);
- buildCount--;
-
- $("buildStatus").textContent=
-  "المكعبات: "+buildCount+" من 3";
-
- speakArabic("تم إزالة المكعب.");
-}
-
-function resetBuild(){
- if(currentGame!==8)return;
-
- game8();
-}
-
-$("buildControls").style.display="none";
-
-// اللعبة العاشرة
-
-function game9(){
- let r=randomItem(riddles);
- show3D("octahedron",0xffcc33);
- makeQuestion(r.q,r.o,r.a);
-}
-
-const games=[
- game0,game1,game2,game3,game4,
- game5,game6,game7,game8,game9
-];
-
-// تشغيل الألعاب
-
-window.startGame=function(index){
- currentGame=index;
- questionNumber=0;
-
- $("menu").style.display="none";
- $("play").style.display="block";
-
- $("buildControls").style.display="none";
-
- resize();
- games[index]();
-};
-
-window.nextQuestion=function(){
- if(currentGame===8){
-  game8();
-  return;
- }
-
- questionNumber++;
- games[currentGame]();
-};
-
-window.goHome=function(){
- $("play").style.display="none";
- $("menu").style.display="grid";
- $("buildControls").style.display="none";
-
- if("speechSynthesis" in window){
-  speechSynthesis.cancel();
- }
-
- clear3D();
-};
-
-function animate(){
- requestAnimationFrame(animate);
-
- const t=clock.getElapsedTime();
-
- objects.forEach((obj,i)=>{
-  if(obj.geometry&&obj.geometry.type!=="BoxGeometry"){
-   obj.rotation.y+=.008;
-  }
- });
-
- renderer.render(scene,camera);
-}
-
-resize();
-animate();
-
-</script>
-</body>
-</html>
+function goHome(){
+ if(renderer){renderer.dispose();renderer=null}
+ document.getElementById("gameScreen").style
