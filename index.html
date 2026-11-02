@@ -3,265 +3,205 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#10152f">
 <title>مغامرات العباقرة 3D</title>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
 <style>
 *{box-sizing:border-box}
 body{
- margin:0;
- background:#10152f;
- color:white;
+ margin:0;background:#10152f;color:white;
  font-family:Tahoma,Arial,sans-serif;
 }
+button,select{font-family:inherit;touch-action:manipulation}
 header{
  background:linear-gradient(120deg,#4935a8,#1477ad);
- text-align:center;
- padding:20px 10px;
+ text-align:center;padding:20px 10px;
 }
-header h1{margin:0;color:#ffe66d;font-size:26px}
+header h1{margin:0;color:#ffe66d;font-size:25px}
 header p{margin:8px 0 0}
-.container{max-width:1100px;margin:auto;padding:14px}
+.container{max-width:1100px;margin:auto;padding:12px}
 .panel{
- background:#20294c;
- border:1px solid #ffffff22;
- padding:15px;
- border-radius:20px;
- margin-bottom:15px;
+ background:#20294c;border:1px solid #ffffff22;
+ padding:15px;border-radius:20px;margin-bottom:15px;
 }
-.stats{
- display:grid;
- grid-template-columns:repeat(3,1fr);
- gap:10px;
-}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
 .stat{
- background:#ffffff12;
- border-radius:15px;
- padding:12px;
- text-align:center;
+ background:#ffffff12;border-radius:14px;
+ padding:12px;text-align:center;font-size:13px;
 }
 .stat strong{
- display:block;
- color:#ffe66d;
- font-size:23px;
- margin-top:5px;
+ display:block;color:#ffe66d;font-size:23px;margin-top:6px
 }
 h2,h3{color:#ffe66d}
 .grid{
- display:grid;
- grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
+ display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));
  gap:11px;
 }
 .game{
  background:linear-gradient(145deg,#354779,#242d50);
- border:1px solid #ffffff25;
- border-radius:17px;
- padding:15px 8px;
- text-align:center;
- min-height:125px;
- cursor:pointer;
- transition:.2s;
+ border:1px solid #ffffff25;border-radius:17px;
+ padding:15px 8px;text-align:center;min-height:115px;
+ cursor:pointer;transition:.2s;
 }
-.game:active{transform:scale(.94)}
-.game .emoji{font-size:39px;display:block;margin-bottom:9px}
-.game b{font-size:14px}
+.game:active{transform:scale(.95)}
+.game .emoji{font-size:38px;display:block;margin-bottom:9px}
 button{
- background:#ffe66d;
- color:#222;
- border:0;
- border-radius:12px;
- padding:12px 17px;
- font-weight:bold;
- font-size:15px;
- cursor:pointer;
+ background:#ffe66d;color:#222;border:0;border-radius:12px;
+ padding:12px 16px;font-weight:bold;font-size:15px;cursor:pointer;
 }
+button:active{transform:scale(.96)}
 button.secondary{background:#4be0c2}
 button.red{background:#ff7373;color:white}
 button:disabled{opacity:.5}
-select{
- padding:10px;
- border-radius:10px;
- border:0;
-}
-#gameScreen{display:none}
+select{padding:10px;border-radius:10px;border:0}
+#gameScreen,#parent{display:none}
 #stage{
- height:340px;
- border-radius:18px;
- overflow:hidden;
- background:#92dfff;
- position:relative;
+ height:340px;border-radius:18px;overflow:hidden;
+ background:#92dfff;position:relative;
 }
-#stage canvas{display:block}
-#gameTitle{
- text-align:center;
- color:#ffe66d;
- font-size:22px;
- margin:10px;
-}
+#stage canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+#gameTitle{text-align:center;color:#ffe66d;font-size:22px}
 #instruction{
- text-align:center;
- background:#fff0a8;
- color:#222;
- border-radius:13px;
- padding:12px;
- margin:12px 0;
- font-weight:bold;
- line-height:1.8;
+ text-align:center;background:#fff0a8;color:#222;
+ border-radius:13px;padding:13px;margin:12px 0;
+ font-weight:bold;line-height:1.9;font-size:17px;
 }
 #actions{
- display:flex;
- justify-content:center;
- gap:8px;
- flex-wrap:wrap;
- margin:12px 0;
+ display:flex;justify-content:center;gap:8px;
+ flex-wrap:wrap;margin:12px 0;
 }
 #result{
- text-align:center;
- font-size:20px;
- color:#ffe66d;
- min-height:30px;
- margin:12px;
+ text-align:center;font-size:19px;color:#ffe66d;
+ min-height:35px;margin:12px;
 }
-#choices{
- display:grid;
- grid-template-columns:repeat(2,1fr);
- gap:10px;
-}
+#choices{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .answer{
- background:#fff;
- color:#222;
- min-height:60px;
- font-size:20px;
+ background:white;color:#222;min-height:65px;font-size:18px;
 }
 .answer.correct{background:#55e5a0}
 .answer.wrong{background:#ff8585}
 #teacher{
- display:flex;
- gap:10px;
- align-items:center;
- background:#fff0a8;
- color:#222;
- padding:10px;
- border-radius:14px;
+ display:flex;gap:10px;align-items:center;
+ background:#fff0a8;color:#222;padding:10px;border-radius:14px;
 }
 #teacher .face{font-size:35px}
-#teacherText{font-weight:bold;line-height:1.6}
-#parent{display:none}
-#parent input{
- padding:10px;
- border-radius:10px;
- border:0;
-}
-.progress{
- background:#ffffff20;
- height:13px;
- border-radius:20px;
- overflow:hidden;
-}
-#progressBar{
- height:100%;
- width:0%;
- background:#ffe66d;
-}
+#teacherText{font-weight:bold;line-height:1.7}
+.progress{background:#ffffff20;height:13px;border-radius:20px;overflow:hidden}
+#progressBar{height:100%;width:0;background:#ffe66d;transition:.4s}
+#roundInfo{text-align:center;color:#aeeaff;margin:10px}
+#parent input{padding:10px;border-radius:10px;border:0}
+#parentStats{line-height:2}
 footer{text-align:center;color:#aebce5;padding:25px}
+.small{font-size:12px;color:#b8c9ed}
 @media(max-width:500px){
  #stage{height:270px}
  header h1{font-size:21px}
  .container{padding:9px}
+ .answer{min-height:58px;font-size:16px}
 }
 </style>
 </head>
+
 <body>
 
 <header>
- <h1>🌟 مغامرات العباقرة 3D</h1>
- <p>اكتشف، جرّب، العب، واصنع مغامرتك!</p>
+<h1>🌟 مغامرات العباقرة 3D</h1>
+<p>اكتشف، جرّب، العب، واصنع مغامرتك!</p>
 </header>
 
 <div class="container">
 
 <section id="home">
 
- <div class="panel">
-  <h3>👋 أهلاً بالمغامر الصغير</h3>
-  <div class="stats">
-   <div class="stat">⭐ النجوم<strong id="stars">0</strong></div>
-   <div class="stat">🏆 المستوى<strong id="level">1</strong></div>
-   <div class="stat">🎮 الألعاب<strong id="played">0</strong></div>
-  </div>
-  <p>اختر عمرك:</p>
-  <select id="age" onchange="saveData()">
-   <option value="3-5">3 إلى 5 سنوات</option>
-   <option value="6-8" selected>6 إلى 8 سنوات</option>
-   <option value="9-10">9 إلى 10 سنوات</option>
-  </select>
-  <button class="secondary" onclick="talk('أهلاً بك في مغامرات العباقرة. هيا نلعب!')">🔊 تحدث معي</button>
- </div>
+<div class="panel">
+<h3>👋 أهلاً بالمغامر الصغير</h3>
 
- <div class="panel">
-  <h3>🗺️ اختر عالم المغامرات</h3>
-  <div class="grid">
-   <div class="game" onclick="filter('space')"><span class="emoji">🚀</span><b>عالم الفضاء</b></div>
-   <div class="game" onclick="filter('nature')"><span class="emoji">🌳</span><b>عالم الطبيعة</b></div>
-   <div class="game" onclick="filter('music')"><span class="emoji">🎵</span><b>عالم الموسيقى</b></div>
-   <div class="game" onclick="filter('adventure')"><span class="emoji">🏴‍☠️</span><b>عالم المغامرات</b></div>
-   <div class="game" onclick="filter('science')"><span class="emoji">🧪</span><b>عالم التجارب</b></div>
-   <div class="game" onclick="filter('all')"><span class="emoji">🌈</span><b>كل الألعاب</b></div>
-  </div>
- </div>
+<div class="stats">
+<div class="stat">⭐ النجوم<strong id="stars">0</strong></div>
+<div class="stat">🏆 المستوى<strong id="level">1</strong></div>
+<div class="stat">🎮 الألعاب<strong id="played">0</strong></div>
+</div>
 
- <div class="panel">
-  <h3>🎮 اختر مغامرتك</h3>
-  <div class="grid" id="gameList"></div>
- </div>
+<p>اختر عمرك:</p>
+<select id="age" onchange="saveData()">
+<option value="3-5">3 إلى 5 سنوات</option>
+<option value="6-8">6 إلى 8 سنوات</option>
+<option value="9-10">9 إلى 10 سنوات</option>
+</select>
 
- <div class="panel">
-  <h3>🏅 إنجازاتك</h3>
-  <div id="badges">ابدأ المغامرة لتحصل على الشارات!</div>
-  <div class="progress"><div id="progressBar"></div></div>
-  <p id="progressText">0% مكتمل</p>
- </div>
+<button class="secondary" onclick="talk('أهلاً بك في مغامرات العباقرة. هيا نلعب!')">
+🔊 تحدث معي
+</button>
+</div>
 
- <div class="panel">
-  <button onclick="parentPanel()">👨‍👩‍👧 لوحة الأهل</button>
-  <button class="red" onclick="resetAll()">إعادة التقدم</button>
- </div>
+<div class="panel">
+<h3>🗺️ عوالم المغامرات</h3>
+<div class="grid">
+<div class="game" onclick="filter('space')"><span class="emoji">🚀</span><b>الفضاء</b></div>
+<div class="game" onclick="filter('nature')"><span class="emoji">🌳</span><b>الطبيعة</b></div>
+<div class="game" onclick="filter('music')"><span class="emoji">🎵</span><b>الموسيقى</b></div>
+<div class="game" onclick="filter('adventure')"><span class="emoji">🏴‍☠️</span><b>المغامرات</b></div>
+<div class="game" onclick="filter('science')"><span class="emoji">🧪</span><b>التجارب</b></div>
+<div class="game" onclick="filter('all')"><span class="emoji">🌈</span><b>كل الألعاب</b></div>
+</div>
+</div>
+
+<div class="panel">
+<h3>🎮 اختر مغامرتك</h3>
+<div class="grid" id="gameList"></div>
+</div>
+
+<div class="panel">
+<h3>🏅 إنجازاتك</h3>
+<div id="badges">ابدأ المغامرة لتحصل على الشارات!</div>
+<div class="progress"><div id="progressBar"></div></div>
+<p id="progressText">0% مكتمل</p>
+</div>
+
+<div class="panel">
+<button onclick="parentPanel()">👨‍👩‍👧 لوحة الأهل</button>
+<button class="red" onclick="resetAll()">إعادة التقدم</button>
+</div>
+
 </section>
 
 <section id="gameScreen">
- <div class="panel">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-   <button class="secondary" onclick="home()">الرئيسية</button>
-   <span>⭐ <b id="currentStars">0</b></span>
-  </div>
+<div class="panel">
 
-  <h2 id="gameTitle">المغامرة</h2>
-  <div id="stage"></div>
+<div style="display:flex;justify-content:space-between;align-items:center">
+<button class="secondary" onclick="home()">الرئيسية</button>
+<span>⭐ <b id="currentStars">0</b></span>
+</div>
 
-  <div id="teacher">
-   <span class="face">🧑‍🚀</span>
-   <span id="teacherText">أنا صديقك في المغامرات!</span>
-  </div>
+<h2 id="gameTitle">المغامرة</h2>
+<div id="roundInfo"></div>
+<div id="stage"></div>
 
-  <div id="instruction"></div>
-  <div id="actions"></div>
-  <div id="choices"></div>
-  <div id="result"></div>
+<div id="teacher">
+<span class="face">🧑‍🚀</span>
+<span id="teacherText">أنا صديقك في المغامرات!</span>
+</div>
 
-  <div style="text-align:center;margin-top:15px">
-   <button class="secondary" onclick="repeat()">🔊 اسمع التعليمات</button>
-   <button onclick="next()">المغامرة التالية ➜</button>
-  </div>
- </div>
+<div id="instruction"></div>
+<div id="actions"></div>
+<div id="choices"></div>
+<div id="result"></div>
+
+<div style="text-align:center;margin-top:15px">
+<button class="secondary" onclick="repeat()">🔊 اسمع التعليمات</button>
+<button onclick="next()">التالي ➜</button>
+</div>
+
+</div>
 </section>
 
 <section id="parent" class="panel">
- <h2>👨‍👩‍👧 لوحة الأهل</h2>
- <p>النجوم: <b id="pStars"></b></p>
- <p>المستوى: <b id="pLevel"></b></p>
- <p>الألعاب المكتملة: <b id="pPlayed"></b></p>
- <p>عدد المحاولات: <b id="pAttempts"></b></p>
- <button onclick="closeParent()">إغلاق</button>
+<h2>👨‍👩‍👧 لوحة الأهل</h2>
+<div id="parentStats"></div>
+<p class="small">رمز الدخول الافتراضي: 1234</p>
+<button onclick="closeParent()">إغلاق</button>
 </section>
 
 </div>
@@ -269,25 +209,42 @@ footer{text-align:center;color:#aebce5;padding:25px}
 <footer>مغامرات العباقرة 3D - التعلم باللعب والإبداع</footer>
 
 <script>
-// =====================================
-// 1. قاعدة البيانات المحلية
-// =====================================
 
-let DB=JSON.parse(localStorage.getItem("adventureGenius")||"{}");
+// ======================================
+// 1 - قاعدة البيانات والحفظ
+// ======================================
+
+function loadDB(){
+ try{
+  return JSON.parse(localStorage.getItem("adventureGenius")||"{}");
+ }catch(e){
+  return {};
+ }
+}
+
+let DB=loadDB();
 
 let player={
- stars:DB.stars||0,
- played:DB.played||0,
- attempts:DB.attempts||0,
- level:DB.level||1,
+ stars:Number(DB.stars)||0,
+ played:Number(DB.played)||0,
+ attempts:Number(DB.attempts)||0,
+ level:Number(DB.level)||1,
  age:DB.age||"6-8",
- completed:DB.completed||[]
+ completed:Array.isArray(DB.completed)?DB.completed:[],
+ earned:Array.isArray(DB.earned)?DB.earned:[]
 };
 
 function saveData(){
- player.age=document.getElementById("age").value;
+ let age=document.getElementById("age");
+ if(age)player.age=age.value;
+
  player.level=Math.floor(player.stars/10)+1;
- localStorage.setItem("adventureGenius",JSON.stringify(player));
+
+ try{
+  localStorage.setItem("adventureGenius",JSON.stringify(player));
+ }catch(e){
+  console.log("تعذر الحفظ",e);
+ }
  updateUI();
 }
 
@@ -297,62 +254,116 @@ function updateUI(){
  document.getElementById("played").textContent=player.played;
  document.getElementById("currentStars").textContent=player.stars;
 
- let percent=Math.min(100,player.completed.length/15*100);
+ let percent=Math.min(100,player.completed.length/games.length*100);
+
  document.getElementById("progressBar").style.width=percent+"%";
- document.getElementById("progressText").textContent=Math.round(percent)+"% مكتمل";
+ document.getElementById("progressText").textContent=
+ Math.round(percent)+"% مكتمل";
 
  let badges="";
- if(player.stars>=2)badges+="⭐ مستكشف";
- if(player.stars>=10)badges+=" 🥇 بطل";
- if(player.stars>=25)badges+=" 🏆 عبقري";
- if(player.stars>=50)badges+=" 👑 أسطورة";
- document.getElementById("badges").textContent=badges||"ابدأ اللعب لتحصل على الشارات!";
+ if(player.stars>=2)badges+="⭐ مستكشف ";
+ if(player.stars>=10)badges+="🥇 بطل ";
+ if(player.stars>=25)badges+="🏆 عبقري ";
+ if(player.stars>=50)badges+="👑 أسطورة ";
+
+ document.getElementById("badges").textContent=
+ badges||"ابدأ اللعب لتحصل على الشارات!";
 }
 
-document.getElementById("age").value=player.age;
+// ======================================
+// 2 - الأصوات
+// ======================================
 
-// =====================================
-// 2. المعلم الصوتي
-// =====================================
+let audioContext=null;
+
+function tone(freq,duration=.2){
+ try{
+  audioContext=audioContext||
+  new(window.AudioContext||window.webkitAudioContext)();
+
+  if(audioContext.state==="suspended")audioContext.resume();
+
+  let osc=audioContext.createOscillator();
+  let gain=audioContext.createGain();
+
+  osc.type="sine";
+  osc.frequency.value=freq;
+  gain.gain.setValueAtTime(.08,audioContext.currentTime);
+  gain.gain.exponentialRampToValueAtTime(
+   .001,audioContext.currentTime+duration
+  );
+
+  osc.connect(gain);
+  gain.connect(audioContext.destination);
+
+  osc.start();
+  osc.stop(audioContext.currentTime+duration);
+ }catch(e){}
+}
+
+function sound(ok){
+ if(ok){
+  tone(660,.15);
+  setTimeout(()=>tone(880,.2),150);
+ }else{
+  tone(220,.3);
+ }
+}
 
 function talk(text){
  document.getElementById("teacherText").textContent=text;
+
  if(!window.speechSynthesis)return;
+
  speechSynthesis.cancel();
+
  let utter=new SpeechSynthesisUtterance(text);
  utter.lang="ar-SA";
  utter.rate=.85;
  utter.pitch=1.1;
+
  let voices=speechSynthesis.getVoices();
  let voice=voices.find(v=>v.lang.startsWith("ar"));
+
  if(voice)utter.voice=voice;
  speechSynthesis.speak(utter);
 }
 
 function repeat(){
- if(current)talk(current.instruction);
+ if(current){
+  talk(gameQuestions[index]?.instruction||"أحسنت!");
+ }
 }
 
-// =====================================
-// 3. قائمة الألعاب الجديدة
-// =====================================
+// ======================================
+// 3 - قائمة الألعاب
+// ======================================
 
 const games=[
- {id:1,name:"هبوط المركبة",emoji:"🚀",world:"space",type:"rocket"},
- {id:2,name:"إنقاذ الديناصور",emoji:"🦕",world:"nature",type:"dino"},
- {id:3,name:"إيقاع الموسيقى",emoji:"🎵",world:"music",type:"music"},
- {id:4,name:"بالونات الألوان",emoji:"🎈",world:"music",type:"balloons"},
- {id:5,name:"النصف المفقود",emoji:"🪞",world:"science",type:"mirror"},
- {id:6,name:"الحديقة السحرية",emoji:"🌱",world:"nature",type:"garden"},
- {id:7,name:"مختبر الألوان",emoji:"🧪",world:"science",type:"mix"},
- {id:8,name:"البحث عن الكنز",emoji:"🏴‍☠️",world:"adventure",type:"treasure"},
- {id:9,name:"إعادة التدوير",emoji:"♻️",world:"nature",type:"recycle"},
- {id:10,name:"إنقاذ الأسماك",emoji:"🐠",world:"nature",type:"fish"},
- {id:11,name:"مطبخ الصغار",emoji:"🧑‍🍳",world:"adventure",type:"cooking"},
- {id:12,name:"الجسر الملون",emoji:"🌈",world:"adventure",type:"bridge"},
- {id:13,name:"آثار الحيوانات",emoji:"🐾",world:"nature",type:"tracks"},
- {id:14,name:"رحلة الكواكب",emoji:"🪐",world:"space",type:"planet"},
- {id:15,name:"المغناطيس",emoji:"🧲",world:"science",type:"magnet"}
+{id:1,name:"هبوط المركبة",emoji:"🚀",world:"space",type:"rocket"},
+{id:2,name:"إنقاذ الديناصور",emoji:"🦕",world:"nature",type:"dino"},
+{id:3,name:"إيقاع الموسيقى",emoji:"🎵",world:"music",type:"music"},
+{id:4,name:"بالونات الألوان",emoji:"🎈",world:"music",type:"balloons"},
+{id:5,name:"النصف المفقود",emoji:"🪞",world:"science",type:"mirror"},
+{id:6,name:"الحديقة السحرية",emoji:"🌱",world:"nature",type:"garden"},
+{id:7,name:"مختبر الألوان",emoji:"🧪",world:"science",type:"mix"},
+{id:8,name:"البحث عن الكنز",emoji:"🏴‍☠️",world:"adventure",type:"treasure"},
+{id:9,name:"إعادة التدوير",emoji:"♻️",world:"nature",type:"recycle"},
+{id:10,name:"إنقاذ الأسماك",emoji:"🐠",world:"nature",type:"fish"},
+{id:11,name:"مطبخ الصغار",emoji:"🧑‍🍳",world:"adventure",type:"cooking"},
+{id:12,name:"الجسر الملون",emoji:"🌈",world:"adventure",type:"bridge"},
+{id:13,name:"آثار الحيوانات",emoji:"🐾",world:"nature",type:"tracks"},
+{id:14,name:"رحلة الكواكب",emoji:"🪐",world:"space",type:"planet"},
+{id:15,name:"المغناطيس",emoji:"🧲",world:"science",type:"magnet"},
+{id:16,name:"اكتشف المختلف",emoji:"🔺",world:"science",type:"odd"},
+{id:17,name:"أكمل التسلسل",emoji:"🔷",world:"science",type:"pattern"},
+{id:18,name:"عد المجسمات",emoji:"🔢",world:"science",type:"count"},
+{id:19,name:"ذاكرة العباقرة",emoji:"🧠",world:"adventure",type:"memory"},
+{id:20,name:"مطابقة الألوان",emoji:"🎨",world:"music",type:"match"},
+{id:21,name:"مدينة المكعبات",emoji:"🧊",world:"adventure",type:"blocks"},
+{id:22,name:"رحلة الأشكال",emoji:"🔵",world:"space",type:"shapes"},
+{id:23,name:"صيد النجوم",emoji:"⭐",world:"space",type:"stars"},
+{id:24,name:"عالم الأرقام",emoji:"🔢",world:"science",type:"numbers"}
 ];
 
 let filterWorld="all";
@@ -360,10 +371,20 @@ let filterWorld="all";
 function renderGames(){
  let box=document.getElementById("gameList");
  box.innerHTML="";
- games.filter(g=>filterWorld==="all"||g.world===filterWorld).forEach(g=>{
+
+ games.filter(g=>filterWorld==="all"||g.world===filterWorld)
+ .forEach(g=>{
   let div=document.createElement("div");
   div.className="game";
-  div.innerHTML=`<span class="emoji">${g.emoji}</span><b>${g.name}</b>`;
+
+  let emoji=document.createElement("span");
+  emoji.className="emoji";
+  emoji.textContent=g.emoji;
+
+  let name=document.createElement("b");
+  name.textContent=g.name;
+
+  div.append(emoji,name);
   div.onclick=()=>start(g);
   box.appendChild(div);
  });
@@ -374,51 +395,62 @@ function filter(w){
  renderGames();
 }
 
-// =====================================
-// 4. محرك المشهد ثلاثي الأبعاد
-// =====================================
+// ======================================
+// 4 - محرك 3D
+// ======================================
 
-let scene,camera,renderer,animationId;
+let scene=null;
+let camera=null;
+let renderer=null;
+let animationId=null;
 let currentObjects=[];
+let raycaster=null;
+let pointer=null;
 let current=null;
-let round=0;
-let correct=0;
-let answered=false;
-let gameQuestions=[];
 
 function clear3D(){
  if(animationId)cancelAnimationFrame(animationId);
+ animationId=null;
+
  if(renderer){
   renderer.dispose();
   renderer.domElement.remove();
  }
  renderer=null;
  scene=null;
+ camera=null;
  currentObjects=[];
 }
 
 function createScene(){
  clear3D();
+
  let stage=document.getElementById("stage");
  stage.innerHTML="";
 
  if(!window.THREE){
-  stage.innerHTML="<p style='color:#222;text-align:center;padding:40px'>تعذر تحميل 3D. تحقق من الإنترنت.</p>";
+  stage.innerHTML=
+  "<p style='color:#222;text-align:center;padding:40px'>تعذر تحميل محرك 3D. تحقق من الإنترنت.</p>";
   return;
  }
 
  scene=new THREE.Scene();
- scene.background=new THREE.Color(0x87d9ff);
+ scene.background=new THREE.Color(0x92dcff);
 
- camera=new THREE.PerspectiveCamera(
-  45,stage.clientWidth/stage.clientHeight,.1,100
- );
- camera.position.set(4,4,7);
+ let w=stage.clientWidth||320;
+ let h=stage.clientHeight||270;
+
+ camera=new THREE.PerspectiveCamera(45,w/h,.1,100);
+ camera.position.set(0,3.5,8);
  camera.lookAt(0,0,0);
 
- renderer=new THREE.WebGLRenderer({antialias:true});
- renderer.setSize(stage.clientWidth,stage.clientHeight);
- renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+ renderer=new THREE.WebGLRenderer({
+  antialias:true,
+  alpha:false
+ });
+
+ renderer.setSize(w,h);
+ renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));
  stage.appendChild(renderer.domElement);
 
  scene.add(new THREE.HemisphereLight(0xffffff,0x668899,2));
@@ -432,35 +464,74 @@ function createScene(){
   new THREE.MeshStandardMaterial({color:0x63c68b})
  );
  floor.rotation.x=-Math.PI/2;
- floor.position.y=-1;
+ floor.position.y=-1.2;
  scene.add(floor);
+
+ raycaster=new THREE.Raycaster();
+ pointer=new THREE.Vector2();
+
+ renderer.domElement.addEventListener("pointerdown",on3DTouch);
 
  animate();
 }
 
 function animate(){
- if(!renderer)return;
+ if(!renderer||!scene)return;
+
  currentObjects.forEach(o=>{
-  if(o.userData.rotate)o.rotation.y+=.012;
+  if(o.userData.rotate)o.rotation.y+=.008;
+  if(o.userData.float){
+   o.position.y=o.userData.baseY+
+   Math.sin(Date.now()*.002+o.userData.phase)*.08;
+  }
  });
+
  renderer.render(scene,camera);
  animationId=requestAnimationFrame(animate);
 }
 
-function shape(type,color,x=0,y=0,z=0){
+function shape(type,color,x=0,y=0,z=0,value=null){
  let geo;
+
  switch(type){
-  case "sphere":geo=new THREE.SphereGeometry(.65,24,18);break;
-  case "cone":geo=new THREE.ConeGeometry(.65,1.3,5);break;
-  case "cylinder":geo=new THREE.CylinderGeometry(.5,.5,1.2,24);break;
-  case "torus":geo=new THREE.TorusGeometry(.55,.18,12,30);break;
-  case "octa":geo=new THREE.OctahedronGeometry(.7);break;
-  default:geo=new THREE.BoxGeometry(1,1,1);
+  case "sphere":
+   geo=new THREE.SphereGeometry(.55,24,18);
+   break;
+  case "cone":
+   geo=new THREE.ConeGeometry(.6,1.2,5);
+   break;
+  case "cylinder":
+   geo=new THREE.CylinderGeometry(.5,.5,1.1,24);
+   break;
+  case "torus":
+   geo=new THREE.TorusGeometry(.5,.17,12,30);
+   break;
+  case "octa":
+   geo=new THREE.OctahedronGeometry(.65);
+   break;
+  case "tetra":
+   geo=new THREE.TetrahedronGeometry(.7);
+   break;
+  case "dodeca":
+   geo=new THREE.DodecahedronGeometry(.65);
+   break;
+  default:
+   geo=new THREE.BoxGeometry(1,1,1);
  }
- let mat=new THREE.MeshStandardMaterial({color:color,roughness:.4});
+
+ let mat=new THREE.MeshStandardMaterial({
+  color:color,
+  roughness:.4,
+  metalness:.08
+ });
+
  let obj=new THREE.Mesh(geo,mat);
  obj.position.set(x,y,z);
  obj.userData.rotate=true;
+ obj.userData.value=value;
+ obj.userData.baseY=y;
+ obj.userData.float=true;
+
  scene.add(obj);
  currentObjects.push(obj);
  return obj;
@@ -469,27 +540,91 @@ function shape(type,color,x=0,y=0,z=0){
 function showScene(items){
  createScene();
  if(!scene)return;
+
  items.forEach((item,i)=>{
-  shape(
+  let x=item.x!==undefined?item.x:
+  (i-(items.length-1)/2)*1.45;
+
+  let y=item.y!==undefined?item.y:0;
+
+  let obj=shape(
    item.type||"box",
    item.color||0xffcc33,
-   (i-(items.length-1)/2)*1.5,
-   item.y||0,
-   0
+   x,y,item.z||0,
+   item.value
   );
+
+  if(item.scale)obj.scale.setScalar(item.scale);
  });
 }
 
-// =====================================
-// 5. أدوات الأسئلة والأجوبة
-// =====================================
+function on3DTouch(event){
+ if(!renderer||!camera||!raycaster)return;
 
-function shuffle(a){
- return [...a].sort(()=>Math.random()-.5);
+ let rect=renderer.domElement.getBoundingClientRect();
+
+ pointer.x=((event.clientX-rect.left)/rect.width)*2-1;
+ pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;
+
+ raycaster.setFromCamera(pointer,camera);
+
+ let hits=raycaster.intersectObjects(currentObjects);
+
+ if(!hits.length)return;
+
+ let value=hits[0].object.userData.value;
+
+ if(value!==null&&value!==undefined){
+  checkAnswer(value,null);
+ }else{
+  let obj=hits[0].object;
+  obj.scale.setScalar(1.25);
+  setTimeout(()=>obj.scale.setScalar(1),200);
+ }
 }
 
-function question(text,answer,choices,visual=[]){
- return {instruction:text,answer:String(answer),choices:choices.map(String),visual};
+function resize3D(){
+ if(!renderer||!camera)return;
+
+ let stage=document.getElementById("stage");
+ let w=stage.clientWidth;
+ let h=stage.clientHeight;
+
+ if(!w||!h)return;
+
+ camera.aspect=w/h;
+ camera.updateProjectionMatrix();
+ renderer.setSize(w,h);
+}
+
+// ======================================
+// 5 - أدوات الأسئلة
+// ======================================
+
+function shuffle(arr){
+ let a=[...arr];
+
+ for(let i=a.length-1;i>0;i--){
+  let j=Math.floor(Math.random()*(i+1));
+  [a[i],a[j]]=[a[j],a[i]];
+ }
+
+ return a;
+}
+
+function uniqueChoices(answer,others){
+ return shuffle([String(answer),...others
+ .map(String).filter(x=>String(x)!==String(answer))])
+ .slice(0,4);
+}
+
+function question(instruction,answer,choices,visual=[]){
+ return {
+  instruction,
+  answer:String(answer),
+  choices:uniqueChoices(answer,choices),
+  visual
+ };
 }
 
 const COLORS=[
@@ -508,36 +643,40 @@ const ANIMALS=[
  {name:"قطة",emoji:"🐱"}
 ];
 
-// =====================================
-// 6. إنشاء مراحل الألعاب
-// =====================================
+// ======================================
+// 6 - بناء الأسئلة
+// ======================================
 
 function makeQuestions(g){
  let list=[];
 
  for(let i=0;i<10;i++){
   let q;
+  let n=i%5+1;
 
   switch(g.type){
 
   case "rocket":{
-   let nums=[1,2,3,4,5,6,7,8,9,10];
-   let n=nums[i];
+   let number=i+1;
    q=question(
-    "ساعد المركبة على الهبوط. اختر الرقم "+n,
-    n,
-    shuffle([n,n+1,Math.max(0,n-1),n+2]),
-    [{type:"cone",color:0xff4444},{type:"cylinder",color:0xaaaaaa}]
+    "ساعد المركبة على الهبوط. اختر الرقم "+number,
+    number,
+    [number+1,Math.max(1,number-1),number+2],
+    [
+     {type:"cone",color:0xff4444,x:0,y:.3},
+     {type:"cylinder",color:0xaaaaaa,x:1.5,y:0}
+    ]
    );
    break;
   }
 
   case "dino":{
-   let a=ANIMALS[i%ANIMALS.length];
+   let a=ANIMALS[i%5];
    q=question(
     "أي حيوان نريد إنقاذه؟ "+a.emoji,
     a.name,
-    shuffle(["ديناصور","أسد","فيل","أرنب","قطة"])
+    ANIMALS.map(x=>x.name),
+    [{type:"dodeca",color:0x22bb77}]
    );
    break;
   }
@@ -545,16 +684,16 @@ function makeQuestions(g){
   case "music":{
    let sounds=["🔴","🔵","🟡","🟢"];
    let s=sounds[i%4];
-   q=question("استمع واختر الرمز الصحيح "+s,s,shuffle(sounds));
+   q=question("استمع واختر الرمز الصحيح "+s,s,sounds);
    break;
   }
 
   case "balloons":{
-   let c=COLORS[i%COLORS.length];
+   let c=COLORS[i%5];
    q=question(
     "اختر لون البالون: "+c.name,
     c.name,
-    shuffle(COLORS.map(x=>x.name)),
+    COLORS.map(x=>x.name),
     [{type:"sphere",color:c.color}]
    );
    break;
@@ -567,16 +706,17 @@ function makeQuestions(g){
     ["نصف نجمة","نجمة"],
     ["نصف مربع","مربع"]
    ];
-   let p=pairs[i%pairs.length];
-   q=question("ما الشكل الذي يكمل النصف المفقود؟ "+p[0],p[1],
-    shuffle(["دائرة","قلب","نجمة","مربع"]));
+   let p=pairs[i%4];
+   q=question("ما الشكل الذي يكمل النصف المفقود؟ "+p[0],
+    p[1],["دائرة","قلب","نجمة","مربع"]);
    break;
   }
 
   case "garden":{
-   let n=i%5+1;
-   q=question("ازرع "+n+" زهور في الحديقة. كم زهرة نحتاج؟",n,
-    shuffle([n,n+1,n+2,Math.max(1,n-1)]));
+   q=question("ازرع "+n+" زهور. كم زهرة نحتاج؟",n,
+    [n+1,n+2,Math.max(1,n-1)],
+    Array.from({length:n},()=>({type:"cone",color:0xff55aa,scale:.65}))
+   );
    break;
   }
 
@@ -588,14 +728,14 @@ function makeQuestions(g){
    ];
    let c=combos[i%3];
    q=question("إذا خلطنا "+c[0]+" مع "+c[1]+" فما اللون الناتج؟",
-    c[2],shuffle(["برتقالي","أخضر","بنفسجي","أحمر"]));
+    c[2],["برتقالي","أخضر","بنفسجي","أحمر"]);
    break;
   }
 
   case "treasure":{
-   let n=i+1;
-   q=question("وجدت "+n+" صناديق كنز. اختر عدد الصناديق الصحيح.",n,
-    shuffle([n,n+1,Math.max(1,n-1),n+2]),
+   let number=i+1;
+   q=question("وجدت "+number+" صناديق كنز. اختر العدد الصحيح.",
+    number,[number+1,Math.max(1,number-1),number+2],
     [{type:"box",color:0xffcc33},{type:"box",color:0xffcc33}]
    );
    break;
@@ -609,15 +749,14 @@ function makeQuestions(g){
    ];
    let p=items[i%3];
    q=question("أين نضع "+p[0]+"؟",p[1],
-    shuffle(["سلة الورق","سلة البلاستيك","سلة المعادن"]));
+    ["سلة الورق","سلة البلاستيك","سلة المعادن"]);
    break;
   }
 
   case "fish":{
-   let n=i%5+1;
-   q=question("أنقذ "+n+" أسماك. كم سمكة في الماء؟",n,
-    shuffle([n,n+1,n+2,Math.max(1,n-1)]),
-    [{type:"sphere",color:0x33aaff}]
+   q=question("أنقذ "+n+" أسماك. كم سمكة؟",n,
+    [n+1,n+2,Math.max(1,n-1)],
+    Array.from({length:n},()=>({type:"sphere",color:0x33aaff,scale:.5}))
    );
    break;
   }
@@ -631,23 +770,22 @@ function makeQuestions(g){
    ];
    let p=recipes[i%4];
    q=question("أين نضع "+p[0]+"؟",p[1],
-    shuffle(["الكوب","الصحن","السلة","الصندوق"]));
+    ["الكوب","الصحن","السلة","الصندوق"]);
    break;
   }
 
   case "bridge":{
-   let c=COLORS[i%COLORS.length];
-   q=question("اختر لون الجسر الصحيح: "+c.name,c.name,
-    shuffle(COLORS.map(x=>x.name)),
-    [{type:"box",color:c.color}]
-   );
+   let c=COLORS[i%5];
+   q=question("اختر لون الجسر الصحيح: "+c.name,
+    c.name,COLORS.map(x=>x.name),
+    [{type:"box",color:c.color,scale:1.3}]);
    break;
   }
 
   case "tracks":{
-   let a=ANIMALS[i%ANIMALS.length];
-   q=question("أي حيوان ترك هذه الآثار؟ "+a.emoji,a.name,
-    shuffle(ANIMALS.map(x=>x.name)));
+   let a=ANIMALS[i%5];
+   q=question("أي حيوان ترك هذه الآثار؟ "+a.emoji,
+    a.name,ANIMALS.map(x=>x.name));
    break;
   }
 
@@ -659,157 +797,14 @@ function makeQuestions(g){
     ["القمر","🌙"]
    ];
    let p=planets[i%4];
-   q=question("اختر الجرم السماوي: "+p[1],p[0],
-    shuffle(["الأرض","المريخ","زحل","القمر"]));
+   q=question("اختر الجرم السماوي: "+p[1],
+    p[0],["الأرض","المريخ","زحل","القمر"]);
    break;
   }
 
   case "magnet":{
    let things=[
     ["مسمار","يجذبه المغناطيس"],
-    ["ورقة","لا يجذبها المغناطيس"],
-    ["قطعة حديد","يجذبها المغناطيس"],
-    ["خشب","لا يجذبه المغناطيس"]
-   ];
-   let p=things[i%4];
-   q=question("ماذا يفعل المغناطيس مع "+p[0]+"؟",p[1],
-    shuffle(["يجذبه المغناطيس","لا يجذبه المغناطيس"]));
-   break;
-  }
-  }
-  list.push(q);
- }
- return list;
-}
-
-// =====================================
-// 7. تشغيل الألعاب
-// =====================================
-
-let index=0;
-let score=0;
-let locked=false;
-
-function start(g){
- current=g;
- index=0;
- score=0;
- gameQuestions=makeQuestions(g);
-
- document.getElementById("home").style.display="none";
- document.getElementById("parent").style.display="none";
- document.getElementById("gameScreen").style.display="block";
-
- document.getElementById("gameTitle").textContent=g.emoji+" "+g.name;
- showQuestion();
-}
-
-function showQuestion(){
- if(index>=gameQuestions.length){
-  finishGame();
-  return;
- }
-
- locked=false;
- let q=gameQuestions[index];
-
- document.getElementById("instruction").textContent=q.instruction;
- document.getElementById("result").textContent="";
- document.getElementById("choices").innerHTML="";
- document.getElementById("actions").innerHTML="";
-
- showScene(q.visual||[]);
-
- q.choices.forEach(c=>{
-  let b=document.createElement("button");
-  b.className="answer";
-  b.textContent=c;
-  b.onclick=()=>checkAnswer(c,b);
-  document.getElementById("choices").appendChild(b);
- });
-
- if(current.type==="music")playTone(index%4);
- talk(q.instruction);
-}
-
-function checkAnswer(value,button){
- if(locked)return;
- locked=true;
- player.attempts++;
-
- let q=gameQuestions[index];
-
- if(String(value)===String(q.answer)){
-  score++;
-  player.stars+=2;
-  button.classList.add("correct");
-  document.getElementById("result").textContent="🎉 أحسنت! ممتاز يا بطل!";
-  talk("رائع! إجابة صحيحة. أنت ذكي جداً!");
-  sound(true);
- }else{
-  button.classList.add("wrong");
-  document.getElementById("result").textContent="💪 حاول مرة أخرى في المرحلة القادمة";
-  talk("لا بأس، استمر في المحاولة!");
-  sound(false);
-
-  document.querySelectorAll(".answer").forEach(b=>{
-   if(b.textContent===String(q.answer))b.classList.add("correct");
-  });
- }
-
- document.getElementById("currentStars").textContent=player.stars;
- saveData();
-}
-
-function next(){
- if(!current)return;
- if(!locked){
-  document.getElementById("result").textContent="اختر إجابة أولاً!";
-  return;
- }
- index++;
- showQuestion();
-}
-
-function finishGame(){
- player.played++;
- if(!player.completed.includes(current.id)){
-  player.completed.push(current.id);
- }
- saveData();
-
- document.getElementById("instruction").textContent="انتهت المغامرة!";
- document.getElementById("choices").innerHTML="";
- document.getElementById("actions").innerHTML="";
- document.getElementById("result").textContent=
- "🏆 نتيجتك: "+score+" من 10 — حصلت على "+(score*2)+" نجمة!";
- talk("أحسنت! انتهت مغامرتك. أنت بطل!");
-}
-
-function home(){
- clear3D();
- document.getElementById("gameScreen").style.display="none";
- document.getElementById("home").style.display="block";
- current=null;
- updateUI();
-}
-
-// =====================================
-// 8. أصوات بسيطة
-// =====================================
-
-let audioContext=null;
-
-function tone(freq,duration){
- try{
-  audioContext=audioContext||new(window.AudioContext||window.webkitAudioContext)();
-  let osc=audioContext.createOscillator();
-  let gain=audioContext.createGain();
-  osc.frequency.value=freq;
-  gain.gain.value=.08;
-  osc.connect(gain);
-  gain.connect(audioContext.destination);
-  osc.start();
-  gain.gain.exponentialRampToValueAtTime(.001,audioContext.currentTime+duration);
-  osc.stop(audioContext.currentTime+duration);
- }catch(e
+    ["ورقة","لا يجذبه المغناطيس"],
+    ["قطعة حديد","يجذبه المغناطيس"],
+    ["خشب","لا يجذبه ال
