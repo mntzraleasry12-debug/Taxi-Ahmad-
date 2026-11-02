@@ -1,510 +1,497 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#101827">
-<title>عالمي تكسي</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>تاكسي أحمد 🚕</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#f3f5f9;
-  --dark:#0f1729;
-  --dark-2:#182337;
-  --primary:#f5bd25;
-  --primary-d:#d9a417;
-  --white:#fff;
-  --gray:#8993a4;
-  --green:#13a878;
-  --red:#e74c3c;
-  --border:#e7eaf0;
-  --shadow:0 4px 14px rgba(15,23,41,.06);
-  --radius:16px;
+  --yellow:#ffc107;--dark:#151a22;--bg:#f3f5f8;
+  --green:#10a56b;--red:#e74c3c;--blue:#2674db;
 }
-body{
-  font-family:'Tajawal',Tahoma,Arial,sans-serif;
-  background:var(--bg);
-  color:var(--dark);
-  min-height:100vh;
-  -webkit-font-smoothing:antialiased;
-}
-button,input,select,textarea{font-family:inherit;outline:none}
-button{cursor:pointer;border:none}
-
-.app{
-  max-width:520px;margin:auto;min-height:100vh;
-  background:#fff;position:relative;
-  padding-bottom:calc(90px + env(safe-area-inset-bottom,0));
-  box-shadow:0 0 40px rgba(0,0,0,.04);
-}
-
-/* ================= Header ================= */
-header{
-  background:linear-gradient(135deg,var(--dark),#1e2d47);
-  color:white;padding:22px 20px 26px;
-  border-radius:0 0 26px 26px;
-  position:relative;overflow:hidden;
-}
-header::before{
-  content:"";position:absolute;width:220px;height:220px;
-  background:radial-gradient(circle,rgba(245,189,37,.18),transparent 70%);
-  top:-80px;left:-80px;pointer-events:none;
-}
-.top{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1}
-.logo{font-size:23px;font-weight:900;letter-spacing:-.3px}
-.logo span{color:var(--primary)}
-.profile{
-  width:44px;height:44px;border-radius:50%;
-  background:#28364c;display:flex;align-items:center;justify-content:center;
-  font-size:20px;cursor:pointer;transition:.2s;
-  border:1px solid rgba(255,255,255,.08);
-}
-.profile:active{transform:scale(.94);background:#324258}
-.location{margin-top:20px;font-size:13px;color:#b9c3d3;position:relative;z-index:1}
-.location strong{display:block;color:white;font-size:15px;margin-top:5px;font-weight:700}
-
-/* ================= Sections ================= */
-.section{padding:18px}
-.section-title{font-size:18px;font-weight:900;margin-bottom:14px;color:var(--dark)}
-
-/* ================= Role switch ================= */
-.role-switch{
-  display:flex;background:#edf0f5;padding:5px;border-radius:14px;gap:5px;
-}
-.role-switch button{
-  flex:1;padding:12px;border-radius:10px;background:transparent;
-  font-weight:700;font-size:14px;color:var(--gray);transition:.25s;
-}
-.role-switch button.active{
-  background:var(--dark);color:white;box-shadow:0 4px 12px rgba(15,23,41,.25);
-}
-
-/* ================= Map ================= */
-.map-wrap{padding:0 18px;position:relative}
-#map{
-  height:280px;width:100%;border-radius:var(--radius);z-index:1;
-  border:1px solid var(--border);
-}
-.map-actions{
-  position:absolute;bottom:14px;left:32px;z-index:2;
-  display:flex;gap:8px;
-}
-.map-btn{
-  width:42px;height:42px;border-radius:50%;
-  background:white;box-shadow:0 2px 10px rgba(0,0,0,.15);
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;transition:.2s;
-}
-.map-btn:active{transform:scale(.92)}
-
-/* ================= Search box ================= */
-.search-box{
-  background:white;border:1px solid var(--border);
-  border-radius:var(--radius);padding:14px;margin-top:15px;
-  box-shadow:var(--shadow);
-}
-.input-row{display:flex;align-items:center;gap:10px;padding:8px 0}
-.input-row:first-child{padding-bottom:12px;border-bottom:1px solid var(--border)}
-.dot{width:12px;height:12px;border-radius:50%;background:var(--green);flex-shrink:0;box-shadow:0 0 0 4px rgba(19,168,120,.12)}
-.dot.destination{background:var(--red);box-shadow:0 0 0 4px rgba(231,76,60,.12)}
-.input-row input{width:100%;border:none;font-size:14px;background:transparent;color:var(--dark)}
-.input-row input::placeholder{color:#b8bfcc}
-.clear-btn{
-  background:transparent;color:#b8bfcc;font-size:18px;padding:4px 6px;
-  border-radius:50%;transition:.15s;
-}
-.clear-btn:active{background:#f0f2f6;color:#666}
-
-/* ================= Buttons ================= */
-.primary-btn{
-  width:100%;padding:15px;border-radius:13px;
-  background:linear-gradient(135deg,var(--primary),#f7c944);
-  font-weight:900;font-size:15px;margin-top:14px;color:#2a1e00;
-  box-shadow:0 6px 16px rgba(245,189,37,.35);
-  transition:.18s;
-}
-.primary-btn:active{transform:scale(.97);box-shadow:0 3px 8px rgba(245,189,37,.35)}
-
-/* ================= Services ================= */
-.services{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.service{
-  border:1.5px solid var(--border);padding:14px 5px;
-  border-radius:14px;text-align:center;background:white;
-  transition:.2s;cursor:pointer;
-}
-.service:active{transform:scale(.96)}
-.service.active{
-  border-color:var(--primary);background:linear-gradient(180deg,#fffbf0,#fff5e0);
-  box-shadow:0 4px 14px rgba(245,189,37,.22);
-}
-.service-icon{font-size:28px;margin-bottom:6px}
-.service-name{font-size:12px;font-weight:700;color:var(--dark)}
-.service-price{font-size:10.5px;color:var(--gray);margin-top:5px}
-
-/* ================= Cards ================= */
-.card{
-  border:1px solid var(--border);padding:15px;
-  border-radius:14px;margin-bottom:11px;
-  background:white;box-shadow:var(--shadow);
-  transition:.2s;cursor:pointer;
-}
-.card:active{transform:scale(.985)}
-.card.static{cursor:default;box-shadow:none;background:#fafbfd}
-.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.muted{color:var(--gray);font-size:12px}
-.price{font-weight:900;font-size:18px;color:var(--dark)}
-.badge{
-  background:#e8f8f1;color:var(--green);padding:5px 10px;
-  border-radius:20px;font-size:11px;font-weight:700;
-}
-.badge.warn{background:#fff5e0;color:#b58100}
-.badge.err{background:#fee;color:var(--red)}
-
-/* ================= Nav ================= */
-.nav{
-  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
-  width:100%;max-width:520px;background:white;
-  border-top:1px solid var(--border);
-  display:flex;justify-content:space-around;
-  padding:10px 5px calc(10px + env(safe-area-inset-bottom,0));
-  z-index:1000;
-  box-shadow:0 -4px 20px rgba(0,0,0,.04);
-}
-.nav button{
-  background:transparent;color:var(--gray);font-size:10.5px;font-weight:700;
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-  padding:6px 10px;border-radius:10px;position:relative;
-  transition:.2s;
-}
-.nav button.active{color:var(--primary-d)}
-.nav button.active::before{
-  content:"";position:absolute;top:-10px;left:20%;right:20%;
-  height:3px;background:var(--primary);border-radius:0 0 3px 3px;
-}
-.nav-icon{font-size:20px}
-
-/* ================= Pages ================= */
-.page{display:none;animation:fadeIn .25s ease}
-.page.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Tahoma,Arial,sans-serif;color:var(--dark)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0}
+#app{max-width:520px;margin:auto;min-height:100vh;background:white;position:relative}
+header{background:var(--dark);color:white;padding:17px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:20px;font-weight:bold}
+.badge{background:var(--yellow);color:#111;padding:5px 10px;border-radius:20px;font-size:12px}
+.page{padding:17px;padding-bottom:90px}
+.card{background:white;border-radius:17px;padding:16px;margin:12px 0;box-shadow:0 3px 15px #0000000d;border:1px solid #eee}
+h2{font-size:20px;margin:8px 0 17px}
+h3{font-size:16px;margin:5px 0 12px}
+label{display:block;font-size:13px;font-weight:bold;margin:12px 0 6px}
+input,select,textarea{width:100%;padding:13px;border:1px solid #ddd;border-radius:11px;background:#fafafa;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--yellow)}
+.btn{padding:14px;border-radius:12px;width:100%;font-weight:bold;margin-top:10px}
+.primary{background:var(--yellow);color:#111}
+.green{background:var(--green);color:white}
+.blue{background:var(--blue);color:white}
+.red{background:var(--red);color:white}
+.dark{background:var(--dark);color:white}
+.gray{background:#edf0f4;color:#222}
+.row{display:flex;gap:9px}
+.row>*{flex:1;min-width:0}
 .hidden{display:none!important}
-
-/* ================= Sub-page header ================= */
-.sub-header{
-  display:flex;align-items:center;gap:12px;
-  padding:16px 18px;border-bottom:1px solid var(--border);
-  background:white;position:sticky;top:0;z-index:10;
-}
-.back-btn{
-  width:38px;height:38px;border-radius:50%;
-  background:#f5f6f9;display:flex;align-items:center;justify-content:center;
-  font-size:18px;color:var(--dark);transition:.15s;flex-shrink:0;
-}
-.back-btn:active{background:#e7eaf0;transform:scale(.94)}
-.sub-header h2{font-size:17px;font-weight:900;color:var(--dark)}
-
-/* ================= Inputs ================= */
-.field{
-  width:100%;padding:13px 14px;
-  border:1.5px solid var(--border);border-radius:12px;
-  font-size:14px;margin-top:8px;background:white;
-  transition:.18s;color:var(--dark);
-}
-.field:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(245,189,37,.15)}
-.field::placeholder{color:#b8bfcc}
-
-/* ================= Payment cards ================= */
-.payment-card{
-  display:flex;align-items:center;gap:12px;
-  border:1.5px solid var(--border);padding:14px;
-  border-radius:12px;margin-bottom:10px;background:white;
-  transition:.2s;cursor:pointer;font-size:14px;font-weight:500;
-}
-.payment-card:active{transform:scale(.98)}
-.payment-card.active{
-  border-color:var(--primary);
-  background:linear-gradient(135deg,#fffbf0,#fff5e0);
-  box-shadow:0 4px 14px rgba(245,189,37,.2);
-}
-.payment-card .check{
-  width:22px;height:22px;border-radius:50%;
-  border:2px solid var(--border);margin-right:auto;
-  display:flex;align-items:center;justify-content:center;
-  font-size:12px;color:white;transition:.2s;
-}
-.payment-card.active .check{
-  background:var(--primary);border-color:var(--primary);color:#2a1e00;
-}
-
-/* ================= Modal ================= */
-.modal{
-  position:fixed;inset:0;background:rgba(10,15,26,.55);
-  z-index:2000;display:none;align-items:flex-end;justify-content:center;
-  backdrop-filter:blur(2px);
-}
-.modal.show{display:flex;animation:fadeIn .2s}
-.modal-content{
-  background:white;width:100%;max-width:520px;
-  border-radius:24px 24px 0 0;padding:12px 22px 22px;
-  max-height:85vh;overflow:auto;
-  animation:slideUp .3s cubic-bezier(.2,.8,.2,1);
-  padding-bottom:calc(22px + env(safe-area-inset-bottom,0));
-}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.modal-handle{
-  width:44px;height:5px;background:#e7eaf0;border-radius:3px;
-  margin:0 auto 14px;
-}
-.modal h3{margin-bottom:16px;font-size:17px;font-weight:900;display:flex;align-items:center;gap:8px}
-.close{
-  position:absolute;top:14px;left:14px;
-  font-size:22px;background:#f5f6f9;color:var(--gray);
-  width:34px;height:34px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-}
-
-/* ================= Driver panel ================= */
-.driver-status{
-  padding:16px;border-radius:14px;
-  background:linear-gradient(135deg,#f1f3f6,#e8ebf1);
-  margin-bottom:15px;
-}
-.switch{
-  width:52px;height:28px;background:#c5cbd6;
-  border-radius:20px;position:relative;transition:.25s;flex-shrink:0;
-}
-.switch::after{
-  content:"";position:absolute;width:22px;height:22px;
-  background:white;border-radius:50%;top:3px;right:3px;transition:.25s;
-  box-shadow:0 2px 5px rgba(0,0,0,.15);
-}
-.switch.on{background:var(--green)}
-.switch.on::after{right:27px}
-
-.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stat{
-  background:linear-gradient(135deg,#f8f9fc,#f0f2f7);
-  padding:16px;border-radius:14px;
-}
-.stat .muted{font-size:11px;margin-bottom:6px;display:block}
-.stat strong{font-size:20px;color:var(--dark);font-weight:900}
-
-/* ================= Empty state ================= */
-.empty-state{
-  text-align:center;padding:30px 20px;
-  color:var(--gray);font-size:13px;
-  background:#fafbfd;border:1.5px dashed var(--border);
-  border-radius:14px;
-}
-.empty-state .ico{font-size:38px;margin-bottom:8px;display:block;opacity:.6}
-
-/* ================= History ================= */
-.history-item{
-  padding:15px 0;border-bottom:1px solid var(--border);
-}
-.history-item:last-child{border-bottom:none}
-
-/* ================= Toast ================= */
-.toast{
-  position:fixed;bottom:110px;left:50%;transform:translateX(-50%) translateY(20px);
-  background:var(--dark-2);color:white;
-  padding:13px 20px;border-radius:14px;z-index:5000;
-  opacity:0;pointer-events:none;transition:.3s;
-  font-size:13px;font-weight:500;max-width:90vw;
-  display:flex;align-items:center;gap:10px;
-  box-shadow:0 8px 24px rgba(0,0,0,.25);
-}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.toast-icon{font-size:16px}
-
-/* ================= Misc ================= */
-hr{border:none;border-top:1px solid var(--border);margin:14px 0}
+.muted{color:#777;font-size:12px}
+#map{height:270px;border-radius:15px;z-index:1}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;background:white;display:flex;justify-content:space-around;padding:10px;border-top:1px solid #eee;z-index:500}
+.nav button{background:white;font-size:12px;color:#555}
+.nav span{display:block;font-size:20px;margin-bottom:4px}
+.car{border:2px solid #eee;border-radius:13px;padding:12px;text-align:center;flex:1}
+.car.active{border-color:var(--yellow);background:#fff9df}
+.price{background:#fff5d4;padding:17px;border-radius:13px;display:flex;justify-content:space-between;align-items:center;margin:15px 0}
+.price strong{font-size:23px}
+.trip{border-right:4px solid var(--yellow)}
+.status{font-size:12px;color:var(--green);font-weight:bold}
+.stat{background:#f4f5f7;padding:14px;border-radius:12px;text-align:center}
+.stat b{font-size:20px;display:block}
+.avatar{width:55px;height:55px;border-radius:50%;background:var(--yellow);display:grid;place-items:center;font-size:27px}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#222;color:white;padding:13px 20px;border-radius:12px;z-index:2000;display:none;width:max-content;max-width:90%}
+.item{padding:12px 0;border-bottom:1px solid #eee}
+.item:last-child{border:0}
+.star{font-size:30px;color:#ddd;background:none;padding:3px}
+.star.active{color:#ffb900}
 </style>
 </head>
 <body>
-<div class="app">
-
-<!-- ================= HEADER ================= -->
+<div id="app">
 <header>
-  <div class="top">
-    <div class="logo">عالمي <span>تكسي 🚕</span></div>
-    <div class="profile" onclick="openPage('profile')">👤</div>
-  </div>
-  <div class="location">
-    موقعك الحالي
-    <strong id="currentLocation">جاري تحديد الموقع...</strong>
-  </div>
+ <div class="logo">🚕 تاكسي أحمد</div>
+ <div class="badge" id="roleBadge">خدمة النقل</div>
 </header>
-
-<!-- ================= HOME ================= -->
-<div id="home" class="page active">
-  <div class="section">
-    <div class="role-switch">
-      <button class="active" id="customerTab" onclick="setRole('customer')">👤 زبون</button>
-      <button id="driverTab" onclick="setRole('driver')">🚕 سائق</button>
-    </div>
-  </div>
-
-  <!-- CUSTOMER -->
-  <div id="customerInterface">
-    <div class="map-wrap">
-      <div id="map"></div>
-      <div class="map-actions">
-        <button class="map-btn" onclick="useCurrentLocation()" title="موقعي">📍</button>
-        <button class="map-btn" onclick="resetMap()" title="إعادة">🔄</button>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">إلى أين تريد الذهاب؟</div>
-      <div class="search-box">
-        <div class="input-row">
-          <div class="dot"></div>
-          <input id="pickup" placeholder="موقع الانطلاق">
-          <button class="clear-btn" onclick="clearField('pickup')">×</button>
-        </div>
-        <div class="input-row">
-          <div class="dot destination"></div>
-          <input id="destination" placeholder="حدد وجهتك">
-          <button class="clear-btn" onclick="clearField('destination')">×</button>
-        </div>
-      </div>
-      <button class="primary-btn" onclick="requestRide()">🔍 طلب الرحلة</button>
-    </div>
-
-    <div class="section">
-      <div class="section-title">اختر نوع الرحلة</div>
-      <div class="services">
-        <div class="service active" onclick="selectService(this,'اقتصادي',1500)"><div class="service-icon">🚗</div><div class="service-name">اقتصادي</div><div class="service-price">من 1500 د.ع</div></div>
-        <div class="service" onclick="selectService(this,'مريح',2500)"><div class="service-icon">🚙</div><div class="service-name">مريح</div><div class="service-price">من 2500 د.ع</div></div>
-        <div class="service" onclick="selectService(this,'عائلي',4000)"><div class="service-icon">🚐</div><div class="service-name">عائلي</div><div class="service-price">من 4000 د.ع</div></div>
-        <div class="service" onclick="selectService(this,'دراجة',1000)"><div class="service-icon">🏍️</div><div class="service-name">دراجة</div><div class="service-price">من 1000 د.ع</div></div>
-        <div class="service" onclick="selectService(this,'VIP',6000)"><div class="service-icon">🚘</div><div class="service-name">VIP</div><div class="service-price">من 6000 د.ع</div></div>
-        <div class="service" onclick="selectService(this,'شحن',3000)"><div class="service-icon">📦</div><div class="service-name">توصيل</div><div class="service-price">من 3000 د.ع</div></div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">خدمات إضافية</div>
-      <div class="card" onclick="openPage('scheduled')"><div class="row"><div>📅 حجز رحلة مسبقاً</div><span>←</span></div></div>
-      <div class="card" onclick="openPage('delivery')"><div class="row"><div>📦 إرسال طرد</div><span>←</span></div></div>
-      <div class="card" onclick="openPage('intercity')"><div class="row"><div>🛣️ السفر بين المحافظات</div><span>←</span></div></div>
-      <div class="card" onclick="openPage('favorites')"><div class="row"><div>⭐ الأماكن المفضلة</div><span>←</span></div></div>
-    </div>
-  </div>
-
-  <!-- DRIVER -->
-  <div id="driverInterface" class="hidden">
-    <div class="section">
-      <div class="driver-status">
-        <div class="row">
-          <div>
-            <strong id="driverStatusText">أنت غير متصل</strong>
-            <div class="muted" style="margin-top:4px">فعّل وضع العمل لاستقبال الطلبات</div>
-          </div>
-          <div class="switch" id="driverSwitch" onclick="toggleDriver()"></div>
-        </div>
-      </div>
-
-      <div class="stat-grid">
-        <div class="stat"><span class="muted">أرباح اليوم</span><strong id="driverEarnings">0 د.ع</strong></div>
-        <div class="stat"><span class="muted">الرحلات</span><strong id="driverTrips">0</strong></div>
-        <div class="stat"><span class="muted">التقييم</span><strong>⭐ 5.0</strong></div>
-        <div class="stat"><span class="muted">الحالة</span><strong style="font-size:15px">نشط</strong></div>
-      </div>
-
-      <div class="section-title" style="margin-top:22px">طلبات الرحلات</div>
-      <div id="driverRequests">
-        <div class="empty-state"><span class="ico">🚕</span>لا توجد طلبات حالياً</div>
-      </div>
-
-      <button class="primary-btn" onclick="openPage('driverProfile')">إعدادات السائق</button>
-    </div>
-  </div>
+<main id="main"></main>
 </div>
+<div class="toast" id="toast"></div>
+<nav class="nav hidden" id="nav">
+ <button onclick="go('home')"><span>🏠</span>الرئيسية</button>
+ <button onclick="go('trips')"><span>🧾</span>رحلاتي</button>
+ <button onclick="go('wallet')"><span>💳</span>المحفظة</button>
+ <button onclick="go('profile')"><span>👤</span>حسابي</button>
+</nav>
 
-<!-- ================= HISTORY ================= -->
-<div id="history" class="page">
-  <div class="sub-header">
-    <button class="back-btn" onclick="openPage('home')">→</button>
-    <h2>سجل الرحلات</h2>
-  </div>
-  <div class="section">
-    <div id="historyList">
-      <div class="empty-state"><span class="ico">🧾</span>لا توجد رحلات حتى الآن</div>
-    </div>
-  </div>
-</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+"use strict";
 
-<!-- ================= WALLET ================= -->
-<div id="wallet" class="page">
-  <div class="sub-header">
-    <button class="back-btn" onclick="openPage('home')">→</button>
-    <h2>محفظتي</h2>
-  </div>
-  <div class="section">
-    <div class="card static" style="background:linear-gradient(135deg,var(--dark),#1e2d47);color:white;border:none">
-      <div class="muted" style="color:#b9c3d3">رصيد المحفظة</div>
-      <div class="price" style="font-size:32px;margin-top:12px;color:white" id="walletBalance">0 د.ع</div>
-      <div style="margin-top:16px;font-size:13px;opacity:.8">💳 عالمي باي</div>
-    </div>
+/* ===================================
+   1 - قاعدة البيانات المحلية التجريبية
+=================================== */
+const DB={
+ users:JSON.parse(localStorage.getItem("ah_users")||"[]"),
+ trips:JSON.parse(localStorage.getItem("ah_trips")||"[]"),
+ wallet:JSON.parse(localStorage.getItem("ah_wallet")||"{}"),
+ messages:JSON.parse(localStorage.getItem("ah_messages")||"{}"),
+ current:JSON.parse(localStorage.getItem("ah_current")||"null"),
+ ratings:JSON.parse(localStorage.getItem("ah_ratings")||"[]"),
+ settings:JSON.parse(localStorage.getItem("ah_settings")||'{"base":1000,"km":500,"commission":10}')
+};
 
-    <div class="section-title" style="margin-top:22px">طرق الدفع</div>
-    <div class="payment-card active" data-payment="نقداً" onclick="setPayment('نقداً',this)">
-      <span>💵</span><span>الدفع نقداً</span><span class="check">✓</span>
-    </div>
-    <div class="payment-card" data-payment="المحفظة" onclick="setPayment('المحفظة',this)">
-      <span>👛</span><span>المحفظة الإلكترونية</span><span class="check"></span>
-    </div>
-    <div class="payment-card" data-payment="البطاقة" onclick="setPayment('البطاقة',this)">
-      <span>💳</span><span>البطاقة المصرفية</span><span class="check"></span>
-    </div>
+function save(){
+ localStorage.setItem("ah_users",JSON.stringify(DB.users));
+ localStorage.setItem("ah_trips",JSON.stringify(DB.trips));
+ localStorage.setItem("ah_wallet",JSON.stringify(DB.wallet));
+ localStorage.setItem("ah_messages",JSON.stringify(DB.messages));
+ localStorage.setItem("ah_current",JSON.stringify(DB.current));
+ localStorage.setItem("ah_ratings",JSON.stringify(DB.ratings));
+ localStorage.setItem("ah_settings",JSON.stringify(DB.settings));
+}
+const $=id=>document.getElementById(id);
+const me=()=>DB.users.find(u=>u.id===DB.current?.id);
+const money=n=>Math.round(n||0).toLocaleString("en-US")+" د.ع";
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 
-    <div class="section-title" style="margin-top:22px">العروض</div>
-    <div class="card static">
-      🎁 استخدم الرمز <b>GLOBAL10</b> للحصول على خصم 10%
-    </div>
-  </div>
-</div>
+function toast(message){
+ const t=$("toast");t.textContent=message;t.style.display="block";
+ clearTimeout(window.toastTimer);
+ window.toastTimer=setTimeout(()=>t.style.display="none",2600);
+}
+function page(html){$("main").innerHTML=html;}
+function go(name){
+ if(!me())return login();
+ if(name==="home")return home();
+ if(name==="trips")return tripsPage();
+ if(name==="wallet")return walletPage();
+ if(name==="profile")return profilePage();
+ if(name==="admin")return adminPage();
+}
+function updateHeader(){
+ $("roleBadge").textContent=me()?.role==="driver"?"حساب سائق":
+ me()?.role==="admin"?"الإدارة":"حساب راكب";
+ $("nav").classList.toggle("hidden",!me());
+}
 
-<!-- ================= OFFERS ================= -->
-<div id="offers" class="page">
-  <div class="sub-header">
-    <button class="back-btn" onclick="openPage('home')">→</button>
-    <h2>العروض والمكافآت</h2>
+/* ===================================
+   2 - التسجيل والدخول
+=================================== */
+function login(){
+ updateHeader();
+ page(`
+ <div class="page">
+ <div style="text-align:center;padding:28px 0">
+  <div style="font-size:70px">🚕</div>
+  <h2>أهلاً بك في تاكسي أحمد</h2>
+  <p class="muted">تنقّل بسهولة وأمان داخل العراق</p>
+ </div>
+ <div class="card">
+  <h3>نوع الحساب</h3>
+  <div class="row">
+   <button class="btn primary" onclick="setRole('rider')">👤 راكب</button>
+   <button class="btn blue" onclick="setRole('driver')">🚘 سائق</button>
   </div>
-  <div class="section">
-    <div class="card static">
-      <div class="row"><strong>🎁 خصم الرحلة الأولى</strong><span class="badge">10%</span></div>
-      <p class="muted" style="margin-top:10px">عرض للمستخدمين الجدد</p>
-    </div>
-    <div class="card static">
-      <div class="row"><strong>⭐ نقاط الولاء</strong><span>0 نقطة</span></div>
-      <p class="muted" style="margin-top:10px">اجمع النقاط مع كل رحلة</p>
-    </div>
-    <div class="card static">
-      <strong>👥 دعوة الأصدقاء</strong>
-      <p class="muted" style="margin-top:10px">شارك التطبيق مع أصدقائك</p>
-      <button class="primary-btn" onclick="shareApp()">مشاركة</button>
-    </div>
+  <label>الاسم الكامل</label>
+  <input id="authName" placeholder="اكتب اسمك">
+  <label>رقم الهاتف</label>
+  <input id="authPhone" type="tel" placeholder="07xxxxxxxxx">
+  <label>كلمة المرور</label>
+  <input id="authPass" type="password" placeholder="كلمة المرور">
+  <div id="driverFields" class="hidden">
+   <label>نوع السيارة</label>
+   <input id="carName" placeholder="مثلاً: تويوتا كورولا">
+   <label>رقم لوحة السيارة</label>
+   <input id="plate" placeholder="رقم اللوحة">
   </div>
-</div>
+  <button class="btn primary" onclick="register()">إنشاء حساب / دخول</button>
+  <p class="muted">حساب الإدارة التجريبي: admin / 123456</p>
+  <button class="btn dark" onclick="adminLogin()">دخول المدير</button>
+ </div>
+ </div>`);
+ window.selectedRole="rider";
+}
+function setRole(role){
+ window.selectedRole=role;
+ $("driverFields").classList.toggle("hidden",role!=="driver");
+}
+function register(){
+ const name=$("authName").value.trim();
+ const phone=$("authPhone").value.trim();
+ const pass=$("authPass").value;
+ if(name.length<2||phone.length<8||pass.length<4)
+  return toast("تأكد من الاسم والهاتف وكلمة المرور");
+ let user=DB.users.find(u=>u.phone===phone);
+ if(user){
+  if(user.password!==pass)return toast("كلمة المرور غير صحيحة");
+  if(user.role!==window.selectedRole)return toast("نوع الحساب غير مطابق");
+ }else{
+  user={
+   id:uid(),name,phone,password:pass,
+   role:window.selectedRole,
+   car:$("carName")?.value||"",
+   plate:$("plate")?.value||"",
+   online:false,approved:window.selectedRole==="rider",
+   createdAt:new Date().toISOString()
+  };
+  DB.users.push(user);
+  DB.wallet[user.id]=0;
+ }
+ DB.current={id:user.id};save();updateHeader();home();
+}
+function adminLogin(){
+ const name=prompt("اسم المدير");
+ const pass=prompt("كلمة مرور المدير");
+ if(name==="admin"&&pass==="123456"){
+  let admin=DB.users.find(u=>u.role==="admin");
+  if(!admin){
+   admin={id:"admin",name:"مدير النظام",phone:"admin",role:"admin",approved:true};
+   DB.users.push(admin);
+  }
+  DB.current={id:"admin"};save();updateHeader();adminPage();
+ }else toast("بيانات المدير غير صحيحة");
+}
+function logout(){
+ DB.current=null;save();updateHeader();login();
+}
 
-<!-- ================= PROFILE ================= -->
-<div id="profile" class="page">
-  <div class="sub-header">
-    <button class="back-btn" onclick="openPage('home')">→</button>
-    <h2>حسابي</h2>
-  </div>
-  <div class="section">
-    <div class="card static" style="text-align:center;padding:24px">
-      <div style="font-size:52px;margin-bottom:10px">👤</div>
-      <input class="field" id="userName" placeholder="الاسم الكامل">
-      <input class="field" id="userPhone" placeholder="رقم الهاتف" inputmode="tel">
-      <button class="primary-btn" onclick="saveProfile()">حفظ المعلومات</button>
-    </div>
+/* ===================================
+   3 - واجهة الراكب
+=================================== */
+let selectedCar="اقتصادية";
+const carTypes=[
+ {name:"اقتصادية",icon:"🚕",mult:1},
+ {name:"عائلية",icon:"🚙",mult:1.4},
+ {name:"مميزة",icon:"🚘",mult:1.8},
+ {name:"دراجة",icon:"🏍️",mult:.7}
+];
+let pickup=null,destination=null,map=null,routeLine=null;
 
-    <div class="card" onclick="openPage('settings')"><div class="row"><span>⚙️
+function home(){
+ updateHeader();
+ if(me().role==="admin")return adminPage();
+ if(me().role==="driver")return driverHome();
+ page(`
+ <div class="page">
+ <h2>مرحباً ${escapeHTML(me().name)} 👋</h2>
+ <p class="muted">إلى أين تريد الذهاب اليوم؟</p>
+ <div class="card">
+  <div id="map"></div>
+  <button class="btn gray" onclick="myLocation()">📍 تحديد موقعي الحالي</button>
+ </div>
+ <div class="card">
+  <label>📍 موقع الانطلاق</label>
+  <input id="pickupText" placeholder="من أين ننطلق؟">
+  <label>🏁 الوجهة</label>
+  <input id="destText" placeholder="إلى أين تريد الذهاب؟">
+  <div class="row">
+   <button class="btn gray" onclick="choosePoint('pickup')">تحديد الانطلاق بالخريطة</button>
+   <button class="btn gray" onclick="choosePoint('destination')">تحديد الوجهة بالخريطة</button>
+  </div>
+  <h3 style="margin-top:20px">اختر نوع السيارة</h3>
+  <div class="row">
+   ${carTypes.map(c=>`<div class="car ${c.name===selectedCar?'active':''}" onclick="selectCar('${c.name}')"><div style="font-size:27px">${c.icon}</div><b>${c.name}</b></div>`).join("")}
+  </div>
+  <div class="price">
+   <div><small>السعر التقديري</small><br><strong id="fare">—</strong></div>
+   <span>💰</span>
+  </div>
+  <button class="btn primary" onclick="requestTrip()">🚕 اطلب سيارة الآن</button>
+ </div>
+ <div class="card">
+  <h3>خدمات إضافية</h3>
+  <div class="row">
+   <button class="btn gray" onclick="toast('خدمة التوصيل ستضاف لاحقاً')">📦 توصيل</button>
+   <button class="btn gray" onclick="toast('خدمة النقل الخاص ستضاف لاحقاً')">🚐 نقل خاص</button>
+  </div>
+ </div>
+ </div>`);
+ setTimeout(initMap,150);
+}
+function initMap(){
+ if(!document.getElementById("map")||!window.L)return;
+ if(map){map.remove();map=null;}
+ map=L.map("map").setView([31.05,46.26],7);
+ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+  attribution:"© OpenStreetMap"
+ }).addTo(map);
+ if(pickup)L.marker(pickup).addTo(map).bindPopup("الانطلاق");
+ if(destination)L.marker(destination).addTo(map).bindPopup("الوجهة");
+ setTimeout(()=>map.invalidateSize(),200);
+}
+function selectCar(name){
+ selectedCar=name;home();
+}
+function myLocation(){
+ if(!navigator.geolocation)return toast("المتصفح لا يدعم تحديد الموقع");
+ navigator.geolocation.getCurrentPosition(pos=>{
+  pickup=[pos.coords.latitude,pos.coords.longitude];
+  $("pickupText").value="موقعي الحالي";
+  if(map){map.setView(pickup,15);L.marker(pickup).addTo(map);}
+  calculateFare();toast("تم تحديد موقعك");
+ },()=>toast("تعذر تحديد الموقع، تحقق من صلاحية الموقع"),{enableHighAccuracy:true});
+}
+function choosePoint(type){
+ if(!map)return;
+ toast("اضغط على الخريطة لتحديد الموقع");
+ map.once("click",e=>{
+  if(type==="pickup"){
+   pickup=[e.latlng.lat,e.latlng.lng];
+   $("pickupText").value="موقع محدد على الخريطة";
+  }else{
+   destination=[e.latlng.lat,e.latlng.lng];
+   $("destText").value="وجهة محددة على الخريطة";
+  }
+  calculateFare();
+  L.marker(e.latlng).addTo(map);
+ });
+}
+function distanceKm(a,b){
+ const R=6371,rad=x=>x*Math.PI/180;
+ const dLat=rad(b[0]-a[0]),dLon=rad(b[1]-a[1]);
+ const x=Math.sin(dLat/2)**2+
+ Math.cos(rad(a[0]))*Math.cos(rad(b[0]))*Math.sin(dLon/2)**2;
+ return 2*R*Math.asin(Math.sqrt(x));
+}
+function fareEstimate(){
+ if(!pickup||!destination)return 0;
+ const car=carTypes.find(c=>c.name===selectedCar);
+ return (DB.settings.base+distanceKm(pickup,destination)*DB.settings.km)*(car?.mult||1);
+}
+function calculateFare(){
+ const el=$("fare");if(el)el.textContent=money(fareEstimate());
+}
+
+/* ===================================
+   4 - طلب الرحلة وإدارتها
+=================================== */
+function requestTrip(){
+ const from=$("pickupText").value.trim();
+ const to=$("destText").value.trim();
+ if(!from||!to)return toast("حدد موقع الانطلاق والوجهة");
+ if(!pickup||!destination)return toast("حدد الموقعين على الخريطة أولاً");
+ const trip={
+  id:uid(),riderId:me().id,riderName:me().name,
+  driverId:null,driverName:null,
+  from,to,pickup,destination,
+  car:selectedCar,distance:distanceKm(pickup,destination),
+  fare:Math.round(fareEstimate()),
+  status:"searching",createdAt:new Date().toISOString(),
+  messages:[]
+ };
+ DB.trips.unshift(trip);save();
+ toast("تم إنشاء طلب الرحلة");
+ searchingPage(trip.id);
+}
+function searchingPage(id){
+ const trip=DB.trips.find(t=>t.id===id);
+ page(`<div class="page">
+ <div class="card" style="text-align:center;padding:35px 15px">
+  <div style="font-size:65px">🚕</div>
+  <h2>جاري البحث عن سائق</h2>
+  <p class="muted">طلبك متاح للسائقين في هذا النموذج التجريبي</p>
+  <div class="price"><span>الأجرة التقديرية</span><strong>${money(trip.fare)}</strong></div>
+  <button class="btn red" onclick="cancelTrip('${id}')">إلغاء الطلب</button>
+ </div></div>`);
+}
+function cancelTrip(id){
+ const t=DB.trips.find(x=>x.id===id);
+ if(!t||["completed","cancelled"].includes(t.status))return;
+ t.status="cancelled";save();toast("تم إلغاء الرحلة");go("trips");
+}
+function tripsPage(){
+ const list=DB.trips.filter(t=>t.riderId===me().id||t.driverId===me().id);
+ page(`<div class="page"><h2>🧾 سجل الرحلات</h2>
+ ${list.length?list.map(t=>tripCard(t)).join(""):'<div class="card">لا توجد رحلات حتى الآن</div>'}
+ </div>`);
+}
+function tripCard(t){
+ const states={searching:"قيد البحث",accepted:"تم قبول الرحلة",arrived:"السائق وصل",started:"الرحلة جارية",completed:"مكتملة",cancelled:"ملغاة"};
+ return `<div class="card trip">
+ <div class="row"><b>${escapeHTML(t.from)}</b><b>${money(t.fare)}</b></div>
+ <p class="muted">إلى: ${escapeHTML(t.to)}</p>
+ <p class="status">${states[t.status]||t.status}</p>
+ <button class="btn gray" onclick="tripDetails('${t.id}')">تفاصيل الرحلة</button>
+ </div>`;
+}
+function tripDetails(id){
+ const t=DB.trips.find(x=>x.id===id);if(!t)return;
+ page(`<div class="page"><h2>تفاصيل الرحلة</h2><div class="card">
+ <p>الانطلاق: ${escapeHTML(t.from)}</p>
+ <p>الوجهة: ${escapeHTML(t.to)}</p>
+ <p>السائق: ${escapeHTML(t.driverName||"لم يتم التعيين")}</p>
+ <p>الأجرة: ${money(t.fare)}</p>
+ <p>الحالة: ${t.status}</p>
+ ${t.driverId?`<button class="btn blue" onclick="chat('${t.id}')">💬 محادثة</button>`:""}
+ ${["searching","accepted","arrived"].includes(t.status)?`<button class="btn red" onclick="cancelTrip('${t.id}')">إلغاء الرحلة</button>`:""}
+ ${t.status==="completed"&&t.riderId===me().id?`<button class="btn primary" onclick="rateTrip('${t.id}')">⭐ قيّم الرحلة</button>`:""}
+ <button class="btn gray" onclick="shareTrip('${t.id}')">مشاركة الرحلة</button>
+ <button class="btn gray" onclick="go('trips')">رجوع</button>
+ </div></div>`);
+}
+
+/* ===================================
+   5 - واجهة السائق
+=================================== */
+function driverHome(){
+ const driver=me();
+ const available=DB.trips.filter(t=>t.status==="searching");
+ const active=DB.trips.find(t=>t.driverId===driver.id&&
+ ["accepted","arrived","started"].includes(t.status));
+ page(`<div class="page">
+ <h2>أهلاً كابتن ${escapeHTML(driver.name)} 🚘</h2>
+ <div class="card">
+ <div class="row" style="align-items:center">
+ <div><b>حالة استقبال الطلبات</b><p class="muted">فعّل الزر لتصبح متاحاً</p></div>
+ <label style="margin:0"><input style="width:25px;height:25px" type="checkbox" ${driver.online?"checked":""} onchange="toggleOnline(this.checked)"></label>
+ </div>
+ <p class="status">${driver.online?"متصل – تستقبل الطلبات":"غير متصل"}</p>
+ </div>
+ ${active?driverActiveTrip(active):""}
+ <h3>طلبات الرحلات المتاحة (${available.length})</h3>
+ ${driver.online?available.map(t=>`
+ <div class="card">
+ <b>👤 ${escapeHTML(t.riderName)}</b>
+ <p>📍 ${escapeHTML(t.from)}</p>
+ <p>🏁 ${escapeHTML(t.to)}</p>
+ <p>🚕 ${t.car} | ${t.distance.toFixed(1)} كم</p>
+ <div class="price"><span>الأجرة</span><strong>${money(t.fare)}</strong></div>
+ <button class="btn green" onclick="acceptTrip('${t.id}')">قبول الرحلة</button>
+ </div>`).join(""):'<div class="card">اتصل بالإنترنت وفعّل استقبال الطلبات</div>'}
+ </div>`);
+}
+function toggleOnline(value){
+ me().online=value;save();driverHome();
+}
+function acceptTrip(id){
+ const t=DB.trips.find(x=>x.id===id);
+ if(!t||t.status!=="searching")return toast("الطلب لم يعد متاحاً");
+ t.driverId=me().id;t.driverName=me().name;t.status="accepted";
+ save();toast("تم قبول الرحلة");driverHome();
+}
+function driverActiveTrip(t){
+ const actions={
+ accepted:["arrived","وصلت إلى الراكب"],
+ arrived:["started","بدء الرحلة"],
+ started:["completed","إنهاء الرحلة"]
+ };
+ const action=actions[t.status];
+ return `<div class="card">
+ <h3>🚕 رحلتك الحالية</h3>
+ <p>الراكب: ${escapeHTML(t.riderName)}</p>
+ <p>من: ${escapeHTML(t.from)}</p><p>إلى: ${escapeHTML(t.to)}</p>
+ <p>الأجرة: ${money(t.fare)}</p>
+ ${action?`<button class="btn green" onclick="advanceTrip('${t.id}','${action[0]}')">${action[1]}</button>`:""}
+ <button class="btn blue" onclick="chat('${t.id}')">مراسلة الراكب</button>
+ <button class="btn red" onclick="cancelTrip('${t.id}')">إلغاء الرحلة</button>
+ </div>`;
+}
+function advanceTrip(id,status){
+ const t=DB.trips.find(x=>x.id===id);if(!t)return;
+ t.status=status;
+ if(status==="completed"){
+  const commission=Math.round(t.fare*DB.settings.commission/100);
+  DB.wallet[me().id]=(DB.wallet[me().id]||0)+t.fare-commission;
+  t.completedAt=new Date().toISOString();
+ }
+ save();toast("تم تحديث حالة الرحلة");driverHome();
+}
+
+/* ===================================
+   6 - المحفظة والمعاملات
+=================================== */
+function walletPage(){
+ const balance=DB.wallet[me().id]||0;
+ page(`<div class="page"><h2>💳 المحفظة</h2>
+ <div class="card" style="background:#17202b;color:white">
+ <p>الرصيد الحالي</p><h2>${money(balance)}</h2>
+ <p class="muted" style="color:#ddd">الرصيد التجريبي داخل هذا الجهاز</p>
+ </div>
+ <div class="card">
+ <h3>الخدمات المالية</h3>
+ <button class="btn primary" onclick="toast('إضافة الرصيد تتطلب بوابة دفع مرتبطة')">➕ إضافة رصيد</button>
+ <button class="btn gray" onclick="toast('السحب يحتاج نظام تحقق وحساب مصرفي')">سحب الأرباح</button>
+ <p class="muted">لا تُجرى عمليات مالية حقيقية في النسخة التجريبية.</p>
+ </div></div>`);
+}
+
+/* ===================================
+   7 - المحادثة ومشاركة الرحلة والطوارئ
+=================================== */
+function chat(id){
+ const t=DB.trips.find(x=>x.id===id);if(!t)return;
+ DB.messages[id]=DB.messages[id]||[];
+ page(`<div class="page"><h2>💬 محادثة الرحلة</h2>
+ <div class="card" id="chatList" style="min-height:200px">
+ ${DB.messages[id].map(m=>`<div class="item"><b>${escapeHTML(m.name)}:</b> ${escapeHTML(m.text)}</div>`).join("")||"لا توجد رسائل"}
+ </div>
+ <input id="chatInput" placeholder="اكتب رسالتك">
+ <button class="btn primary" onclick="sendMessage('${id}')">إرسال</button>
+ <button class="btn gray" onclick="tripDetails('${id}')">رجوع</button>
+ </div>`);
+}
+function sendMessage(id){
+ const input=$("chatInput"),text=input.value.trim();
+ if(!text)return;
+ DB.messages[id]=DB.messages[id]||[];
+ DB.messages[id].push({name:me().name,text,time:Date.now()});
+ save();chat(id);
+}
+function shareTrip(id){
+ const t=DB.trips.find(x=>x.id===id);
+ const text=`رحلتي في تاكسي أحمد\nمن: ${t.from}\nإلى: ${t.to}\nالسائق: ${t.driverName||"قيد البحث"}`;
+ if(navigator.share)navigator.share({title:"مشاركة الرحلة",text});
+ else if(navigator.clipboard)navigator.clipboard.writeText(text).then(()=>toast("تم نسخ تفاصيل الرحلة"));
+ else toast(text);
+}
+function emergency(
