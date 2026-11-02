@@ -1,447 +1,564 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>10 ألعاب ذكاء 3D للأطفال</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>عالم العباقرة 3D</title>
+
 <style>
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  body{
-    margin:0;font-family:'Tajawal','Cairo','Segoe UI',Tahoma,sans-serif;
-    background:
-      radial-gradient(circle at 12% 8%, #8b5cf6 0%, transparent 50%),
-      radial-gradient(circle at 90% 92%, #06b6d4 0%, transparent 50%),
-      linear-gradient(160deg,#3b0764,#1e3a8a 55%,#0e7490);
-    min-height:100vh;display:flex;align-items:center;justify-content:center;
-    padding:14px;overflow-x:hidden;
-  }
-
-  /* خلفية عائمة */
-  .bg-shapes{position:fixed;inset:0;pointer-events:none;overflow:hidden;perspective:900px;z-index:0}
-  .bg-shapes span{
-    position:absolute;font-size:44px;opacity:.15;
-    animation:float3d 14s ease-in-out infinite;
-    transform-style:preserve-3d;
-  }
-  @keyframes float3d{
-    0%,100%{transform:translateY(0) rotateY(0deg) rotateX(0deg) scale(1)}
-    50%{transform:translateY(-38px) rotateY(180deg) rotateX(25deg) scale(1.1)}
-  }
-
-  /* المشهد ثلاثي الأبعاد */
-  .scene{
-    perspective:1200px; perspective-origin:50% 40%;
-    width:min(720px,100%); position:relative; z-index:1;
-  }
-  .app{
-    transform-style:preserve-3d; transition:transform .2s ease-out;
-    background:linear-gradient(#ffffff,#f5f3ff);
-    border-radius:26px; padding:14px;
-    box-shadow: 0 25px 50px -12px rgba(0,0,0,.6), 0 -6px 0 rgba(139,92,246,.15) inset;
-    min-height:560px; display:flex; flex-direction:column;
-    position:relative;
-  }
-
-  header{display:flex;align-items:center;justify-content:space-between;gap:8px;transform:translateZ(10px)}
-  .brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:#4c1d95}
-  .brand .logo{font-size:25px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.3))}
-  
-  .stats{display:flex;align-items:center;gap:5px}
-  .stat{
-    display:flex;align-items:center;gap:3px;background:linear-gradient(#ede9fe,#ddd6fe);
-    color:#5b21b6;font-weight:800;font-size:14px;padding:5px 9px;border-radius:13px;
-    border:2px solid #c4b5fd; box-shadow:0 4px 0 #a78bfa, inset 0 1px 0 #fff;
-  }
-  .icon-btn{
-    border:2px solid #c4b5fd;background:linear-gradient(#ede9fe,#ddd6fe);border-radius:13px;
-    padding:6px 10px;font-size:15px;cursor:pointer;font-family:inherit;
-    box-shadow:0 4px 0 #a78bfa, inset 0 1px 0 #fff; transition:transform .07s;
-  }
-  .icon-btn:active{transform:translateY(4px);box-shadow:none}
-
-  .progress{
-    height:12px;background:#ede9fe;border-radius:10px;margin:11px 0 4px;overflow:hidden;
-    border:2px solid #ddd6fe; box-shadow:inset 0 3px 6px rgba(76,29,149,.2);
-  }
-  .bar{
-    height:100%;width:0;border-radius:10px;
-    background:linear-gradient(90deg,#22c55e,#84cc16,#eab308);
-    transition:width .35s cubic-bezier(.34,1.4,.64,1);
-  }
-
-  main{flex:1;display:flex;flex-direction:column;justify-content:center;gap:8px;padding:4px 0;min-height:300px}
-
-  /* قائمة الألعاب */
-  .hub-title{text-align:center;color:#4c1d95;font-weight:900;font-size:20px;margin:4px 0 2px}
-  .hub-sub{text-align:center;color:#7c3aed;font-weight:600;font-size:13px;margin:0 0 10px}
-  .hub{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:12px;padding:2px;perspective:900px}
-
-  .game-card{
-    border:none;cursor:pointer;font-family:inherit;font-weight:800;font-size:13px;color:#1e293b;
-    background:linear-gradient(#ffffff,#eef2ff); border-radius:18px;padding:14px 6px;
-    display:flex;flex-direction:column;align-items:center;gap:7px;
-    box-shadow: 0 6px 0 #a5b4fc, 0 10px 15px -5px rgba(76,29,149,.4), inset 0 2px 0 #fff;
-    transform-style:preserve-3d; transition:transform .15s ease-out, box-shadow .15s;
-  }
-  .game-card .g-icon{font-size:28px;line-height:1;filter:drop-shadow(0 2px 3px rgba(0,0,0,.2))}
-  .game-card:active{box-shadow:0 2px 0 #a5b4fc, inset 0 2px 0 #fff}
-
-  /* السؤال والوسائط */
-  .q-text{text-align:center;font-size:20px;font-weight:800;color:#4c1d95;margin:2px 0}
-  .visual{
-    min-height:116px;display:flex;align-items:center;justify-content:center;
-    background:linear-gradient(160deg,#faf5ff,#ede9fe);
-    border-radius:20px;padding:12px;border:2px dashed #ddd6fe;
-    box-shadow:inset 0 4px 10px rgba(139,92,246,.15);
-  }
-  .emoji-grid{display:flex;flex-wrap:wrap;gap:2px 6px;justify-content:center}
-  .emoji{font-size:32px;line-height:1.15;display:inline-block;animation:pop3d .4s backwards;filter:drop-shadow(0 3px 2px rgba(0,0,0,.15))}
-  .emoji.gone{opacity:.2;filter:grayscale(1)}
-  @keyframes pop3d{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
-
-  .seq{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;direction:ltr}
-  .term{
-    min-width:48px;height:56px;display:flex;align-items:center;justify-content:center;
-    font-size:24px;font-weight:800;color:#4c1d95;
-    background:linear-gradient(#fff,#f1f0ff);border-radius:14px;border:3px solid #ddd6fe;
-    box-shadow:0 5px 0 #c7d2fe, inset 0 2px 0 #fff;
-  }
-  .term.blank{color:#a855f7;border-color:#c4b5fd;border-style:dashed;animation:pulse3d 1.2s infinite}
-  @keyframes pulse3d{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
-
-  .add-row{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;direction:ltr}
-  .grp{
-    display:flex;flex-wrap:wrap;gap:1px;max-width:140px;justify-content:center;
-    background:#fff;border-radius:14px;padding:6px;border:2px solid #ddd6fe;
-    box-shadow:0 4px 0 #c7d2fe, inset 0 2px 0 #fff;
-  }
-  .grp .emoji{font-size:20px}
-  .op{font-size:26px;font-weight:800;color:#7c3aed}
-  .qmark{
-    font-size:26px;font-weight:800;color:#a855f7;min-width:50px;height:54px;
-    display:flex;align-items:center;justify-content:center;
-    border:3px dashed #c4b5fd;border-radius:14px;background:#faf5ff;
-    animation:pulse3d 1.2s infinite;
-  }
-
-  .big-shape{font-size:80px;line-height:1;animation:pop3d .4s}
-  .swatch{width:100px;height:100px;border-radius:50%;border:5px solid #fff;box-shadow:0 10px 20px -5px rgba(0,0,0,.4);animation:pop3d .4s}
-  .cmp{display:flex;align-items:center;gap:12px}
-  .cmp-num{
-    font-size:42px;font-weight:900;color:#4c1d95;background:linear-gradient(#fff,#f1f0ff);
-    border:3px solid #ddd6fe;border-radius:16px;padding:4px 18px;
-    box-shadow:0 6px 0 #c7d2fe, inset 0 2px 0 #fff;
-  }
-
-  /* الاختيارات */
-  .options{display:grid;gap:10px;margin-top:4px;perspective:900px}
-  .opt{
-    font-family:inherit;font-size:30px;font-weight:800;color:#1e293b;cursor:pointer;
-    padding:13px 6px;border-radius:18px;border:none;
-    background:linear-gradient(#ffffff,#eef2ff);
-    box-shadow: 0 7px 0 #a5b4fc, 0 10px 15px -5px rgba(76,29,149,.35), inset 0 2px 0 #fff;
-    transition:transform .08s, box-shadow .08s, background .25s;
-  }
-  .opt:active{transform:translateY(6px);box-shadow:0 1px 0 #a5b4fc}
-  .opt.correct{
-    background:linear-gradient(#86efac,#22c55e);color:#fff;
-    box-shadow:0 7px 0 #15803d, 0 0 20px rgba(34,197,94,.6);
-  }
-  .opt.wrong{
-    background:linear-gradient(#fca5a5,#ef4444);color:#fff;
-    box-shadow:0 7px 0 #b91c1c; animation:shake .4s;
-  }
-  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-
-  /* الذاكرة */
-  .mem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;direction:ltr;perspective:1000px}
-  .card{
-    aspect-ratio:1/1;border:none;padding:0;background:none;cursor:pointer;
-    position:relative;transform-style:preserve-3d;transition:transform .4s cubic-bezier(.4,.15,.2,1);border-radius:14px;
-  }
-  .card.flipped{transform:rotateY(180deg)}
-  .face{
-    position:absolute;inset:0;border-radius:14px;
-    display:flex;align-items:center;justify-content:center;
-    backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  }
-  .face.front{
-    background:linear-gradient(150deg,#a78bfa,#7c3aed);
-    box-shadow:0 5px 0 #4c1d95, inset 0 2px 0 rgba(255,255,255,.3);
-  }
-  .face.front::after{content:'?';font-size:28px;font-weight:900;color:#fff;}
-  .face.back{
-    transform:rotateY(180deg);background:#fff;border:2px solid #ddd6fe;
-    box-shadow:0 5px 0 #c7d2fe;font-size:28px;
-  }
-  .card.matched .face.back{background:#bbf7d0;border-color:#4ade80;box-shadow:0 5px 0 #16a34a}
-
-  /* المختلف */
-  .odd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;perspective:900px}
-  .odd-item{
-    aspect-ratio:1/1;font-size:32px;border:none;cursor:pointer;font-family:inherit;
-    background:linear-gradient(#fff,#eef2ff);border-radius:16px;
-    box-shadow:0 6px 0 #a5b4fc, inset 0 2px 0 #fff;transition:transform .08s;
-  }
-  .odd-item:active{transform:translateY(5px);box-shadow:0 1px 0 #a5b4fc}
-  .odd-item.correct{background:linear-gradient(#86efac,#22c55e);box-shadow:0 6px 0 #15803d}
-  .odd-item.wrong{background:linear-gradient(#fca5a5,#ef4444);box-shadow:0 6px 0 #b91c1c;animation:shake .4s}
-
-  /* المؤثرات */
-  .feedback{
-    position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) scale(0);
-    font-size:22px;font-weight:900;padding:10px 20px;border-radius:16px;
-    pointer-events:none;opacity:0;white-space:nowrap;z-index:20;
-  }
-  .feedback.show{animation:fbIn .3s cubic-bezier(.34,1.56,.64,1) forwards}
-  @keyframes fbIn{
-    0%{transform:translate(-50%,-50%) scale(.5);opacity:0}
-    60%{transform:translate(-50%,-50%) scale(1.1);opacity:1}
-    100%{transform:translate(-50%,-50%) scale(1);opacity:1}
-  }
-  .feedback.good{background:linear-gradient(#4ade80,#22c55e);color:#fff;box-shadow:0 8px 0 #15803d}
-  .feedback.bad{background:linear-gradient(#f87171,#ef4444);color:#fff;box-shadow:0 8px 0 #b91c1c}
-
-  .confetti-layer{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:15;border-radius:26px}
-  .confetti{position:absolute;width:8px;height:12px;border-radius:2px;top:-20px;animation:fall linear forwards}
-  @keyframes fall{to{transform:translateY(600px) rotate(720deg);opacity:0}}
-
-  @media (max-width:420px){
-    .emoji{font-size:26px}
-    .opt{font-size:26px;padding:11px 4px}
-    .brand{font-size:14px}
-    .term{min-width:40px;height:48px;font-size:20px}
-    .q-text{font-size:17px}
-    .cmp-num{font-size:34px}
-    .card span{font-size:22px}
-    .game-card{font-size:12px;padding:10px 4px}
-    .game-card .g-icon{font-size:24px}
-  }
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Tahoma,Arial;
+ background:linear-gradient(140deg,#101b43,#25206c,#472b85);
+ color:white;
+ text-align:center;
+ min-height:100vh;
+}
+header{
+ padding:20px 10px;
+ background:#111a3b;
+ box-shadow:0 4px 20px #0005;
+}
+h1{margin:5px;color:#ffdf59;font-size:27px}
+header p{margin:8px;color:#cbd5ff}
+.stats{
+ display:flex;
+ justify-content:center;
+ gap:12px;
+ flex-wrap:wrap;
+ margin:12px;
+}
+.stat{
+ background:#ffffff18;
+ padding:10px 18px;
+ border-radius:15px;
+}
+#menu{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
+ gap:13px;
+ padding:15px;
+ max-width:850px;
+ margin:auto;
+}
+.game-card{
+ border:2px solid #ffffff30;
+ border-radius:20px;
+ padding:17px 8px;
+ background:linear-gradient(145deg,#ffffff25,#ffffff09);
+ color:white;
+ cursor:pointer;
+ font-size:16px;
+ transition:.2s;
+}
+.game-card:active{transform:scale(.94)}
+.game-card .emoji{font-size:38px;display:block;margin-bottom:9px}
+#play{
+ display:none;
+ max-width:700px;
+ margin:15px auto;
+ padding:15px;
+}
+#scene{
+ width:100%;
+ height:280px;
+ border-radius:22px;
+ overflow:hidden;
+ background:linear-gradient(#86d8ff,#d5f4ff);
+}
+#question{
+ font-size:22px;
+ font-weight:bold;
+ margin:20px 5px;
+ color:#ffe477;
+}
+#answers{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:12px;
+}
+.answer{
+ padding:17px 5px;
+ font-size:21px;
+ font-weight:bold;
+ color:white;
+ background:#5949b7;
+ border:2px solid #ffffff50;
+ border-radius:17px;
+ cursor:pointer;
+}
+.answer:active{transform:scale(.95)}
+#message{
+ min-height:40px;
+ font-size:20px;
+ margin:15px;
+ font-weight:bold;
+}
+.controls{
+ display:flex;
+ justify-content:center;
+ gap:10px;
+ flex-wrap:wrap;
+}
+.btn{
+ padding:12px 22px;
+ border:0;
+ border-radius:14px;
+ background:#ffcf45;
+ color:#222;
+ font-size:17px;
+ font-weight:bold;
+ cursor:pointer;
+}
+#back{background:#ff7575}
+footer{padding:20px;color:#aebcff}
+@media(max-width:400px){
+ #scene{height:230px}
+ #question{font-size:19px}
+ .answer{font-size:18px}
+}
 </style>
+
+<script type="importmap">
+{
+ "imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"
+ }
+}
+</script>
 </head>
+
 <body>
 
-<div class="bg-shapes" id="bgShapes"></div>
-
-<div class="scene">
-  <div class="app" id="app">
-    <header>
-      <div class="brand"><span class="logo">🧠</span><span>ألعاب الذكاء</span></div>
-      <div class="stats">
-        <div class="stat" title="النقاط">⭐<span id="score">0</span></div>
-        <div class="stat" title="المستوى">🏆<span id="level">1</span></div>
-        <div class="stat" title="التتابع">🔥<span id="streak">0</span></div>
-        <button id="homeBtn" class="icon-btn" title="القائمة">🏠</button>
-      </div>
-    </header>
-
-    <div class="progress"><div class="bar" id="bar"></div></div>
-
-    <main id="stage"></main>
-
-    <div id="feedback" class="feedback"></div>
-    <div id="confetti" class="confetti-layer"></div>
-  </div>
+<header>
+<h1>🧠 عالم العباقرة 3D</h1>
+<p>نتعلم ونلعب ونصبح أذكى!</p>
+<div class="stats">
+ <div class="stat">⭐ النقاط: <span id="score">0</span></div>
+ <div class="stat">🏆 المستوى: <span id="level">1</span></div>
+ <div class="stat">🎮 الألعاب: 10</div>
 </div>
+</header>
 
-<script>
-/* ================= أدوات مساعدة آمنة ================= */
-const $ = id => document.getElementById(id);
-const stage = $('stage'), feedbackEl = $('feedback'), confettiLayer = $('confetti'), appEl = $('app');
-const scoreEl = $('score'), levelEl = $('level'), streakEl = $('streak'), barEl = $('bar');
+<section id="menu">
+ <button class="game-card" onclick="startGame(0)">
+  <span class="emoji">🧩</span>تركيب الأشكال
+ </button>
+ <button class="game-card" onclick="startGame(1)">
+  <span class="emoji">🎨</span>الألوان
+ </button>
+ <button class="game-card" onclick="startGame(2)">
+  <span class="emoji">🔢</span>العد والأرقام
+ </button>
+ <button class="game-card" onclick="startGame(3)">
+  <span class="emoji">🐘</span>الحيوانات
+ </button>
+ <button class="game-card" onclick="startGame(4)">
+  <span class="emoji">🧠</span>الذاكرة
+ </button>
+ <button class="game-card" onclick="startGame(5)">
+  <span class="emoji">🔷</span>الشكل المختلف
+ </button>
+ <button class="game-card" onclick="startGame(6)">
+  <span class="emoji">🔤</span>الحروف العربية
+ </button>
+ <button class="game-card" onclick="startGame(7)">
+  <span class="emoji">➕</span>الحساب
+ </button>
+ <button class="game-card" onclick="startGame(8)">
+  <span class="emoji">🧱</span>ترتيب المكعبات
+ </button>
+ <button class="game-card" onclick="startGame(9)">
+  <span class="emoji">💡</span>الألغاز
+ </button>
+</section>
 
-const EMOJIS = ['🍎','🍌','🍓','🐤','🐟','⭐','🎈','🚗','🌸','🍪','🐞','🧸','🍇','🦋','🍊','🐸','🍉','🌼','🚀','🐬','🍭','🎁'];
-const GOOD = ['أحسنت! 🎉','رائع جداً! ⭐','أنت عبقري! 🧠','ممتاز! 👏','بطل! 🏅','صحيح! 💚'];
-const BAD  = ['حاول مرة ثانية 💪','لا بأس، جرّب! 🤔','قريب جداً! 🙂'];
+<section id="play">
+ <div id="scene"></div>
+ <div id="question"></div>
+ <div id="answers"></div>
+ <div id="message"></div>
+ <div class="controls">
+  <button class="btn" onclick="nextQuestion()">السؤال التالي ➡️</button>
+  <button class="btn" id="back" onclick="goHome()">القائمة الرئيسية</button>
+ </div>
+</section>
 
-const randInt = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
-const pick = a => a[Math.floor(Math.random()*a.length)];
-function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+<footer>عالم العباقرة 3D © 2026</footer>
 
-/* ================= الخلفية العائمة (محمية من الأخطاء) ================= */
-try {
-  (function bg(){
-    const box = $('bgShapes');
-    if(!box) return;
-    const items = ['🔢','➕','➖','⭐','🎲','🧩','🔺','🎈','🍎','🧠'];
-    for(let i=0;i<12;i++){
-      const s = document.createElement('span');
-      s.textContent = pick(items);
-      s.style.left = randInt(2,92) + '%';
-      s.style.top  = randInt(2,92) + '%';
-      s.style.fontSize = randInt(28,56) + 'px';
-      s.style.animationDelay = (-Math.random()*14) + 's';
-      s.style.animationDuration = randInt(11,20) + 's';
-      box.appendChild(s);
-    }
-  })();
-} catch(e) { console.warn("Background failed", e); }
+<script type="module">
+import * as THREE from "three";
 
-/* ================= الأصوات ================= */
-let actx = null;
-function audio(){ if(!actx){ try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } return actx; }
-function tone(freq, dur, type='sine', vol=0.12, when=0){
-  const ctx = audio(); if(!ctx) return;
-  try {
-    const o = ctx.createOscillator(), g = ctx.createGain();
-    o.type = type; o.frequency.value = freq;
-    o.connect(g); g.connect(ctx.destination);
-    const t = ctx.currentTime + when;
-    g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(vol, t + 0.02);
-    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
-    o.start(t); o.stop(t + dur + 0.05);
-  } catch(e){}
+let score=0;
+let level=1;
+let currentGame=0;
+let currentAnswer="";
+let answered=false;
+let questionNumber=0;
+
+const $=id=>document.getElementById(id);
+
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x91ddff);
+
+const camera=new THREE.PerspectiveCamera(
+ 45,1,0.1,100
+);
+camera.position.set(0,3,8);
+camera.lookAt(0,0,0);
+
+const renderer=new THREE.WebGLRenderer({
+ antialias:true,
+ alpha:false
+});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.shadowMap.enabled=true;
+$("scene").appendChild(renderer.domElement);
+
+scene.add(new THREE.HemisphereLight(0xffffff,0x7180a0,2));
+
+const light=new THREE.DirectionalLight(0xffffff,3);
+light.position.set(4,7,5);
+light.castShadow=true;
+scene.add(light);
+
+let objects=[];
+let clock=new THREE.Clock();
+
+function resize(){
+ const w=$("scene").clientWidth;
+ const h=$("scene").clientHeight;
+ camera.aspect=w/h;
+ camera.updateProjectionMatrix();
+ renderer.setSize(w,h);
 }
-const sndCorrect = () => { tone(523.25,.12,'sine',.13,0); tone(659.25,.12,'sine',.13,.10); tone(783.99,.24,'sine',.13,.20); };
-const sndWrong   = () => { tone(220,.18,'sawtooth',.07,0); tone(160,.26,'sawtooth',.07,.13); };
-const sndClick   = () => tone(720,.06,'triangle',.06);
+window.addEventListener("resize",resize);
+resize();
 
-/* ================= حالة اللعبة ================= */
-const state = {
-  screen:'hub', game:null, score:0, streak:0, level:1,
-  correctInLevel:0, q:null, firstTry:true, locked:true, mem:null
+function clear3D(){
+ objects.forEach(o=>scene.remove(o));
+ objects=[];
+}
+
+function addObject(mesh){
+ mesh.castShadow=true;
+ mesh.position.y=0.7;
+ scene.add(mesh);
+ objects.push(mesh);
+ return mesh;
+}
+
+function shape(type,color,x=0,z=0){
+ let geometry;
+
+ if(type==="cube")
+  geometry=new THREE.BoxGeometry(1.5,1.5,1.5);
+
+ else if(type==="sphere")
+  geometry=new THREE.SphereGeometry(.85,32,32);
+
+ else if(type==="cone")
+  geometry=new THREE.ConeGeometry(.9,1.7,4);
+
+ else if(type==="cylinder")
+  geometry=new THREE.CylinderGeometry(.7,.7,1.5,32);
+
+ else if(type==="torus")
+  geometry=new THREE.TorusGeometry(.7,.25,16,40);
+
+ else
+  geometry=new THREE.OctahedronGeometry(1);
+
+ const material=new THREE.MeshStandardMaterial({
+  color:color,
+  roughness:.35,
+  metalness:.1
+ });
+
+ const mesh=new THREE.Mesh(geometry,material);
+ mesh.position.x=x;
+ mesh.position.z=z;
+ return addObject(mesh);
+}
+
+function ground(){
+ const floor=new THREE.Mesh(
+  new THREE.BoxGeometry(20,.2,20),
+  new THREE.MeshStandardMaterial({color:0x8bd38b})
+ );
+ floor.position.y=-.4;
+ scene.add(floor);
+ objects.push(floor);
+}
+
+function show3D(type,color=0xffcc44){
+ clear3D();
+ ground();
+ shape(type,color);
+}
+
+function showMany(type,color,count){
+ clear3D();
+ ground();
+ for(let i=0;i<count;i++){
+  let x=(i-(count-1)/2)*1.15;
+  shape(type,color,x,0);
+ }
+ camera.position.set(0,3,9);
+ camera.lookAt(0,0,0);
+}
+
+function shuffle(arr){
+ return [...arr].sort(()=>Math.random()-.5);
+}
+
+function makeQuestion(q,answers,correct){
+ $("question").textContent=q;
+ $("answers").innerHTML="";
+ $("message").textContent="";
+ currentAnswer=String(correct);
+ answered=false;
+
+ shuffle(answers).forEach(answer=>{
+  let btn=document.createElement("button");
+  btn.className="answer";
+  btn.textContent=answer;
+  btn.onclick=()=>checkAnswer(answer);
+  $("answers").appendChild(btn);
+ });
+}
+
+function checkAnswer(answer){
+ if(answered)return;
+ answered=true;
+
+ if(String(answer)===currentAnswer){
+  score+=10;
+  $("message").textContent="🎉 أحسنت! إجابة صحيحة +10";
+  $("message").style.color="#9aff9a";
+ }else{
+  $("message").textContent="😊 حاول مرة أخرى! الإجابة: "+currentAnswer;
+  $("message").style.color="#ffb1b1";
+ }
+
+ level=Math.floor(score/100)+1;
+ $("score").textContent=score;
+ $("level").textContent=level;
+}
+
+const colors=[
+ {name:"أحمر",value:0xff3333},
+ {name:"أزرق",value:0x2266ff},
+ {name:"أصفر",value:0xffdd00},
+ {name:"أخضر",value:0x22bb55},
+ {name:"بنفسجي",value:0xaa44dd}
+];
+
+const shapes=[
+ {name:"مكعب",type:"cube"},
+ {name:"كرة",type:"sphere"},
+ {name:"مخروط",type:"cone"},
+ {name:"أسطوانة",type:"cylinder"},
+ {name:"حلقة",type:"torus"},
+ {name:"شكل ماسي",type:"diamond"}
+];
+
+const animals=[
+ {name:"أسد",emoji:"🦁",letter:"أ"},
+ {name:"فيل",emoji:"🐘",letter:"ف"},
+ {name:"قطة",emoji:"🐱",letter:"ق"},
+ {name:"كلب",emoji:"🐶",letter:"ك"},
+ {name:"أرنب",emoji:"🐰",letter:"أ"},
+ {name:"سمكة",emoji:"🐟",letter:"س"}
+];
+
+const riddles=[
+ {q:"ما الشيء الذي له أسنان ولا يعض؟",a:"المشط",o:["المشط","الكتاب","الكرسي","الباب"]},
+ {q:"ما الشيء الذي نراه في الليل ولا نراه في النهار؟",a:"النجوم",o:["النجوم","الشمس","البيت","الطاولة"]},
+ {q:"كم عدد أرجل العنكبوت؟",a:"8",o:["4","6","8","10"]},
+ {q:"ما الحيوان الذي يسمى ملك الغابة؟",a:"الأسد",o:["الفيل","الأسد","القطة","الحصان"]}
+];
+
+function randomItem(arr){
+ return arr[Math.floor(Math.random()*arr.length)];
+}
+
+// اللعبة 1: تركيب الأشكال
+function game0(){
+ let s=randomItem(shapes);
+ show3D(s.type,0xffa833);
+ makeQuestion(
+  "ما اسم هذا الشكل ثلاثي الأبعاد؟",
+  shuffle([s.name,...shapes.filter(x=>x.name!==s.name).slice(0,3).map(x=>x.name)]),
+  s.name
+ );
+}
+
+// اللعبة 2: الألوان
+function game1(){
+ let c=randomItem(colors);
+ show3D("sphere",c.value);
+ makeQuestion(
+  "ما اسم لون الكرة؟",
+  shuffle([c.name,...colors.filter(x=>x.name!==c.name).slice(0,3).map(x=>x.name)]),
+  c.name
+ );
+}
+
+// اللعبة 3: العد
+function game2(){
+ let n=Math.floor(Math.random()*8)+2;
+ showMany("sphere",0xffa72b,n);
+ let options=shuffle([n,n+1,n-1,n+2]).map(String);
+ makeQuestion("كم كرة موجودة أمامك؟",options,String(n));
+}
+
+// اللعبة 4: الحيوانات
+function game3(){
+ let a=randomItem(animals);
+ show3D("sphere",0xffcc77);
+ makeQuestion(
+  "ما اسم الحيوان "+a.emoji+" ؟",
+  shuffle([a.name,...animals.filter(x=>x.name!==a.name).slice(0,3).map(x=>x.name)]),
+  a.name
+ );
+}
+
+// اللعبة 5: الذاكرة
+function game4(){
+ const sequence=shuffle(colors).slice(0,3);
+ clear3D();
+ ground();
+
+ sequence.forEach((c,i)=>{
+  shape("sphere",c.value,(i-1)*2);
+ });
+
+ let target=randomItem(sequence);
+ makeQuestion(
+  "تذكّر الألوان! أي لون ظهر في المجموعة؟",
+  shuffle([target.name,...colors.filter(c=>!sequence.includes(c)).slice(0,3).map(c=>c.name)]),
+  target.name
+ );
+}
+
+// اللعبة 6: الشكل المختلف
+function game5(){
+ let different=randomItem(shapes);
+ let same=shapes.find(s=>s.name!==different.name);
+
+ clear3D();
+ ground();
+
+ for(let i=0;i<4;i++){
+  shape(
+   i===3?different.type:same.type,
+   i===3?0xff3333:0x2266ff,
+   (i-1.5)*1.5
+  );
+ }
+
+ makeQuestion(
+  "أي شكل مختلف عن بقية الأشكال؟",
+  shuffle([different.name,same.name,"كرة","مكعب"]),
+  different.name
+ );
+}
+
+// اللعبة 7: الحروف
+function game6(){
+ let a=randomItem(animals);
+ show3D("cube",0xffcc33);
+ makeQuestion(
+  "بأي حرف يبدأ اسم "+a.emoji+" "+a.name+"؟",
+  shuffle([a.letter,"ب","م","س","ت"]),
+  a.letter
+ );
+}
+
+// اللعبة 8: الحساب
+function game7(){
+ let a=Math.floor(Math.random()*10)+1;
+ let b=Math.floor(Math.random()*10)+1;
+ let result=a+b;
+
+ showMany("cube",0x3388ff,Math.min(a,6));
+ makeQuestion(
+  "احسب: "+a+" + "+b+" = ؟",
+  shuffle([result,result+1,result-1,result+2]).map(String),
+  result
+ );
+}
+
+// اللعبة 9: ترتيب المكعبات
+function game8(){
+ let nums=shuffle([1,2,3,4]);
+ clear3D();
+ ground();
+
+ nums.forEach((n,i)=>{
+  const mesh=shape("cube",0x3377ff,(i-1.5)*1.6);
+  mesh.scale.set(.5+n*.13,.5+n*.13,.5+n*.13);
+ });
+
+ makeQuestion(
+  "ما أكبر رقم في ترتيب المكعبات؟",
+  shuffle(nums).map(String),
+  "4"
+ );
+}
+
+// اللعبة 10: الألغاز
+function game9(){
+ let r=randomItem(riddles);
+ show3D("octahedron",0xffcc33);
+ makeQuestion(r.q,r.o,r.a);
+}
+
+const games=[
+ game0,game1,game2,game3,game4,
+ game5,game6,game7,game8,game9
+];
+
+window.startGame=function(index){
+ currentGame=index;
+ questionNumber=0;
+ $("menu").style.display="none";
+ $("play").style.display="block";
+ resize();
+ nextQuestion();
 };
 
-function updateHUD(){
-  if(scoreEl) scoreEl.textContent = state.score;
-  if(levelEl) levelEl.textContent = state.level;
-  if(streakEl) streakEl.textContent = state.streak;
-  if(barEl) barEl.style.width = Math.min(100, state.correctInLevel/4*100) + '%';
-}
+window.nextQuestion=function(){
+ questionNumber++;
+ games[currentGame]();
+};
 
-/* ================= مولّدات الاختيارات ================= */
-function makeOptions(correct, min, max, count=4){
-  const set = new Set([correct]);
-  let guard = 0;
-  while(set.size < count && guard++ < 500){
-    let d = randInt(-4,4); if(d === 0) d = 1;
-    const v = correct + d;
-    if(v >= min && v <= max) set.add(v);
+window.goHome=function(){
+ $("play").style.display="none";
+ $("menu").style.display="grid";
+ clear3D();
+};
+
+function animate(){
+ requestAnimationFrame(animate);
+ const t=clock.getElapsedTime();
+
+ objects.forEach((obj,i)=>{
+  if(obj.geometry && obj.position.y>-.3){
+   obj.rotation.y+=.008;
+   if(obj.geometry.type!=="BoxGeometry"){
+    obj.position.y=.7+Math.sin(t*2+i)*.09;
+   }
   }
-  let f = min;
-  while(set.size < count && f <= max){ if(!set.has(f)) set.add(f); f++; }
-  while(set.size < count) set.add(randInt(min,max));
-  return shuffle([...set]);
-}
-function emojiOptions(correct, count=4){
-  const set = new Set([correct]);
-  for(const e of shuffle([...EMOJIS])){ if(set.size >= count) break; set.add(e); }
-  return shuffle([...set]);
-}
+ });
 
-/* ================= الأسئلة ================= */
-function qCount(){
-  const max = state.level <= 1 ? 5 : state.level <= 3 ? 8 : 12;
-  const n = randInt(1, max);
-  const e = pick(EMOJIS);
-  let visual = '<div class="emoji-grid">';
-  for(let i=0;i<n;i++) visual += `<span class="emoji" style="animation-delay:${i*50}ms">${e}</span>`;
-  visual += '</div>';
-  return { text:'كم عدد الأشياء؟', visual, answer:n, options: makeOptions(n,1,12) };
+ renderer.render(scene,camera);
 }
-function qMissing(){
-  const step = state.level <= 1 ? 1 : state.level <= 3 ? 2 : pick([2,3,5,10]);
-  const start = randInt(1, step === 1 ? 8 : 5);
-  const terms = [];
-  for(let i=0;i<5;i++) terms.push(start + i*step);
-  const idx = randInt(1,3);
-  const visual = '<div class="seq">' + terms.map((t,i)=>
-      i === idx ? '<span class="term blank">?</span>' : `<span class="term">${t}</span>`
-    ).join('') + '</div>';
-  return { text:'ما هو الرقم الناقص؟', visual, answer:terms[idx], options: makeOptions(terms[idx], Math.max(0, terms[idx]-10), terms[idx]+10) };
-}
-function qAdd(){
-  const m = state.level <= 1 ? 3 : state.level <= 3 ? 5 : 9;
-  const a = randInt(1,m), b = randInt(1,m), e = pick(EMOJIS);
-  const grp = n => '<div class="grp">' + Array.from({length:n},(_,i)=>`<span class="emoji" style="animation-delay:${i*50}ms">${e}</span>`).join('') + '</div>';
-  const visual = `<div class="add-row">${grp(a)}<span class="op">+</span>${grp(b)}<span class="op">=</span><span class="qmark">?</span></div>`;
-  return { text:'كم مجموع الأشياء؟', visual, answer:a+b, options: makeOptions(a+b, 1, 20) };
-}
-function qSub(){
-  const m = state.level <= 1 ? 5 : state.level <= 3 ? 8 : 12;
-  const a = randInt(2,m), b = randInt(1,a-1), e = pick(EMOJIS);
-  let visual = '<div class="emoji-grid">';
-  for(let i=0;i<a;i++) visual += `<span class="emoji ${i<b?'gone':''}" style="animation-delay:${i*50}ms">${e}</span>`;
-  visual += '</div>';
-  return { text:`لدينا ${a}، أُخذ منها ${b}. كم بقي؟`, visual, answer:a-b, options: makeOptions(a-b, 0, a) };
-}
-function qShapes(){
-  const uniq = [['⚪','دائرة'],['🟥','مربع'],['🔺','مثلث'],['⭐','نجمة'],['❤️','قلب'],['🔶','معين']];
-  const sh = pick(uniq);
-  const opts = new Set([sh[1]]);
-  for(const n of shuffle(uniq.map(s=>s[1]))){ if(opts.size>=4) break; opts.add(n); }
-  return { text:'ما اسم هذا الشكل؟', visual:`<div class="big-shape">${sh[0]}</div>`, answer:sh[1], options: shuffle([...opts]) };
-}
-const COLORS = [['#ef4444','أحمر'],['#3b82f6','أزرق'],['#22c55e','أخضر'],['#eab308','أصفر'],['#f97316','برتقالي'],['#a855f7','بنفسجي'],['#ec4899','وردي']];
-function qColors(){
-  const c = pick(COLORS);
-  const opts = new Set([c[1]]);
-  for(const n of shuffle(COLORS.map(x=>x[1]))){ if(opts.size>=4) break; opts.add(n); }
-  return { text:'ما هذا اللون؟', visual:`<div class="swatch" style="background:${c[0]}"></div>`, answer:c[1], options: shuffle([...opts]) };
-}
-function qCompare(){
-  const max = state.level <= 1 ? 10 : state.level <= 3 ? 20 : 50;
-  let a = randInt(1,max), b = randInt(1,max);
-  while(b === a) b = randInt(1,max);
-  const big = Math.random() < 0.5;
-  const visual = `<div class="cmp"><div class="cmp-num">${a}</div><div class="op">?</div><div class="cmp-num">${b}</div></div>`;
-  return { text: big ? 'أي الرقمين أكبر؟' : 'أي الرقمين أصغر؟', visual, answer: big ? Math.max(a,b) : Math.min(a,b), options: shuffle([a,b]) };
-}
-function qPattern(){
-  const items = shuffle([...EMOJIS]).slice(0,3);
-  const period = state.level <= 2 ? 2 : 3;
-  const seq = [];
-  for(let i=0;i<5;i++) seq.push(items[i % period]);
-  const visual = '<div class="seq">' + seq.map((e,i)=>
-      i === 4 ? '<span class="term blank">?</span>' : `<span class="term">${e}</span>`
-    ).join('') + '</div>';
-  return { text:'ما هو الشيء التالي في النمط؟', visual, answer:seq[4], options: emojiOptions(seq[4]) };
-}
+animate();
 
-/* ================= المؤثرات ================= */
-function showFeedback(text, kind){
-  feedbackEl.textContent = text;
-  feedbackEl.className = 'feedback ' + kind;
-  void feedbackEl.offsetWidth;
-  feedbackEl.classList.add('show');
-  clearTimeout(showFeedback.t);
-  showFeedback.t = setTimeout(() => { feedbackEl.className = 'feedback ' + kind; }, 950);
-}
-function confetti(){
-  const colors = ['#f43f5e','#f59e0b','#22c55e','#3b82f6','#a855f7','#eab308'];
-  for(let i=0;i<20;i++){
-    const d = document.createElement('div');
-    d.className = 'confetti';
-    d.style.left = Math.random()*100 + '%';
-    d.style.background = colors[i % colors.length];
-    d.style.animationDuration = (1 + Math.random()*0.8) + 's';
-    d.style.animationDelay = (Math.random()*0.25) + 's';
-    confettiLayer.appendChild(d);
-    setTimeout(() => d.remove(), 2400);
-  }
-}
-
-/* ================= التسجيل ================= */
-function onCorrect(btn){
-  state.locked = true;
-  if(btn) btn.classList.add('correct');
-  sndCorrect(); confetti(); showFeedback(pick(GOOD),'good');
-  state.score += state.firstTry ? 10 : 5;
-  if(state.firstTry) state.streak++;
-  state.correctInLevel++;
-  if(state.correctInLevel >= 4){
-    state.level = Math.min(state.level + 1, 6);
-    state.correctInLevel = 0;
-  }
-  updateHUD();
-}
-function onWrong(btn){
-  state.firstTry = false;
-  state.streak = 0;
-  if(btn){ btn.classList.add('wrong'); btn.disabled = true; }
-  sndWrong(); showFeedback(pick(BAD),'bad');
-  updateHUD();
-}
-
-/* ====
+</script>
+</body>
+</html>
