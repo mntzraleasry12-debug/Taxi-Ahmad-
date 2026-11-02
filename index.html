@@ -22,9 +22,7 @@
   --red: #d94444;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -32,11 +30,10 @@ body {
   color: #ffffff;
   font-family: 'Tajawal', sans-serif;
   -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
 }
 
-button, input {
-  font-family: inherit;
-}
+button, input { font-family: inherit; }
 
 button {
   cursor: pointer;
@@ -45,7 +42,7 @@ button {
 }
 
 button:active {
-  transform: scale(0.98);
+  transform: scale(0.96);
   opacity: 0.9;
 }
 
@@ -59,9 +56,7 @@ button:active {
   overflow: hidden;
 }
 
-.hidden {
-  display: none !important;
-}
+.hidden { display: none !important; }
 
 header {
   background: #191a20;
@@ -72,42 +67,15 @@ header {
   border-bottom: 1px solid var(--card-border);
 }
 
-.logo {
-  font-size: 24px;
-  font-weight: 900;
-  color: var(--gold);
-  letter-spacing: 0.5px;
-}
+.logo { font-size: 24px; font-weight: 900; color: var(--gold); letter-spacing: 0.5px; }
+.logo span { color: #fff; }
+.sub { color: #888; font-size: 11px; margin-top: 2px; }
 
-.logo span {
-  color: #fff;
-}
+main { padding: 20px; }
 
-.sub {
-  color: #888;
-  font-size: 11px;
-  margin-top: 2px;
-}
-
-main {
-  padding: 20px;
-}
-
-h2 {
-  margin: 5px 0 15px;
-  font-weight: 800;
-}
-
-h3 {
-  margin: 0 0 12px;
-  font-weight: 700;
-}
-
-p {
-  color: #999;
-  font-size: 14px;
-  line-height: 1.6;
-}
+h2 { margin: 5px 0 15px; font-weight: 800; }
+h3 { margin: 0 0 12px; font-weight: 700; }
+p { color: #999; font-size: 14px; line-height: 1.6; }
 
 .card {
   background: var(--card);
@@ -119,7 +87,7 @@ p {
 }
 
 /* ======================================
-   واجهة البداية الفخمة (Landing / Welcome Screen)
+   واجهة البداية الفخمة
    ====================================== */
 #welcome-screen {
   min-height: 100vh;
@@ -143,54 +111,16 @@ p {
   50% { transform: translateY(-8px); }
 }
 
-.welcome-brand h1 {
-  font-size: 36px;
-  font-weight: 900;
-  color: var(--gold);
-  margin: 0;
-  letter-spacing: 1px;
-}
+.welcome-brand h1 { font-size: 36px; font-weight: 900; color: var(--gold); margin: 0; letter-spacing: 1px; }
+.welcome-brand h1 span { color: #fff; }
+.welcome-brand p { color: #aaa; font-size: 15px; margin-top: 10px; }
 
-.welcome-brand h1 span {
-  color: #fff;
-}
+.welcome-features { display: flex; justify-content: space-around; margin: 20px 0; }
+.feat-item { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); padding: 15px; border-radius: 16px; width: 30%; }
+.feat-item span { font-size: 24px; display: block; margin-bottom: 5px; }
+.feat-item b { font-size: 12px; color: #ddd; }
 
-.welcome-brand p {
-  color: #aaa;
-  font-size: 15px;
-  margin-top: 10px;
-}
-
-.welcome-features {
-  display: flex;
-  justify-content: space-around;
-  margin: 20px 0;
-}
-
-.feat-item {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--card-border);
-  padding: 15px;
-  border-radius: 16px;
-  width: 30%;
-}
-
-.feat-item span {
-  font-size: 24px;
-  display: block;
-  margin-bottom: 5px;
-}
-
-.feat-item b {
-  font-size: 12px;
-  color: #ddd;
-}
-
-.welcome-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+.welcome-actions { display: flex; flex-direction: column; gap: 12px; }
 
 /* ======================================
    باقي العناصر والتصميم
@@ -204,27 +134,11 @@ p {
   border: 1px solid rgba(255, 196, 0, 0.15);
 }
 
-.hero .car {
-  font-size: 55px;
-  margin-bottom: 5px;
-}
+.hero .car { font-size: 55px; margin-bottom: 5px; }
+.hero h2 { color: var(--gold); font-size: 22px; }
 
-.hero h2 {
-  color: var(--gold);
-  font-size: 22px;
-}
-
-.field {
-  margin: 15px 0;
-}
-
-.field label {
-  display: block;
-  margin-bottom: 8px;
-  color: #ccc;
-  font-size: 13px;
-  font-weight: 500;
-}
+.field { margin: 15px 0; }
+.field label { display: block; margin-bottom: 8px; color: #ccc; font-size: 13px; font-weight: 500; }
 
 input {
   width: 100%;
@@ -238,183 +152,62 @@ input {
   transition: all 0.2s;
 }
 
-input:focus {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(255, 196, 0, 0.15);
-}
+input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255, 196, 0, 0.15); }
 
 .btn {
-  width: 100%;
-  padding: 15px;
-  background: var(--gold);
-  color: #111;
-  border-radius: 14px;
-  font-weight: 900;
-  font-size: 16px;
-  margin: 6px 0;
+  width: 100%; padding: 15px; background: var(--gold); color: #111;
+  border-radius: 14px; font-weight: 900; font-size: 16px; margin: 6px 0;
   box-shadow: 0 4px 15px rgba(255, 196, 0, 0.2);
 }
+.btn:hover { background: var(--gold-hover); box-shadow: 0 0 20px rgba(255, 196, 0, 0.5); }
 
-.btn.dark {
-  background: #282a33;
-  color: #fff;
-  box-shadow: none;
-  border: 1px solid #3d3f4a;
-}
+.btn.dark { background: #282a33; color: #fff; box-shadow: none; border: 1px solid #3d3f4a; }
+.btn.green { background: var(--green); color: #07170f; box-shadow: 0 4px 15px rgba(22, 199, 132, 0.2); }
+.btn.red { background: var(--red); color: #fff; box-shadow: 0 4px 15px rgba(217, 68, 68, 0.2); }
 
-.btn.green {
-  background: var(--green);
-  color: #07170f;
-  box-shadow: 0 4px 15px rgba(22, 199, 132, 0.2);
-}
+.roles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+.role { background: #16171c; border: 2px solid var(--card-border); padding: 18px; text-align: center; border-radius: 16px; color: #fff; }
+.role.active { border-color: var(--gold); background: #241f0a; }
+.role div { font-size: 32px; margin-bottom: 5px; }
+.role b { font-size: 14px; }
 
-.btn.red {
-  background: var(--red);
-  color: #fff;
-  box-shadow: 0 4px 15px rgba(217, 68, 68, 0.2);
-}
+#map { height: 300px; width: 100%; border-radius: 16px; z-index: 1; margin-bottom: 12px; border: 1px solid var(--card-border); }
 
-.roles {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 10px;
-}
+.search { display: flex; gap: 8px; margin: 12px 0; }
+.search input { flex: 1; min-width: 0; }
+.search button { background: var(--gold); border-radius: 12px; padding: 0 20px; font-weight: 800; color: #111; }
 
-.role {
-  background: #16171c;
-  border: 2px solid var(--card-border);
-  padding: 18px;
-  text-align: center;
-  border-radius: 16px;
-  color: #fff;
-}
+.quick { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+.quick button { background: var(--card); border: 1px solid var(--card-border); color: #fff; padding: 16px; border-radius: 16px; font-size: 14px; text-align: center; font-weight: 600; }
+.quick button span { display: block; font-size: 24px; margin-bottom: 6px; }
 
-.role.active {
-  border-color: var(--gold);
-  background: #241f0a;
-}
+.row { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin: 8px 0; }
+.gold { color: var(--gold); }
 
-.role div {
-  font-size: 32px;
-  margin-bottom: 5px;
-}
-
-.role b {
-  font-size: 14px;
-}
-
-#map {
-  height: 300px;
-  width: 100%;
-  border-radius: 16px;
-  z-index: 1;
-  margin-bottom: 12px;
-  border: 1px solid var(--card-border);
-}
-
-.search {
-  display: flex;
-  gap: 8px;
-  margin: 12px 0;
-}
-
-.search input {
-  flex: 1;
-  min-width: 0;
-}
-
-.search button {
-  background: var(--gold);
-  border-radius: 12px;
-  padding: 0 20px;
-  font-weight: 800;
-  color: #111;
-}
-
-.quick {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 15px;
-}
-
-.quick button {
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  color: #fff;
-  padding: 16px;
-  border-radius: 16px;
-  font-size: 14px;
-  text-align: center;
-  font-weight: 600;
-}
-
-.quick button span {
-  display: block;
-  font-size: 24px;
-  margin-bottom: 6px;
-}
-
-.row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  margin: 8px 0;
-}
-
-.gold {
-  color: var(--gold);
-}
-
-.trip {
-  padding: 16px;
-  background: #16171c;
-  border-radius: 16px;
-  margin: 12px 0;
-  border: 1px solid var(--card-border);
-}
-
-.small {
-  font-size: 12px;
-  color: #888;
-}
+.trip { padding: 16px; background: #16171c; border-radius: 16px; margin: 12px 0; border: 1px solid var(--card-border); }
+.small { font-size: 12px; color: #888; }
 
 #message {
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  right: 15px;
-  max-width: 480px;
-  margin: auto;
-  background: #1d1e26;
-  border: 1px solid var(--gold);
-  border-radius: 14px;
-  padding: 14px 20px;
-  z-index: 9999;
-  text-align: center;
-  display: none;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-  font-weight: 600;
-  font-size: 14px;
+  position: fixed; top: 15px; left: 15px; right: 15px; max-width: 480px; margin: auto;
+  background: #1d1e26; border: 1px solid var(--gold); border-radius: 14px; padding: 14px 20px;
+  z-index: 9999; text-align: center; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+  font-weight: 600; font-size: 14px;
 }
 
-.status {
-  color: var(--green);
-  font-weight: 700;
-}
+.status { color: var(--green); font-weight: 700; }
+.back-link { background: none; color: var(--gold); font-size: 14px; font-weight: 700; text-align: center; width: 100%; margin-top: 10px; padding: 8px; }
 
-.back-link {
-  background: none;
-  color: var(--gold);
-  font-size: 14px;
-  font-weight: 700;
-  text-align: center;
-  width: 100%;
-  margin-top: 10px;
-  padding: 8px;
+/* Loader CSS */
+.loader {
+  border: 3px solid rgba(255,255,255,0.1);
+  border-top: 3px solid var(--gold);
+  border-radius: 50%;
+  width: 20px; height: 20px;
+  animation: spin 1s linear infinite;
+  display: inline-block; vertical-align: middle;
+  margin-left: 8px;
 }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 </style>
 </head>
 
@@ -423,7 +216,7 @@ input:focus {
 
 <div class="app">
 
-<!-- 🌟 الواجهة الرئيسية الفخمة (WELCOME / LANDING SCREEN) -->
+<!-- 🌟 الواجهة الرئيسية -->
 <section id="welcome-screen">
   <div class="welcome-brand">
     <div class="big-icon">🚖</div>
@@ -432,18 +225,9 @@ input:focus {
   </div>
 
   <div class="welcome-features">
-    <div class="feat-item">
-      <span>⚡</span>
-      <b>سرعة بالطلب</b>
-    </div>
-    <div class="feat-item">
-      <span>🛡️</span>
-      <b>رحلات آمنة</b>
-    </div>
-    <div class="feat-item">
-      <span>💎</span>
-      <b>خدمة ملكية</b>
-    </div>
+    <div class="feat-item"><span>⚡</span><b>سرعة بالطلب</b></div>
+    <div class="feat-item"><span>🛡️</span><b>رحلات آمنة</b></div>
+    <div class="feat-item"><span>💎</span><b>خدمة ملكية</b></div>
   </div>
 
   <div class="welcome-actions">
@@ -452,7 +236,7 @@ input:focus {
   </div>
 </section>
 
-<!-- LOGIN / REGISTER SECTION -->
+<!-- LOGIN / REGISTER -->
 <section id="auth-screen" class="hidden">
 <header>
  <div><div class="logo">ROYAL <span>TAXI</span></div><div class="sub" id="authHeaderSub">تسجيل الدخول إلى حسابك</div></div>
@@ -467,23 +251,13 @@ input:focus {
 
  <h2>اختر نوع الحساب</h2>
  <div class="roles">
-  <button type="button" class="role active" id="roleCustomer" onclick="selectRole('customer')">
-   <div>👤</div><b>زبون</b>
-  </button>
-  <button type="button" class="role" id="roleDriver" onclick="selectRole('driver')">
-   <div>🚕</div><b>سائق</b>
-  </button>
+  <button type="button" class="role active" id="roleCustomer" onclick="selectRole('customer')"><div>👤</div><b>زبون</b></button>
+  <button type="button" class="role" id="roleDriver" onclick="selectRole('driver')"><div>🚕</div><b>سائق</b></button>
  </div>
 
  <div class="card">
-  <div class="field">
-   <label>رقم الهاتف</label>
-   <input id="phone" type="tel" placeholder="07XXXXXXXXX">
-  </div>
-  <div class="field">
-   <label>كلمة المرور</label>
-   <input id="password" type="password" placeholder="كلمة المرور">
-  </div>
+  <div class="field"><label>رقم الهاتف</label><input id="phone" type="tel" placeholder="07XXXXXXXXX"></div>
+  <div class="field"><label>كلمة المرور</label><input id="password" type="password" placeholder="كلمة المرور"></div>
 
   <div id="extra" class="hidden">
    <div class="field"><label>الاسم الكامل</label><input id="name" placeholder="اسمك الكامل"></div>
@@ -523,7 +297,7 @@ input:focus {
   <h3>🗺️ اختر وجهتك على الخريطة</h3>
   <div class="search">
    <input id="searchPlace" placeholder="ابحث عن منطقة أو شارع...">
-   <button type="button" onclick="searchPlace()">بحث</button>
+   <button type="button" id="searchBtn" onclick="searchPlace()">بحث</button>
   </div>
   <div id="map"></div>
   <p class="small">💡 انقر مباشرة على الخريطة لتحديد وجهتك بدقة.</p>
@@ -591,7 +365,6 @@ input:focus {
 
 </div>
 
-<!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
@@ -599,47 +372,35 @@ input:focus {
 
 const el = id => document.getElementById(id);
 
-function safeText(str) {
-  if (!str) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
-
-function notify(message) {
+// دالة التنبيهات المحسنة
+function notify(message, type = 'info') {
   const box = el('message');
   box.textContent = message;
   box.style.display = 'block';
+  
+  if (type === 'error') box.style.borderColor = 'var(--red)';
+  else if (type === 'success') box.style.borderColor = 'var(--green)';
+  else box.style.borderColor = 'var(--gold)';
+
   clearTimeout(window.msgTimer);
   window.msgTimer = setTimeout(() => box.style.display = 'none', 3500);
 }
 
-function read(key, fallback) {
-  try {
-    const val = localStorage.getItem(key);
-    return val ? JSON.parse(val) : fallback;
-  } catch(e) {
-    return fallback;
-  }
+// دالة تأمين النصوص
+function safeText(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 }
 
+function read(key, fallback) {
+  try { const val = localStorage.getItem(key); return val ? JSON.parse(val) : fallback; } catch(e) { return fallback; }
+}
 function write(key, value) {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-  } catch(e) {
-    console.error('LocalStorage write error', e);
-  }
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch(e) { console.error('LocalStorage write error', e); }
 }
 
 function users() { return read('royal_users', []); }
 function rides() { return read('royal_rides', []); }
-
-// ======================================
-// إدارة التنقل بين الواجهات
-// ======================================
 
 let role = 'customer';
 let isRegisterMode = false;
@@ -694,42 +455,40 @@ function submitAuth() {
   const phone = el('phone').value.trim();
   const password = el('password').value;
 
-  if (!phone || !password) {
-    notify('يرجى إدخال رقم الهاتف وكلمة المرور');
-    return;
-  }
+  if (!phone || !password) { notify('يرجى إدخال رقم الهاتف وكلمة المرور', 'error'); return; }
 
   let list = users();
   let found = list.find(u => u.phone === phone && u.role === role);
 
   if (isRegisterMode) {
-    if (found) { notify('هذا الحساب مسجل مسبقاً، يرجى تسجيل الدخول'); return; }
+    if (found) { notify('هذا الحساب مسجل مسبقاً، يرجى تسجيل الدخول', 'error'); return; }
 
     const name = el('name').value.trim();
-    if (!name) { notify('يرجى إدخال الاسم الكامل'); return; }
+    if (!name) { notify('يرجى إدخال الاسم الكامل', 'error'); return; }
+
+    const carType = role === 'driver' ? el('carType').value.trim() : '';
+    const plate = role === 'driver' ? el('plate').value.trim() : '';
+    const carColor = role === 'driver' ? el('carColor').value.trim() : '';
+
+    if (role === 'driver' && (!carType || !plate || !carColor)) {
+      notify('يرجى ادخال جميع بيانات المركبة', 'error'); return;
+    }
 
     const user = {
       id: String(Date.now()) + Math.random().toString(16).slice(2),
-      phone, password, name, role,
-      carType: role === 'driver' ? el('carType').value.trim() : '',
-      plate: role === 'driver' ? el('plate').value.trim() : '',
-      carColor: role === 'driver' ? el('carColor').value.trim() : '',
-      online: false
+      phone, 
+      password: btoa(password), // تشفير بسيط للكلمة
+      name, role, carType, plate, carColor, online: false
     };
-
-    if (role === 'driver' && (!user.carType || !user.plate)) {
-      notify('يرجى ادخال نوع السيارة ورقم اللوحة');
-      return;
-    }
 
     list.push(user);
     write('royal_users', list);
     me = user;
-    notify('تم إنشاء حسابك بنجاح! أهلاً بك');
+    notify('تم إنشاء حسابك بنجاح! أهلاً بك', 'success');
   } else {
-    if (!found || found.password !== password) {
-      notify('رقم الهاتف أو كلمة المرور غير صحيحة');
-      return;
+    // التحقق مع فك التشفير
+    if (!found || found.password !== btoa(password)) {
+      notify('رقم الهاتف أو كلمة المرور غير صحيحة', 'error'); return;
     }
     me = found;
   }
@@ -747,7 +506,7 @@ function showApp() {
   if (me.role === 'customer') {
     el('customer').classList.remove('hidden');
     el('welcome').textContent = safeText(me.name);
-    setTimeout(initMap, 250);
+    setTimeout(initMap, 300);
   } else {
     el('driver').classList.remove('hidden');
     el('driverWelcome').textContent = safeText(me.name);
@@ -760,32 +519,23 @@ function logout() {
   me = null;
   write('royal_session', null);
   goToWelcome();
-  notify('تم تسجيل الخروج بنجاح');
+  notify('تم تسجيل الخروج بنجاح', 'success');
 }
 
 // ======================================
-// الخريطة والتوجيه (Leaflet & OSRM)
+// الخريطة
 // ======================================
-
-let map = null;
-let pickup = null;
-let destination = null;
-let startMarker = null;
-let endMarker = null;
-let routeLine = null;
-let mapBusy = false;
+let map = null, pickup = null, destination = null, startMarker = null, endMarker = null, routeLine = null, mapBusy = false;
 
 function initMap() {
   if (!window.L) return;
   const mapEl = el('map');
-  if (!mapEl) return;
+  if (!mapEl || mapEl.clientHeight === 0) return;
 
   if (!map) {
-    map = L.map('map').setView([33.3152, 44.3661], 13); // الافتراضي (بغداد)
-
+    map = L.map('map').setView([33.3152, 44.3661], 13); // بغداد
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap'
+      maxZoom: 19, attribution: '© OpenStreetMap'
     }).addTo(map);
 
     map.on('click', e => {
@@ -796,19 +546,11 @@ function initMap() {
 }
 
 function getLocation() {
-  if (!navigator.geolocation) {
-    notify('المتصفح الخاص بك لا يدعم تحديد الموقع الجغرافي');
-    return;
-  }
-
-  notify('جاري تحديد موقعك الحالي...');
+  if (!navigator.geolocation) { notify('المتصفح لا يدعم تحديد الموقع', 'error'); return; }
+  notify('جاري تحديد موقعك...', 'info');
 
   navigator.geolocation.getCurrentPosition(pos => {
-    pickup = {
-      lat: pos.coords.latitude,
-      lng: pos.coords.longitude
-    };
-
+    pickup = { lat: pos.coords.latitude, lng: pos.coords.longitude };
     el('locationText').textContent = 'تم تحديد موقع الانطلاق بنجاح 📍';
     initMap();
 
@@ -819,7 +561,7 @@ function getLocation() {
     }
     if (destination) calculateRoute();
   }, err => {
-    notify('تعذر تحديد الموقع. يرجى تفعيل الـ GPS والسماح بالصلاحيات.');
+    notify('تعذر تحديد الموقع. تأكد من تفعيل GPS والصلاحيات.', 'error');
   }, { enableHighAccuracy: true, timeout: 15000 });
 }
 
@@ -829,24 +571,18 @@ function setDestination(lat, lng, name) {
 
   if (map) {
     if (endMarker) map.removeLayer(endMarker);
-    endMarker = L.marker([lat, lng]).addTo(map).bindPopup('الوجهة المطلوبة').openPopup();
+    endMarker = L.marker([lat, lng]).addTo(map).bindPopup('الوجهة').openPopup();
   }
-
-  if (pickup) {
-    calculateRoute();
-  } else {
-    notify('تم تثبيت الوجهة. يرجى تحديد موقع الانطلاق (GPS).');
-  }
+  if (pickup) calculateRoute();
+  else notify('تم تثبيت الوجهة. يرجى تحديد موقع الانطلاق (GPS).', 'info');
 }
 
 async function searchPlace() {
   const query = el('searchPlace').value.trim();
-  if (!query) { notify('يرجى كتابة اسم المنطقة أو الشارع للبحث'); return; }
-
+  if (!query) { notify('يرجى كتابة اسم المنطقة للبحث', 'error'); return; }
   if (mapBusy) return;
   mapBusy = true;
 
-  try {
-    const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`;
-    const response = await fetch(url);
-    if (!response.ok) throw new Error('S
+  const btn = el('searchBtn');
+  const originalText = btn.textContent;
+  btn.innerHTML 
