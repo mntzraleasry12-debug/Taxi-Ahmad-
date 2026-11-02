@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -209,6 +208,7 @@ border:1px solid #ffffff20;
 #map{
 width:100%;
 height:100%;
+background:#26374c;
 }
 
 .map-tag{
@@ -285,6 +285,10 @@ background:linear-gradient(120deg,#ffe0a0,#c18b3b);
 color:#182337;
 font-size:15px;
 font-weight:900;
+}
+
+.gold-btn:disabled{
+opacity:.6;
 }
 
 .outline-btn{
@@ -418,9 +422,15 @@ overflow-wrap:anywhere;
 display:flex;
 justify-content:space-between;
 align-items:center;
+gap:12px;
 padding:12px 0;
 border-bottom:1px solid #ffffff12;
 font-size:12px;
+}
+
+.row strong{
+text-align:left;
+overflow-wrap:anywhere;
 }
 
 .empty{
@@ -442,6 +452,8 @@ height:28px;
 background:#536077;
 border-radius:30px;
 position:relative;
+border:0;
+transition:.2s;
 }
 
 .switch:after{
@@ -500,6 +512,7 @@ background:none;
 border:0;
 color:white;
 font-size:25px;
+line-height:1;
 }
 
 .form-input{
@@ -513,6 +526,8 @@ color:white;
 outline:0;
 }
 
+/* حالات الرحلة */
+
 .status{
 display:inline-block;
 background:#26c98b20;
@@ -521,6 +536,21 @@ padding:6px 12px;
 border-radius:9px;
 font-size:11px;
 margin:8px 0;
+}
+
+.status.pending{
+background:#e9bd6920;
+color:var(--gold);
+}
+
+.status.accepted{
+background:#26c98b20;
+color:var(--green);
+}
+
+.status.canceled{
+background:#ef5b6720;
+color:var(--red);
 }
 
 .danger{
@@ -674,7 +704,7 @@ font-size:10px;
 </div>
 <div class="card">
 <div class="row"><span>الاسم</span><strong id="nameValue">غير محدد</strong></div>
-<div class="row"><span>نوع الحساب</span><strong id="roleValue"></strong></div>
+<div class="row"><span>نوع الحساب</span><strong id="roleValue">—</strong></div>
 <button class="outline-btn" onclick="openProfile()">تعديل الحساب</button>
 <button class="outline-btn danger" onclick="logout()">تسجيل الخروج</button>
 </div>
@@ -693,7 +723,7 @@ font-size:10px;
 <h3>حالة العمل</h3>
 <p id="driverState">أنت غير متصل</p>
 </div>
-<button class="switch" id="driverSwitch" onclick="toggleDriver()"></button>
+<button class="switch" id="driverSwitch" onclick="toggleDriver()" aria-label="حالة العمل"></button>
 </div>
 </div>
 
@@ -744,7 +774,7 @@ font-size:10px;
 <div class="row"><span>الوجهة</span><strong id="confirmDestination"></strong></div>
 <div class="row"><span>السيارة</span><strong id="confirmCar"></strong></div>
 <div class="row"><span>السعر</span><strong class="gold" id="confirmPrice"></strong></div>
-<button class="gold-btn" style="margin-top:20px" onclick="createTrip()">تأكيد الطلب</button>
+<button class="gold-btn" style="margin-top:20px" id="confirmTripBtn" onclick="createTrip()">تأكيد الطلب</button>
 </div>
 </div>
 
@@ -754,8 +784,8 @@ font-size:10px;
 <div class="modal-box">
 <button class="close" onclick="closeModal('profileModal')">×</button>
 <h2>بيانات الحساب</h2>
-<input class="form-input" id="userName" placeholder="الاسم الكامل">
-<input class="form-input" id="userPhone" placeholder="رقم الهاتف">
+<input class="form-input" id="userName" placeholder="الاسم الكامل" autocomplete="name">
+<input class="form-input" id="userPhone" placeholder="رقم الهاتف" inputmode="tel" autocomplete="tel">
 <button class="gold-btn" onclick="saveProfile()">حفظ البيانات</button>
 </div>
 </div>
@@ -768,7 +798,7 @@ font-size:10px;
 <h2>تفاصيل الرحلة</h2>
 <div class="status" id="tripStatus"></div>
 <div id="tripDetails"></div>
-<button class="outline-btn danger" onclick="cancelTrip()">إلغاء الرحلة</button>
+<button class="outline-btn danger" id="cancelTripBtn" onclick="cancelTrip()">إلغاء الرحلة</button>
 <button class="outline-btn" onclick="closeModal('tripModal')">إغلاق</button>
 </div>
 </div>
@@ -776,10 +806,10 @@ font-size:10px;
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-
 // ROYAL TAXI ENGINE
-
 "use strict";
+
+/* ================= الحالة ================= */
 
 let role = "";
 let selectedCar = "اقتصادية";
@@ -787,396 +817,233 @@ let selectedPrice = 3000;
 let driverOnline = false;
 let currentTrip = null;
 
-let trips = JSON.parse(
-localStorage.getItem("royal_trips") || "[]"
-);
+let trips = [];
+let user = { name: "مستخدم رويال", phone: "" };
 
-let user = JSON.parse(
-localStorage.getItem("royal_user") ||
-'{"name":"مستخدم رويال","phone":""}'
-);
+try {
+  trips = JSON.parse(localStorage.getItem("royal_trips") || "[]");
+  if (!Array.isArray(trips)) trips = [];
+} catch (e) { trips = []; }
+
+try {
+  const savedUser = JSON.parse(localStorage.getItem("royal_user") || "null");
+  if (savedUser && typeof savedUser === "object") {
+    user = {
+      name: savedUser.name || "مستخدم رويال",
+      phone: savedUser.phone || ""
+    };
+  }
+} catch (e) { /* تجاهل */ }
 
 let map = null;
 let pickupMarker = null;
 let destinationMarker = null;
 
-// ACCOUNT SYSTEM
+const DEFAULT_COORDS = [31.0579, 46.2573]; // بغداد تقريباً
+
+/* ================= الحساب ================= */
 
 function chooseRole(value){
+  role = value;
+  localStorage.setItem("royal_role", value);
 
-role = value;
+  document.getElementById("roleScreen").style.display = "none";
 
-localStorage.setItem("royal_role",value);
+  updateRole();
 
-document.getElementById("roleScreen").style.display="none";
-
-updateRole();
-
-if(!user.phone){
-openProfile();
-}
-
+  if (!user.phone) openProfile();
 }
 
 function updateRole(){
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
 
-document.querySelectorAll(".page").forEach(page=>{
-page.classList.remove("active");
-});
+  const isCustomer = role === "customer";
 
-document.getElementById("customerNav").style.display =
-role==="customer" ? "flex":"none";
+  document.getElementById("customerNav").style.display = isCustomer ? "flex" : "none";
+  document.getElementById("driverNav").style.display = isCustomer ? "none" : "flex";
 
-document.getElementById("driverNav").style.display =
-role==="driver" ? "flex":"none";
+  if (isCustomer) {
+    document.getElementById("homePage").classList.add("active");
+    ensureMapSize(); // الخريطة تُبنى الآن بعد ظهور الحاوية
+  } else {
+    document.getElementById("driverPage").classList.add("active");
+    renderDriverOrders();
+  }
 
-if(role==="customer"){
-document.getElementById("homePage").classList.add("active");
-}else if(role==="driver"){
-document.getElementById("driverPage").classList.add("active");
+  document.getElementById("roleValue").textContent =
+    isCustomer ? "زبون" : "سائق";
 }
 
-document.getElementById("roleValue").textContent =
-role==="customer" ? "زبون":"سائق";
+/* ================= التنقل ================= */
 
+function navigate(page, button){
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  const target = document.getElementById(page);
+  if (!target) return;
+  target.classList.add("active");
+
+  if (button && button.parentElement) {
+    button.parentElement.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+    button.classList.add("active");
+  }
+
+  if (page === "tripsPage") renderTrips();
+  if (page === "driverPage") renderDriverOrders();
+  if (page === "homePage") ensureMapSize();
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-// NAVIGATION
+/* ================= الخريطة ================= */
 
-function navigate(page,button){
-
-document.querySelectorAll(".page").forEach(p=>{
-p.classList.remove("active");
-});
-
-document.getElementById(page).classList.add("active");
-
-button.parentElement.querySelectorAll("button").forEach(b=>{
-b.classList.remove("active");
-});
-
-button.classList.add("active");
-
-if(page==="tripsPage") renderTrips();
-
-if(page==="driverPage") renderDriverOrders();
-
+function ensureMapSize(){
+  if (!map) return;
+  // الحاوية كانت مخفية عند التهيئة → يجب إعادة حساب الأبعاد
+  setTimeout(() => {
+    try { map.invalidateSize(); } catch (e) {}
+  }, 200);
 }
-
-// MAP
 
 function initMap(){
+  if (map || !window.L) return;
 
-if(!window.L) return;
+  const el = document.getElementById("map");
+  if (!el) return;
 
-map=L.map("map").setView([31.0579,46.2573],13);
+  map = L.map(el, { zoomControl: true }).setView(DEFAULT_COORDS, 13);
 
-L.tileLayer(
-"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-{
-attribution:"© OpenStreetMap"
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: "© OpenStreetMap"
+  }).addTo(map);
+
+  pickupMarker = L.marker(DEFAULT_COORDS, { draggable: true })
+    .addTo(map)
+    .bindPopup("موقع الانطلاق");
+
+  pickupMarker.on("dragend", () => {
+    const pos = pickupMarker.getLatLng();
+    document.getElementById("pickup").value =
+      pos.lat.toFixed(5) + "," + pos.lng.toFixed(5);
+  });
+
+  map.on("click", (e) => {
+    const lat = e.latlng.lat;
+    const lng = e.latlng.lng;
+
+    if (!destinationMarker) {
+      destinationMarker = L.marker([lat, lng], { draggable: true }).addTo(map);
+      destinationMarker.on("dragend", syncDestinationInput);
+    } else {
+      destinationMarker.setLatLng([lat, lng]);
+    }
+
+    document.getElementById("destination").value =
+      lat.toFixed(5) + "," + lng.toFixed(5);
+  });
+
+  ensureMapSize();
 }
-).addTo(map);
 
-pickupMarker=L.marker([31.0579,46.2573])
-.addTo(map)
-.bindPopup("موقع الانطلاق");
-
-map.on("click",function(e){
-
-const lat=e.latlng.lat;
-const lng=e.latlng.lng;
-
-if(!destinationMarker){
-
-destinationMarker=L.marker([lat,lng]).addTo(map);
-
-}else{
-
-destinationMarker.setLatLng([lat,lng]);
-
+function syncDestinationInput(){
+  if (!destinationMarker) return;
+  const pos = destinationMarker.getLatLng();
+  document.getElementById("destination").value =
+    pos.lat.toFixed(5) + "," + pos.lng.toFixed(5);
 }
 
-document.getElementById("destination").value =
-lat.toFixed(5)+","+lng.toFixed(5);
-
-});
-
-}
-
-// LOCATION
+/* ================= الموقع ================= */
 
 function getMyLocation(){
+  if (!navigator.geolocation) {
+    alert("تحديد الموقع غير مدعوم في هذا المتصفح");
+    return;
+  }
 
-if(!navigator.geolocation){
-alert("تحديد الموقع غير مدعوم");
-return;
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+
+      document.getElementById("pickup").value =
+        lat.toFixed(5) + "," + lng.toFixed(5);
+
+      if (map && pickupMarker) {
+        map.setView([lat, lng], 16);
+        pickupMarker.setLatLng([lat, lng]);
+      }
+    },
+    () => alert("تعذر تحديد الموقع، تحقق من صلاحية الموقع"),
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+  );
 }
 
-navigator.geolocation.getCurrentPosition(
+/* ================= السيارات ================= */
 
-position=>{
+function selectCar(element, name, price){
+  document.querySelectorAll(".car").forEach(car => car.classList.remove("selected"));
+  element.classList.add("selected");
 
-const lat=position.coords.latitude;
-const lng=position.coords.longitude;
-
-document.getElementById("pickup").value =
-lat.toFixed(5)+","+lng.toFixed(5);
-
-if(map){
-map.setView([lat,lng],16);
-pickupMarker.setLatLng([lat,lng]);
+  selectedCar = name;
+  selectedPrice = price;
 }
 
-},
-
-()=>{
-alert("تعذر تحديد الموقع، تحقق من صلاحية الموقع");
-},
-
-{
-enableHighAccuracy:true,
-timeout:15000
-}
-
-);
-
-}
-
-// CARS
-
-function selectCar(element,name,price){
-
-document.querySelectorAll(".car").forEach(car=>{
-car.classList.remove("selected");
-});
-
-element.classList.add("selected");
-
-selectedCar=name;
-selectedPrice=price;
-
-}
-
-// BOOKING
+/* ================= الحجز ================= */
 
 function showBooking(){
+  const pickup = document.getElementById("pickup").value.trim();
+  const destination = document.getElementById("destination").value.trim();
 
-const pickup=document.getElementById("pickup").value.trim();
-const destination=document.getElementById("destination").value.trim();
+  if (!pickup) { alert("حدد موقع الانطلاق"); return; }
+  if (!destination) { alert("حدد الوجهة"); return; }
 
-if(!pickup){
-alert("حدد موقع الانطلاق");
-return;
-}
+  document.getElementById("confirmPickup").textContent = pickup;
+  document.getElementById("confirmDestination").textContent = destination;
+  document.getElementById("confirmCar").textContent = selectedCar;
+  document.getElementById("confirmPrice").textContent =
+    selectedPrice.toLocaleString("en-US") + " د.ع";
 
-if(!destination){
-alert("حدد الوجهة");
-return;
-}
-
-document.getElementById("confirmPickup").textContent=pickup;
-document.getElementById("confirmDestination").textContent=destination;
-document.getElementById("confirmCar").textContent=selectedCar;
-document.getElementById("confirmPrice").textContent=
-selectedPrice.toLocaleString("en-US")+" د.ع";
-
-openModal("bookingModal");
-
+  openModal("bookingModal");
 }
 
 function createTrip(){
+  const btn = document.getElementById("confirmTripBtn");
+  if (btn.disabled) return; // منع الضغط المزدوج
 
-const trip={
-id:Date.now(),
-pickup:document.getElementById("pickup").value.trim(),
-destination:document.getElementById("destination").value.trim(),
-car:selectedCar,
-price:selectedPrice,
-status:"بانتظار السائق",
-date:new Date().toLocaleString("ar-IQ")
-};
+  const pickup = document.getElementById("pickup").value.trim();
+  const destination = document.getElementById("destination").value.trim();
 
-trips.unshift(trip);
+  if (!pickup || !destination) {
+    alert("بيانات الرحلة غير مكتملة");
+    return;
+  }
 
-saveTrips();
+  btn.disabled = true;
+  setTimeout(() => { btn.disabled = false; }, 800);
 
-currentTrip=trip;
+  const trip = {
+    id: Date.now(),
+    pickup,
+    destination,
+    car: selectedCar,
+    price: selectedPrice,
+    status: "بانتظار السائق",
+    date: new Date().toLocaleString("ar-IQ")
+  };
 
-closeModal("bookingModal");
+  trips.unshift(trip);
+  saveTrips();
 
-showTripDetails(trip);
+  currentTrip = trip;
 
-openModal("tripModal");
+  closeModal("bookingModal");
 
-renderTrips();
-renderDriverOrders();
+  renderTrips();
+  renderDriverOrders();
 
+  showTripDetails(trip);
+  openModal("tripModal");
 }
 
-function showTripDetails(trip){
-
-document.getElementById("tripStatus").textContent=trip.status;
-
-document.getElementById("tripDetails").innerHTML="";
-
-const details=[
-["رقم الرحلة",trip.id],
-["الانطلاق",trip.pickup],
-["الوجهة",trip.destination],
-["السيارة",trip.car],
-["السعر",trip.price.toLocaleString("en-US")+" د.ع"]
-];
-
-details.forEach(item=>{
-
-const div=document.createElement("div");
-div.className="row";
-
-const label=document.createElement("span");
-label.textContent=item[0];
-
-const value=document.createElement("strong");
-value.textContent=item[1];
-
-div.append(label,value);
-
-document.getElementById("tripDetails").appendChild(div);
-
-});
-
-}
-
-// TRIP STORAGE
-
-function saveTrips(){
-
-localStorage.setItem("royal_trips",JSON.stringify(trips));
-
-}
-
-function renderTrips(){
-
-const list=document.getElementById("tripList");
-
-list.innerHTML="";
-
-if(trips.length===0){
-
-list.innerHTML='<div class="empty"><span>🚕</span>لا توجد رحلات بعد</div>';
-
-return;
-
-}
-
-trips.forEach(trip=>{
-
-const card=document.createElement("div");
-card.className="card";
-
-const title=document.createElement("h3");
-title.textContent="رحلة رقم "+trip.id;
-
-const status=document.createElement("p");
-status.textContent=trip.status+" • "+trip.date;
-
-const route=document.createElement("p");
-route.textContent=trip.pickup+" ← "+trip.destination;
-
-const price=document.createElement("strong");
-price.className="gold";
-price.textContent=trip.price.toLocaleString("en-US")+" د.ع";
-
-card.append(title,status,route,price);
-
-card.onclick=()=>{
-currentTrip=trip;
-showTripDetails(trip);
-openModal("tripModal");
-};
-
-list.appendChild(card);
-
-});
-
-}
-
-// CANCEL TRIP
-
-function cancelTrip(){
-
-if(!currentTrip) return;
-
-if(currentTrip.status==="ملغاة"){
-closeModal("tripModal");
-return;
-}
-
-currentTrip.status="ملغاة";
-
-saveTrips();
-
-closeModal("tripModal");
-
-renderTrips();
-renderDriverOrders();
-
-alert("تم إلغاء الرحلة على هذا الجهاز");
-
-}
-
-// DRIVER
-
-function toggleDriver(){
-
-driverOnline=!driverOnline;
-
-document.getElementById("driverSwitch")
-.classList.toggle("on",driverOnline);
-
-document.getElementById("driverState").textContent=
-driverOnline ? "متصل ومستعد لاستقبال الرحلات":"غير متصل";
-
-renderDriverOrders();
-
-}
-
-function renderDriverOrders(){
-
-const box=document.getElementById("driverOrders");
-
-box.innerHTML="";
-
-if(!driverOnline){
-
-box.innerHTML='<div class="empty"><span>🔴</span>أنت غير متصل</div>';
-
-return;
-
-}
-
-const available=trips.filter(t=>t.status==="بانتظار السائق");
-
-if(available.length===0){
-
-box.innerHTML='<div class="empty"><span>📭</span>لا توجد طلبات حالياً</div>';
-
-return;
-
-}
-
-available.forEach(trip=>{
-
-const card=document.createElement("div");
-card.className="card";
-
-const title=document.createElement("h3");
-title.textContent="طلب رحلة جديد 🚕";
-
-const from=document.createElement("p");
-from.textContent="من: "+trip.pickup;
-
-const to=document.createElement("p");
-to.textContent="إلى: "+trip.destination;
-
-const price=document.createElement("st
+function statusClass(status){
+  if (status === "بان
