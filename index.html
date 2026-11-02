@@ -4,8 +4,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#7155f5">
-<title>ROYAL TAXI 3D</title>
+<meta name="theme-color" content="#201641">
+<title>ROYAL TAXI</title>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
@@ -13,459 +13,462 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{
  font-family:Tahoma,Arial,sans-serif;
- background:#f5f4ff;color:#25213d;
- padding-bottom:85px;
+ background:#f5f3ff;color:#28223f;
 }
-button,input,select{font-family:inherit}
-button{cursor:pointer}
-header{
- background:linear-gradient(135deg,#6145e9,#a35cf6);
- color:white;padding:20px;border-radius:0 0 30px 30px;
- box-shadow:0 8px 25px #7454ed44;
+button,input{font-family:inherit}
+button{cursor:pointer;border:0}
+.hidden{display:none!important}
+.app{max-width:520px;margin:auto;min-height:100vh;padding-bottom:85px}
+
+/* تسجيل الدخول */
+#loginScreen{
+ min-height:100vh;
+ background:linear-gradient(155deg,#20143f,#4931a0,#8157e9);
+ padding:30px 22px;
+ color:white;
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
 }
-.top{display:flex;justify-content:space-between;align-items:center}
-.logo{font-size:23px;font-weight:900}
-.logo span{color:#ffe45b}
-.user-icon{
- width:43px;height:43px;background:#fff;color:#7353ec;
- border-radius:15px;display:grid;place-items:center;font-size:23px;
+.brand{text-align:center;margin-bottom:30px}
+.brand-icon{
+ width:95px;height:95px;margin:auto auto 15px;
+ border-radius:30px;
+ display:grid;place-items:center;
+ font-size:52px;
+ background:linear-gradient(145deg,#ffe86b,#ffae32);
+ box-shadow:0 15px 35px #100a3d77;
+ transform:rotate(-5deg);
 }
-header p{font-size:13px;margin-top:13px;color:#eee}
-.container{max-width:600px;margin:auto;padding:15px}
-.page{display:none}
-.page.active{display:block}
-.card{
- background:white;padding:17px;border-radius:20px;
- margin-bottom:15px;box-shadow:0 5px 20px #3c28790d;
+.brand h1{font-size:29px;font-weight:900}
+.brand h1 span{color:#ffe66c}
+.brand p{color:#d8cef7;font-size:13px;margin-top:9px}
+.login-card{
+ background:#ffffff;
+ color:#27213d;
+ padding:23px;
+ border-radius:25px;
+ box-shadow:0 20px 50px #110a3d55;
 }
-.heading{font-size:17px;font-weight:900;margin-bottom:14px}
-.small{font-size:12px;color:#999;margin-top:5px}
-.hero{
- background:linear-gradient(145deg,#7558f3,#a85df4);
- border-radius:23px;padding:16px;color:white;
- margin-bottom:17px;overflow:hidden;
+.login-card h2{font-size:22px;margin-bottom:7px}
+.subtitle{font-size:12px;color:#888;margin-bottom:20px}
+.role-select{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.role{
+ padding:15px 5px;border-radius:15px;
+ background:#f4f1ff;color:#7664a8;
+ border:2px solid transparent;font-weight:bold;
 }
-.hero-title{font-size:21px;font-weight:900}
-.hero p{font-size:12px;color:#eee;margin-top:7px}
-#car3d{
- height:230px;width:100%;position:relative;
- border-radius:17px;overflow:hidden;
- background:radial-gradient(ellipse at center,#c6baff,#8064eb);
- margin-top:12px;touch-action:pan-y;
-}
-#car3d canvas{display:block;width:100%;height:100%}
-.car-caption{text-align:center;font-size:11px;color:#eee;margin-top:7px}
+.role.selected{border-color:#7955ef;background:#eee8ff;color:#6845e6}
+.role b{display:block;font-size:25px;margin-bottom:7px}
 .field{
+ background:#f5f3fa;border:1px solid #ece8f6;
+ border-radius:13px;padding:14px;margin-bottom:12px;
  display:flex;align-items:center;gap:10px;
- background:#f6f5fc;border-radius:13px;
- padding:13px;margin-bottom:10px;
 }
 .field input{
- background:none;border:0;outline:0;
- width:100%;font-size:14px;color:#29243c;
+ background:transparent;border:0;outline:none;
+ width:100%;font-size:14px;color:#29233e;
 }
-.dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
-.green{background:#20c997}
-.purple{background:#7955f5}
-.main-btn{
- width:100%;border:0;border-radius:14px;
- background:linear-gradient(120deg,#7155ef,#a15cf5);
- color:white;font-weight:900;font-size:15px;
- padding:15px;box-shadow:0 5px 0 #5135bd;
- transition:.15s;
+.primary{
+ width:100%;padding:16px;border-radius:14px;
+ background:linear-gradient(120deg,#7653ef,#a45ce8);
+ color:white;font-weight:900;font-size:16px;
+ box-shadow:0 5px 0 #5032b4;
 }
-.main-btn:active{transform:translateY(4px);box-shadow:0 1px 0 #5135bd}
-.secondary{
- background:#eeeaff;color:#7155ef;border:0;
- padding:12px;border-radius:12px;font-weight:bold;
-}
-.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.price{font-weight:900;color:#7354ed;font-size:19px}
-#map{height:220px;border-radius:15px;margin-bottom:12px}
-.car-options{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
-.car-option{
- border:2px solid #eee;background:white;border-radius:14px;
- padding:12px 4px;text-align:center;color:#444;
-}
-.car-option.selected{border-color:#7955f5;background:#f1edff;color:#7354ed}
-.car-option b{display:block;font-size:23px;margin-bottom:6px}
-.car-option small{font-size:11px}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stat{background:#f3efff;padding:15px;border-radius:15px;font-size:12px}
-.stat strong{display:block;font-size:19px;color:#7253ec;margin-top:8px}
-.tabs{display:flex;gap:8px;margin-bottom:15px}
-.tabs button{
- flex:1;padding:13px;border:0;border-radius:13px;
- background:white;color:#777;font-weight:bold;
-}
-.tabs button.active{background:#7355ef;color:white}
-.status{display:flex;justify-content:space-between;align-items:center}
-.switch{
- width:55px;height:29px;border:0;border-radius:30px;
- background:#ccc;position:relative;
-}
-.switch:after{
- content:"";position:absolute;right:4px;top:3px;
- width:23px;height:23px;border-radius:50%;background:white;
- transition:.2s;
-}
-.switch.on{background:#20c997}
-.switch.on:after{right:28px}
-.order{
- background:#f5f2ff;padding:14px;border-radius:14px;
- margin-top:10px;font-size:13px;line-height:2;
-}
-.order button{margin-top:8px}
-nav{
- position:fixed;bottom:0;left:0;right:0;z-index:100;
- display:flex;justify-content:space-around;
- background:white;padding:12px 4px calc(12px + env(safe-area-inset-bottom));
- box-shadow:0 -5px 20px #0000000c;
-}
-nav button{
- background:none;border:0;color:#999;font-size:11px;
- display:flex;flex-direction:column;align-items:center;gap:4px;
-}
-nav button span{font-size:21px}
-nav button.active{color:#7454ef;font-weight:bold}
-.modal{
- position:fixed;inset:0;background:#15102caa;
- z-index:200;display:none;align-items:center;justify-content:center;
+.primary:active{transform:translateY(3px);box-shadow:0 2px 0 #5032b4}
+.terms{text-align:center;color:#aaa;font-size:10px;margin-top:17px}
+
+/* الرئيسية */
+header{
  padding:20px;
+ color:white;
+ background:linear-gradient(130deg,#6847e9,#a05af2);
+ border-radius:0 0 28px 28px;
 }
-.modal.show{display:flex}
-.modal-content{
- background:white;border-radius:22px;padding:22px;
- width:100%;max-width:390px;
+.top{display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:22px;font-weight:900}
+.logo span{color:#ffe66c}
+.avatar{
+ background:#fff;color:#7755eb;
+ width:43px;height:43px;border-radius:14px;
+ display:grid;place-items:center;font-size:22px;
 }
-.modal-content h2{margin-bottom:15px}
-.modal-content input{
- width:100%;padding:14px;border:1px solid #eee;
- background:#f7f6fc;border-radius:12px;margin-bottom:10px;
- outline:none;
+header p{font-size:13px;margin-top:12px;color:#eee}
+.container{padding:17px}
+.hero{
+ background:linear-gradient(145deg,#4b359e,#8760ee);
+ border-radius:22px;padding:18px;color:white;
+ margin-bottom:17px;overflow:hidden;
 }
-.modal-content .main-btn{margin-top:8px}
-.notice{
- background:#fff4d5;color:#765400;
- padding:12px;border-radius:12px;font-size:12px;margin-bottom:12px;
+.hero h2{font-size:21px}
+.hero p{font-size:12px;color:#e6dcff;margin-top:6px}
+#car3d{
+ width:100%;height:210px;margin-top:12px;
+ border-radius:15px;overflow:hidden;
+ background:radial-gradient(ellipse,#c5b6ff,#7658d9);
+ touch-action:pan-y;
 }
-.hidden{display:none!important}
-footer{text-align:center;color:#aaa;font-size:11px;padding:12px}
+#car3d canvas{display:block;width:100%;height:100%}
+.card{
+ background:white;padding:17px;border-radius:20px;
+ margin-bottom:15px;box-shadow:0 4px 18px #36216c0c;
+}
+.heading{font-weight:900;font-size:17px;margin-bottom:14px}
+#map{height:190px;border-radius:14px;margin-bottom:13px}
+.field .dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+.green{background:#20c997}
+.purple{background:#7955ef}
+.car-options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.car{
+ background:#f5f3fc;border:2px solid transparent;
+ border-radius:13px;padding:12px 3px;text-align:center;
+ color:#39304e;
+}
+.car.selected{background:#eee9ff;border-color:#7856ed;color:#7049e8}
+.car b{display:block;font-size:24px;margin-bottom:6px}
+.car small{font-size:10px}
+.row{display:flex;justify-content:space-between;align-items:center;margin:15px 0}
+.price{font-size:19px;font-weight:900;color:#7552eb}
+.nav{
+ position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+ width:100%;max-width:520px;
+ display:flex;justify-content:space-around;
+ background:white;padding:12px 5px calc(12px + env(safe-area-inset-bottom));
+ box-shadow:0 -5px 20px #0000000c;z-index:10;
+}
+.nav button{background:none;color:#999;font-size:11px;display:flex;flex-direction:column;gap:5px;align-items:center}
+.nav button span{font-size:21px}
+.nav button.active{color:#7654ed;font-weight:bold}
+.page{display:none}
+.page.active{display:block}
+.notice{background:#fff3d7;color:#795700;padding:12px;border-radius:12px;font-size:12px;margin-bottom:12px}
 </style>
 </head>
 
 <body>
 
-<header>
- <div class="top">
-  <div class="logo">ROYAL <span>TAXI</span> 🚕</div>
-  <button class="user-icon" onclick="openLogin()">👤</button>
- </div>
- <p id="welcome">أهلاً بك! رحلتك تبدأ من هنا.</p>
-</header>
-
-<div class="container">
-
-<!-- الرئيسية -->
-<section id="homePage" class="page active">
-
- <div class="hero">
-  <div class="hero-title">رحلتك بأسلوب ملكي 👑</div>
-  <p>اطلب تكسي بكل سهولة وأمان</p>
-  <div id="car3d"></div>
-  <div class="car-caption">اسحب بإصبعك لتدوير السيارة ثلاثية الأبعاد</div>
+<!-- شاشة تسجيل الدخول -->
+<section id="loginScreen">
+ <div class="brand">
+  <div class="brand-icon">🚕</div>
+  <h1>ROYAL <span>TAXI</span></h1>
+  <p>رحلتك تبدأ معنا.. راحتك أولويتنا</p>
  </div>
 
- <div class="card">
-  <div class="heading">📍 احجز رحلتك</div>
-  <div id="map"></div>
-  <button class="secondary" onclick="getLocation()">📍 تحديد موقعي</button>
-  <div style="height:12px"></div>
+ <div class="login-card">
+  <h2>مرحباً بك 👋</h2>
+  <p class="subtitle">اختر نوع حسابك وسجل دخولك</p>
+
+  <div class="role-select">
+   <button class="role selected" id="passRole" onclick="chooseRole('passenger')">
+    <b>👤</b>أنا زبون
+   </button>
+   <button class="role" id="driverRole" onclick="chooseRole('driver')">
+    <b>🚕</b>أنا سائق
+   </button>
+  </div>
 
   <div class="field">
-   <span class="dot green"></span>
-   <input id="pickup" placeholder="من أين ننطلق؟">
+   <span>👤</span>
+   <input id="loginName" placeholder="الاسم الكامل">
   </div>
   <div class="field">
-   <span class="dot purple"></span>
-   <input id="destination" placeholder="إلى أين تريد الذهاب؟">
+   <span>📱</span>
+   <input id="loginPhone" type="tel" placeholder="رقم الهاتف">
   </div>
 
-  <div class="heading" style="margin-top:17px">🚘 اختر سيارتك</div>
-  <div class="car-options">
-   <button class="car-option selected" onclick="selectCar(this,2500,'اقتصادي')">
-    <b>🚗</b>اقتصادي<small>2500 د.ع</small>
-   </button>
-   <button class="car-option" onclick="selectCar(this,4000,'مريح')">
-    <b>🚙</b>مريح<small>4000 د.ع</small>
-   </button>
-   <button class="car-option" onclick="selectCar(this,6000,'عائلي')">
-    <b>🚐</b>عائلي<small>6000 د.ع</small>
-   </button>
-  </div>
-
-  <div class="row" style="margin:18px 0">
-   <span>السعر التقديري</span>
-   <span class="price" id="price">2,500 د.ع</span>
-  </div>
-  <button class="main-btn" onclick="requestRide()">🚕 اطلب تكسي الآن</button>
- </div>
-
- <div class="card">
-  <div class="heading">✨ خدماتنا</div>
-  <div class="stats">
-   <div class="stat">🚕<br>تكسي داخل المدينة<strong>متوفر</strong></div>
-   <div class="stat">🚙<br>سيارات مريحة<strong>متنوعة</strong></div>
-   <div class="stat">📍<br>تحديد الموقع<strong>GPS</strong></div>
-   <div class="stat">💰<br>أسعار واضحة<strong>اقتصادية</strong></div>
-  </div>
+  <button class="primary" onclick="login()">دخول إلى التطبيق ←</button>
+  <p class="terms">بالدخول أنت توافق على شروط استخدام رويال تكسي</p>
  </div>
 </section>
 
-<!-- السائق -->
-<section id="driverPage" class="page">
- <div class="card">
-  <div class="heading">🚕 لوحة السائق</div>
-  <div class="notice">هذه نسخة تجريبية، الطلبات محفوظة على هذا الجهاز فقط.</div>
-  <div class="status">
-   <div>
-    <b>استقبال الرحلات</b>
-    <p class="small" id="driverStatus">غير متصل</p>
+<!-- التطبيق بعد تسجيل الدخول -->
+<div id="mainApp" class="app hidden">
+
+<header>
+ <div class="top">
+  <div class="logo">ROYAL <span>TAXI</span> 🚕</div>
+  <div class="avatar">👤</div>
+ </div>
+ <p id="greeting">أهلاً بك في رويال تكسي</p>
+</header>
+
+<!-- الرئيسية -->
+<section id="homePage" class="page active">
+ <div class="container">
+
+  <div class="hero">
+   <h2>رحلتك بأسلوب ملكي 👑</h2>
+   <p>سيارتك بانتظارك.. أين تريد الذهاب؟</p>
+   <div id="car3d"></div>
+  </div>
+
+  <div class="card">
+   <div class="heading">📍 حدد رحلتك</div>
+   <div id="map"></div>
+   <button onclick="getLocation()" style="background:#eeeaff;color:#7552ec;padding:11px;border-radius:10px;margin-bottom:12px">📍 موقعي الحالي</button>
+
+   <div class="field">
+    <span class="dot green"></span>
+    <input id="pickup" placeholder="موقع الانطلاق">
    </div>
-   <button class="switch" id="driverSwitch" onclick="toggleDriver()"></button>
-  </div>
-  <div class="stats" style="margin-top:17px">
-   <div class="stat">📦 الطلبات<strong id="ordersCount">0</strong></div>
-   <div class="stat">💵 الأرباح<strong id="earnings">0 د.ع</strong></div>
-  </div>
- </div>
+   <div class="field">
+    <span class="dot purple"></span>
+    <input id="destination" placeholder="الوجهة">
+   </div>
 
- <div class="card">
-  <div class="heading">📋 الطلبات الجديدة</div>
-  <div id="driverOrders">لا توجد طلبات حالياً.</div>
- </div>
+   <div class="heading" style="margin-top:15px">🚘 نوع السيارة</div>
+   <div class="car-options">
+    <button class="car selected" onclick="selectCar(this,2500)"><b>🚗</b>اقتصادي<small>2500 د.ع</small></button>
+    <button class="car" onclick="selectCar(this,4000)"><b>🚙</b>مريح<small>4000 د.ع</small></button>
+    <button class="car" onclick="selectCar(this,6000)"><b>🚐</b>عائلي<small>6000 د.ع</small></button>
+   </div>
 
- <div class="card">
-  <div class="heading">بيانات السائق</div>
-  <div class="field"><input id="driverName" placeholder="اسم السائق"></div>
-  <div class="field"><input id="driverPhone" placeholder="رقم الهاتف"></div>
-  <button class="main-btn" onclick="saveDriver()">حفظ بياناتي</button>
+   <div class="row">
+    <span>السعر التقديري</span>
+    <span class="price" id="price">2,500 د.ع</span>
+   </div>
+   <button class="primary" onclick="requestRide()">🚕 اطلب تكسي الآن</button>
+  </div>
+
+  <div class="card">
+   <div class="heading">⭐ خدمات رويال</div>
+   🚕 تكسي داخل المدينة
+   <p style="margin-top:13px">🚙 سيارات عائلية</p>
+   <p style="margin-top:13px">📍 تحديد الموقع</p>
+  </div>
  </div>
 </section>
 
 <!-- الرحلات -->
 <section id="ridesPage" class="page">
- <div class="card">
-  <div class="heading">📜 سجل الرحلات</div>
-  <div id="history">لا توجد رحلات حتى الآن.</div>
+ <div class="container">
+  <div class="card">
+   <div class="heading">📜 رحلاتي</div>
+   <div id="history">لا توجد رحلات حالياً.</div>
+  </div>
  </div>
 </section>
 
 <!-- الحساب -->
 <section id="accountPage" class="page">
- <div class="card">
-  <div class="heading">👤 حساب الزبون</div>
-  <div class="field"><input id="userName" placeholder="الاسم الكامل"></div>
-  <div class="field"><input id="userPhone" placeholder="رقم الهاتف"></div>
-  <button class="main-btn" onclick="saveAccount()">حفظ الحساب</button>
- </div>
- <div class="card">
-  <div class="heading">ℹ️ حول التطبيق</div>
-  ROYAL TAXI 3D
-  <p class="small">خدمة النقل الذكية - العراق</p>
+ <div class="container">
+  <div class="card">
+   <div class="heading">👤 حسابي</div>
+   <p id="accountName"></p>
+   <p id="accountPhone" style="margin-top:12px"></p>
+   <button class="primary" style="margin-top:20px" onclick="logout()">تسجيل الخروج</button>
+  </div>
  </div>
 </section>
 
-</div>
+<!-- لوحة السائق -->
+<section id="driverPage" class="page">
+ <div class="container">
+  <div class="card">
+   <div class="heading">🚕 لوحة السائق</div>
+   <div class="notice">الطلبات في هذه النسخة تجريبية ومحلية على الجهاز.</div>
+   <button class="primary" id="onlineBtn" onclick="toggleOnline()">تشغيل استقبال الطلبات</button>
+   <p id="driverState" style="margin-top:15px;color:#888">غير متصل</p>
+  </div>
+  <div class="card">
+   <div class="heading">📋 الطلبات</div>
+   <div id="orders">لا توجد طلبات.</div>
+  </div>
+ </div>
+</section>
 
-<nav>
- <button class="active" id="navHome" onclick="showPage('home')"><span>🏠</span>الرئيسية</button>
- <button id="navDriver" onclick="openLogin('driver')"><span>🚕</span>السائق</button>
- <button id="navRides" onclick="showPage('rides')"><span>📜</span>رحلاتي</button>
+<nav class="nav">
+ <button id="navHome" class="active" onclick="showPage('home')"><span>🏠</span>الرئيسية</button>
+ <button id="navRides" onclick="showPage('rides')"><span>🚕</span>الرحلات</button>
  <button id="navAccount" onclick="showPage('account')"><span>👤</span>حسابي</button>
 </nav>
 
-<!-- نافذة تسجيل الدخول -->
-<div class="modal" id="loginModal">
- <div class="modal-content">
-  <h2 id="loginTitle">تسجيل الدخول</h2>
-  <p class="small" style="margin-bottom:15px">أدخل معلوماتك للمتابعة</p>
-  <input id="loginName" placeholder="الاسم الكامل">
-  <input id="loginPhone" placeholder="رقم الهاتف" type="tel">
-  <button class="main-btn" onclick="login()">دخول</button>
-  <button class="secondary" style="width:100%;margin-top:12px" onclick="closeLogin()">إلغاء</button>
- </div>
 </div>
-
-<footer>ROYAL TAXI © 2026</footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <script>
-// =========================
-// إعدادات التطبيق
-// =========================
-let currentRole="guest";
-let loginRole="passenger";
+let selectedRole="passenger";
+let currentUser=null;
 let selectedPrice=2500;
-let selectedType="اقتصادي";
-let driverOnline=false;
 let orders=[];
 let history=[];
-let earnings=0;
-let orderNumber=0;
+let driverOnline=false;
 let map=null,marker=null;
 let scene,camera,renderer,carGroup;
-let animationId=null;
 
-const $=id=>document.getElementById(id);
-const money=n=>Number(n).toLocaleString("en-US")+" د.ع";
+function $(id){return document.getElementById(id)}
 
-// =========================
-// سيارة ثلاثية الأبعاد
-// =========================
+// اختيار نوع الحساب
+function chooseRole(role){
+ selectedRole=role;
+ $("passRole").classList.toggle("selected",role==="passenger");
+ $("driverRole").classList.toggle("selected",role==="driver");
+}
+
+// تسجيل الدخول
+function login(){
+ let name=$("loginName").value.trim();
+ let phone=$("loginPhone").value.trim();
+
+ if(name.length<2){
+  alert("يرجى كتابة الاسم");
+  return;
+ }
+ if(!/^[0-9+\-\s]{7,16}$/.test(phone)){
+  alert("يرجى إدخال رقم هاتف صحيح");
+  return;
+ }
+
+ currentUser={name,phone,role:selectedRole};
+ localStorage.setItem("royalUser",JSON.stringify(currentUser));
+ openApp();
+}
+
+function openApp(){
+ $("loginScreen").classList.add("hidden");
+ $("mainApp").classList.remove("hidden");
+
+ $("greeting").textContent="أهلاً بك "+currentUser.name;
+ $("accountName").textContent="الاسم: "+currentUser.name;
+ $("accountPhone").textContent="الهاتف: "+currentUser.phone;
+
+ if(currentUser.role==="driver"){
+  showPage("driver");
+ }else{
+  showPage("home");
+ }
+}
+
+function logout(){
+ localStorage.removeItem("royalUser");
+ currentUser=null;
+ $("mainApp").classList.add("hidden");
+ $("loginScreen").classList.remove("hidden");
+ $("loginName").value="";
+ $("loginPhone").value="";
+ chooseRole("passenger");
+}
+
+// الصفحات
+function showPage(page){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+
+ if(page==="home"){
+  $("homePage").classList.add("active");
+  $("navHome").classList.add("active");
+  setTimeout(initMap,150);
+ }
+ if(page==="rides"){
+  $("ridesPage").classList.add("active");
+  $("navRides").classList.add("active");
+  renderHistory();
+ }
+ if(page==="account"){
+  $("accountPage").classList.add("active");
+  $("navAccount").classList.add("active");
+ }
+ if(page==="driver"){
+  $("driverPage").classList.add("active");
+  renderOrders();
+ }
+}
+
+// السيارة ثلاثية الأبعاد
 function init3D(){
- const container=$("car3d");
- if(!container||!window.THREE)return;
+ const el=$("car3d");
+ if(!el||!window.THREE||renderer)return;
 
  scene=new THREE.Scene();
- scene.background=new THREE.Color(0x9279ed);
+ scene.background=new THREE.Color(0x9276e8);
 
- camera=new THREE.PerspectiveCamera(
-  40,container.clientWidth/container.clientHeight,0.1,100
- );
+ camera=new THREE.PerspectiveCamera(40,el.clientWidth/el.clientHeight,.1,100);
  camera.position.set(5,4,7);
- camera.lookAt(0,0.7,0);
+ camera.lookAt(0,.7,0);
 
- renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
- renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
- renderer.setSize(container.clientWidth,container.clientHeight);
- container.appendChild(renderer.domElement);
+ renderer=new THREE.WebGLRenderer({antialias:true});
+ renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+ renderer.setSize(el.clientWidth,el.clientHeight);
+ el.appendChild(renderer.domElement);
 
- scene.add(new THREE.HemisphereLight(0xffffff,0x6550aa,2));
-
- const light=new THREE.DirectionalLight(0xffffff,2.5);
+ scene.add(new THREE.HemisphereLight(0xffffff,0x6850aa,2));
+ const light=new THREE.DirectionalLight(0xffffff,3);
  light.position.set(5,8,5);
  scene.add(light);
 
  const floor=new THREE.Mesh(
-  new THREE.CircleGeometry(4,64),
-  new THREE.MeshStandardMaterial({color:0x927ce9,roughness:1})
+  new THREE.CircleGeometry(4,48),
+  new THREE.MeshStandardMaterial({color:0x9d87ec})
  );
  floor.rotation.x=-Math.PI/2;
- floor.position.y=-0.1;
+ floor.position.y=-.1;
  scene.add(floor);
 
  carGroup=new THREE.Group();
  scene.add(carGroup);
 
- const yellow=new THREE.MeshStandardMaterial({
-  color:0xffd52f,metalness:.25,roughness:.3
- });
- const black=new THREE.MeshStandardMaterial({
-  color:0x20283d,metalness:.4,roughness:.25
- });
- const glass=new THREE.MeshStandardMaterial({
-  color:0x8dd9ff,metalness:.5,roughness:.15
- });
+ const yellow=new THREE.MeshStandardMaterial({color:0xffd52f,metalness:.25,roughness:.3});
+ const glass=new THREE.MeshStandardMaterial({color:0x8ddfff,metalness:.3,roughness:.2});
+ const black=new THREE.MeshStandardMaterial({color:0x202333});
  const white=new THREE.MeshStandardMaterial({color:0xffffff});
 
- function part(geometry,material,x,y,z){
-  const mesh=new THREE.Mesh(geometry,material);
-  mesh.position.set(x,y,z);
-  carGroup.add(mesh);
-  return mesh;
+ function add(geo,mat,x,y,z){
+  let obj=new THREE.Mesh(geo,mat);
+  obj.position.set(x,y,z);
+  carGroup.add(obj);
+  return obj;
  }
 
- // جسم السيارة
- part(new THREE.BoxGeometry(3,0.65,1.35),yellow,0,.65,0);
- part(new THREE.BoxGeometry(1.65,.65,1.15),yellow,-.15,1.15,0);
+ add(new THREE.BoxGeometry(3,.65,1.35),yellow,0,.65,0);
+ add(new THREE.BoxGeometry(1.65,.65,1.15),yellow,-.15,1.15,0);
+ add(new THREE.BoxGeometry(.7,.43,1.17),glass,.28,1.17,0);
+ add(new THREE.BoxGeometry(.5,.4,1.17),glass,-.55,1.17,0);
 
- // الزجاج الأمامي والخلفي
- part(new THREE.BoxGeometry(.7,.43,1.17),glass,.28,1.17,0);
- part(new THREE.BoxGeometry(.5,.4,1.17),glass,-.55,1.17,0);
-
- // غطاء المحرك والصندوق
- part(new THREE.BoxGeometry(.85,.12,1.3),yellow,1.05,.98,0);
- part(new THREE.BoxGeometry(.65,.12,1.3),yellow,-1.05,.98,0);
-
- // المصابيح
- part(new THREE.BoxGeometry(.08,.2,.3),white,1.53,.68,.4);
- part(new THREE.BoxGeometry(.08,.2,.3),white,1.53,.68,-.4);
-
- // لوحة سيارة
- part(new THREE.BoxGeometry(.06,.16,.48),white,1.54,.48,0);
-
- // عجلات
- for(const x of [-1,1]){
-  for(const z of [-.72,.72]){
-   const wheel=new THREE.Mesh(
-    new THREE.CylinderGeometry(.39,.39,.22,32),
-    black
-   );
+ for(let x of [-1,1]){
+  for(let z of [-.72,.72]){
+   let wheel=add(new THREE.CylinderGeometry(.39,.39,.22,24),black,x,.39,z);
    wheel.rotation.x=Math.PI/2;
-   wheel.position.set(x,.39,z);
-   carGroup.add(wheel);
-
-   const rim=new THREE.Mesh(
-    new THREE.CylinderGeometry(.19,.19,.23,24),
-    white
-   );
+   let rim=add(new THREE.CylinderGeometry(.19,.19,.23,24),white,x,.39,z);
    rim.rotation.x=Math.PI/2;
-   rim.position.set(x,.39,z);
-   carGroup.add(rim);
   }
  }
-
- // إشارة التكسي
- part(new THREE.BoxGeometry(.55,.15,.35),yellow,-.1,1.58,0);
- const textBoard=part(new THREE.BoxGeometry(.35,.06,.2),white,-.1,1.69,0);
-
+ add(new THREE.BoxGeometry(.55,.15,.35),yellow,-.1,1.58,0);
  carGroup.rotation.y=-.5;
 
- let dragging=false,lastX=0;
- renderer.domElement.addEventListener("pointerdown",e=>{
-  dragging=true;lastX=e.clientX;
- });
+ let drag=false,lastX=0;
+ renderer.domElement.addEventListener("pointerdown",e=>{drag=true;lastX=e.clientX});
  renderer.domElement.addEventListener("pointermove",e=>{
-  if(!dragging)return;
-  carGroup.rotation.y+=(e.clientX-lastX)*.012;
-  lastX=e.clientX;
+  if(drag){carGroup.rotation.y+=(e.clientX-lastX)*.012;lastX=e.clientX}
  });
- window.addEventListener("pointerup",()=>dragging=false);
+ window.addEventListener("pointerup",()=>drag=false);
 
  function animate(){
-  animationId=requestAnimationFrame(animate);
-  if(!dragging)carGroup.rotation.y+=.003;
-  carGroup.position.y=Math.sin(Date.now()*.0015)*.06;
+  requestAnimationFrame(animate);
+  if(!drag)carGroup.rotation.y+=.003;
+  carGroup.position.y=Math.sin(Date.now()*.0015)*.05;
   renderer.render(scene,camera);
  }
  animate();
 
  window.addEventListener("resize",()=>{
   if(!renderer)return;
-  const w=container.clientWidth,h=container.clientHeight;
-  camera.aspect=w/h;
+  camera.aspect=el.clientWidth/el.clientHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize(w,h);
+  renderer.setSize(el.clientWidth,el.clientHeight);
  });
 }
 
-// =========================
 // الخريطة
-// =========================
 function initMap(){
  if(map||!window.L)return;
  map=L.map("map").setView([31.057,46.257],13);
-
  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
   attribution:"© OpenStreetMap"
  }).addTo(map);
-
- marker=L.marker([31.057,46.257]).addTo(map)
- .bindPopup("الناصرية - العراق");
-
+ marker=L.marker([31.057,46.257]).addTo(map);
  map.on("click",e=>{
   marker.setLatLng(e.latlng);
   $("pickup").value="موقع محدد على الخريطة";
@@ -473,218 +476,118 @@ function initMap(){
 }
 
 function getLocation(){
- if(!navigator.geolocation){
-  alert("تحديد الموقع غير مدعوم");
-  return;
- }
+ if(!navigator.geolocation){alert("تحديد الموقع غير مدعوم");return}
  navigator.geolocation.getCurrentPosition(pos=>{
   let lat=pos.coords.latitude,lng=pos.coords.longitude;
   $("pickup").value="موقعي الحالي";
-  if(map){
-   map.setView([lat,lng],16);
-   marker.setLatLng([lat,lng]);
-  }
+  if(map){map.setView([lat,lng],16);marker.setLatLng([lat,lng])}
   alert("تم تحديد موقعك");
- },()=>alert("اسمح للتطبيق بالوصول للموقع"));
+ },()=>alert("تعذر تحديد موقعك"));
 }
 
-// =========================
-// السيارات والأسعار
-// =========================
-function selectCar(button,price,type){
+// اختيار السيارة
+function selectCar(btn,price){
  selectedPrice=price;
- selectedType=type;
- document.querySelectorAll(".car-option").forEach(b=>b.classList.remove("selected"));
- button.classList.add("selected");
- $("price").textContent=money(price);
+ document.querySelectorAll(".car").forEach(c=>c.classList.remove("selected"));
+ btn.classList.add("selected");
+ $("price").textContent=price.toLocaleString("en-US")+" د.ع";
 }
 
-// =========================
-// الصفحات
-// =========================
-function showPage(name){
- document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
- document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
-
- const page=$(name+"Page");
- if(page)page.classList.add("active");
-
- const nav={
-  home:"navHome",
-  driver:"navDriver",
-  rides:"navRides",
-  account:"navAccount"
- };
- if(nav[name])$(nav[name]).classList.add("active");
-
- if(name==="home")setTimeout(initMap,150);
- if(name==="rides")renderHistory();
-}
-
-// =========================
-// تسجيل الدخول المنفصل
-// =========================
-function openLogin(role){
- loginRole=role||"passenger";
- $("loginTitle").textContent=loginRole==="driver"?
- "دخول السائق 🚕":"دخول الزبون 👤";
- $("loginModal").classList.add("show");
-}
-function closeLogin(){
- $("loginModal").classList.remove("show");
-}
-function login(){
- const name=$("loginName").value.trim();
- const phone=$("loginPhone").value.trim();
- if(!name||!phone){
-  alert("أدخل الاسم ورقم الهاتف");
-  return;
- }
- if(!/^[0-9+\-\s]{7,16}$/.test(phone)){
-  alert("تأكد من رقم الهاتف");
-  return;
- }
- currentRole=loginRole;
- localStorage.setItem("royalLogin",JSON.stringify({name,phone,role:currentRole}));
- $("welcome").textContent="أهلاً بك "+name;
- closeLogin();
-
- if(currentRole==="driver"){
-  $("driverName").value=name;
-  $("driverPhone").value=phone;
-  showPage("driver");
- }else{
-  $("userName").value=name;
-  $("userPhone").value=phone;
-  showPage("home");
- }
-}
-
-// =========================
 // طلب رحلة
-// =========================
 function requestRide(){
- if(currentRole==="guest"){
-  openLogin("passenger");
-  alert("سجل دخولك أولاً");
+ if(!currentUser||currentUser.role!=="passenger"){
+  alert("سجل دخولك كزبون أولاً");
   return;
  }
- if(currentRole!=="passenger"){
-  alert("هذه الخدمة مخصصة للزبائن");
-  return;
- }
-
- const pickup=$("pickup").value.trim();
- const destination=$("destination").value.trim();
-
+ let pickup=$("pickup").value.trim();
+ let destination=$("destination").value.trim();
  if(!pickup||!destination){
-  alert("حدد موقع الانطلاق والوجهة");
+  alert("حدد الانطلاق والوجهة");
   return;
  }
-
- orderNumber++;
- const order={
-  id:orderNumber,
-  pickup,
-  destination,
-  price:selectedPrice,
-  type:selectedType,
-  status:"بانتظار السائق",
-  date:new Date().toLocaleString("ar-IQ")
+ let order={
+  id:Date.now(),pickup,destination,
+  price:selectedPrice,status:"بانتظار السائق"
  };
  orders.push(order);
- saveData();
- renderOrders();
- alert("تم إرسال طلب الرحلة بنجاح!");
+ save();
+ alert("تم إنشاء طلب الرحلة التجريبي");
  showPage("rides");
 }
 
-// =========================
-// لوحة السائق
-// =========================
-function toggleDriver(){
- if(currentRole!=="driver"){
-  openLogin("driver");
-  return;
- }
+// السائق
+function toggleOnline(){
+ if(!currentUser||currentUser.role!=="driver")return;
  driverOnline=!driverOnline;
- $("driverSwitch").classList.toggle("on",driverOnline);
- $("driverStatus").textContent=driverOnline?"متصل ويستقبل الطلبات":"غير متصل";
+ $("onlineBtn").textContent=driverOnline?"إيقاف استقبال الطلبات":"تشغيل استقبال الطلبات";
+ $("driverState").textContent=driverOnline?"متصل ويستقبل الطلبات":"غير متصل";
  renderOrders();
 }
 
 function renderOrders(){
- const area=$("driverOrders");
- if(!driverOnline){
-  area.textContent="فعّل استقبال الطلبات أولاً.";
-  return;
- }
- const pending=orders.filter(o=>o.status==="بانتظار السائق");
+ let area=$("orders");
+ if(!driverOnline){area.textContent="شغّل استقبال الطلبات أولاً";return}
+ let pending=orders.filter(o=>o.status==="بانتظار السائق");
  area.innerHTML="";
- if(!pending.length){
-  area.textContent="لا توجد طلبات جديدة حالياً.";
-  return;
- }
-
- pending.forEach(order=>{
-  const box=document.createElement("div");
-  box.className="order";
-  const details=document.createElement("div");
-  details.textContent="🚩 الانطلاق: "+order.pickup+
-   "\n🏁 الوجهة: "+order.destination+
-   "\n🚘 السيارة: "+order.type+
-   "\n💰 السعر: "+money(order.price);
-  details.style.whiteSpace="pre-line";
-
-  const btn=document.createElement("button");
-  btn.className="main-btn";
+ if(!pending.length){area.textContent="لا توجد طلبات جديدة";return}
+ pending.forEach(o=>{
+  let div=document.createElement("div");
+  div.style.cssText="background:#f3efff;padding:14px;border-radius:13px;margin-top:10px;white-space:pre-line";
+  div.textContent="📍 "+o.pickup+"\n🏁 "+o.destination+"\n💰 "+o.price+" د.ع";
+  let btn=document.createElement("button");
+  btn.className="primary";
   btn.textContent="قبول الرحلة";
-  btn.onclick=()=>acceptOrder(order.id);
-
-  box.append(details,btn);
-  area.appendChild(box);
+  btn.style.marginTop="12px";
+  btn.onclick=()=>{
+   o.status="تم قبول الرحلة";
+   history.unshift(o);
+   save();
+   renderOrders();
+   renderHistory();
+   alert("تم قبول الرحلة");
+  };
+  div.appendChild(btn);
+  area.appendChild(div);
  });
 }
 
-function acceptOrder(id){
- if(currentRole!=="driver")return;
- const order=orders.find(o=>o.id===id);
- if(!order||order.status!=="بانتظار السائق")return;
-
- order.status="تم قبول الرحلة";
- earnings+=order.price;
- history.unshift(order);
- $("earnings").textContent=money(earnings);
- $("ordersCount").textContent=history.length;
- saveData();
- renderOrders();
- renderHistory();
- alert("تم قبول الرحلة!");
-}
-
-// =========================
-// الحساب
-// =========================
-function saveDriver(){
- const name=$("driverName").value.trim();
- const phone=$("driverPhone").value.trim();
- if(!name||!phone){alert("أدخل بيانات السائق");return;}
- localStorage.setItem("royalDriver",JSON.stringify({name,phone}));
- alert("تم حفظ بيانات السائق");
-}
-function saveAccount(){
- const name=$("userName").value.trim();
- const phone=$("userPhone").value.trim();
- if(!name||!phone){alert("أدخل بيانات الحساب");return;}
- localStorage.setItem("royalUser",JSON.stringify({name,phone}));
- alert("تم حفظ الحساب");
-}
-
-// =========================
-// الرحلات والحفظ
-// =========================
 function renderHistory(){
- const area=$("history");
+ let area=$("history");
  area.innerHTML="";
- if(!history.length){
-  are
+ if(!history.length){area.textContent="لا توجد رحلات حتى الآن";return}
+ history.forEach(o=>{
+  let d=document.createElement("div");
+  d.style.cssText="padding:13px;background:#f3efff;border-radius:12px;margin-bottom:10px;white-space:pre-line";
+  d.textContent="🚕 "+o.pickup+" ← "+o.destination+"\n💰 "+o.price+" د.ع\n"+o.status;
+  area.appendChild(d);
+ });
+}
+
+function save(){
+ localStorage.setItem("royalOrders",JSON.stringify(orders));
+ localStorage.setItem("royalHistory",JSON.stringify(history));
+}
+
+function load(){
+ try{
+  orders=JSON.parse(localStorage.getItem("royalOrders"))||[];
+  history=JSON.parse(localStorage.getItem("royalHistory"))||[];
+  currentUser=JSON.parse(localStorage.getItem("royalUser"));
+ }catch(e){}
+ if(currentUser)openApp();
+}
+
+window.addEventListener("load",()=>{
+ load();
+ if(currentUser&&currentUser.role==="passenger")init3D();
+});
+
+const originalOpenApp=openApp;
+openApp=function(){
+ originalOpenApp();
+ if(currentUser.role==="passenger")setTimeout(init3D,150);
+};
+</script>
+
+</body>
+</html>
