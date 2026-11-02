@@ -3,457 +3,425 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>10 ألعاب ذكاء 3D للأطفال</title>
+<title>مغامرات العباقرة 3D</title>
 <style>
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{height:100%}
-  body{
-    margin:0;font-family:'Tajawal','Cairo','Segoe UI',Tahoma,sans-serif;
-    background:
-      radial-gradient(circle at 12% 8%, #8b5cf6 0%, transparent 50%),
-      radial-gradient(circle at 90% 92%, #06b6d4 0%, transparent 50%),
-      linear-gradient(160deg,#3b0764,#1e3a8a 55%,#0e7490);
-    min-height:100vh;display:flex;align-items:center;justify-content:center;
-    padding:12px;overflow-x:hidden;
+  /* ================= إعدادات عامة ================= */
+  @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@700;800;900&display=swap');
+
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    font-family: 'Tajawal', sans-serif;
+    user-select: none;
   }
 
-  /* خلفية عائمة بدون تعارض 3D */
-  .bg-shapes{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
-  .bg-shapes span{
-    position:absolute;font-size:44px;opacity:.15;
-    animation:float 14s ease-in-out infinite;
-  }
-  @keyframes float{
-    0%,100%{transform:translateY(0) rotate(0deg) scale(1)}
-    50%{transform:translateY(-35px) rotate(20deg) scale(1.1)}
-  }
-
-  .scene{
-    width:min(720px,100%);
-    position:relative;z-index:1;
-  }
-  .app{
-    background:linear-gradient(#ffffff,#f5f3ff);
-    border-radius:28px;padding:14px;
-    box-shadow:
-      0 1px 0 #fff inset,
-      0 -8px 0 rgba(139,92,246,.12) inset,
-      0 30px 60px -10px rgba(0,0,0,.55);
-    min-height:560px;display:flex;flex-direction:column;
-    position:relative;
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* خلفية سماوية سحرية مستوحاة من الصورة */
+    background: 
+      radial-gradient(circle at 50% 0%, #2e1065 0%, transparent 70%),
+      radial-gradient(circle at 10% 90%, #06b6d4 0%, transparent 40%),
+      radial-gradient(circle at 90% 90%, #8b5cf6 0%, transparent 40%),
+      linear-gradient(180deg, #020617 0%, #1e1b4b 100%);
+    overflow: hidden;
   }
 
-  header{display:flex;align-items:center;justify-content:space-between;gap:8px;}
-  .brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:#4c1d95}
-  .brand .logo{font-size:25px;filter:drop-shadow(0 4px 5px rgba(0,0,0,.3));animation:bob 2.4s ease-in-out infinite}
-  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-
-  .stats{display:flex;align-items:center;gap:5px}
-  .stat{
-    display:flex;align-items:center;gap:3px;background:linear-gradient(#ede9fe,#ddd6fe);
-    color:#5b21b6;font-weight:800;font-size:14px;padding:5px 9px;border-radius:13px;
-    border:2px solid #c4b5fd;
-    box-shadow:0 4px 0 #a78bfa, 0 6px 10px rgba(76,29,149,.2), inset 0 1px 0 #fff;
+  /* نجوم متلألئة في الخلفية */
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
   }
-  .icon-btn{
-    border:2px solid #c4b5fd;background:linear-gradient(#ede9fe,#ddd6fe);border-radius:13px;
-    padding:6px 10px;font-size:15px;cursor:pointer;font-family:inherit;
-    box-shadow:0 4px 0 #a78bfa, 0 6px 10px rgba(76,29,149,.2), inset 0 1px 0 #fff;
-    transition:transform .07s, box-shadow .07s;
+  .star {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #fff, 0 0 20px #a855f7;
+    animation: twinkle 3s infinite alternate;
   }
-  .icon-btn:active{transform:translateY(4px);box-shadow:0 0 0 #a78bfa}
-
-  .progress{
-    height:14px;background:#ede9fe;border-radius:10px;margin:11px 0 4px;overflow:hidden;
-    border:2px solid #ddd6fe;
-    box-shadow:inset 0 3px 6px rgba(76,29,149,.28), inset 0 -2px 0 #fff;
-  }
-  .bar{
-    height:100%;width:0;border-radius:10px;
-    background:linear-gradient(90deg,#22c55e,#84cc16,#eab308);
-    box-shadow:0 0 14px rgba(34,197,94,.85);
-    transition:width .35s cubic-bezier(.34,1.4,.64,1);
+  @keyframes twinkle {
+    0% { opacity: 0.2; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1.2); }
   }
 
-  main{flex:1;display:flex;flex-direction:column;justify-content:center;gap:8px;padding:4px 0;overflow-y:auto;}
-
-  /* قائمة الألعاب */
-  .hub-title{text-align:center;color:#4c1d95;font-weight:900;font-size:20px;margin:4px 0 2px}
-  .hub-sub{text-align:center;color:#7c3aed;font-weight:600;font-size:13px;margin:0 0 10px}
-  .hub{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:11px;padding:2px;}
-
-  .game-card{
-    border:none;cursor:pointer;font-family:inherit;font-weight:800;font-size:13px;color:#1e293b;
-    background:linear-gradient(#ffffff,#eef2ff);
-    border-radius:18px;padding:14px 6px;
-    display:flex;flex-direction:column;align-items:center;gap:7px;
-    box-shadow:
-      0 7px 0 #a5b4fc,
-      0 14px 22px -6px rgba(76,29,149,.45),
-      inset 0 2px 0 #fff, inset 0 -3px 0 rgba(199,210,254,.8);
-    transition:transform .15s ease-out, box-shadow .15s ease-out;
-  }
-  .game-card .g-icon{font-size:29px;line-height:1;filter:drop-shadow(0 3px 3px rgba(0,0,0,.22))}
-  .game-card:active{
-    box-shadow:0 2px 0 #a5b4fc, 0 5px 10px -4px rgba(76,29,149,.5), inset 0 2px 0 #fff;
+  /* ================= الحاوية الرئيسية ================= */
+  .game-ui {
+    position: relative;
+    z-index: 10;
+    width: min(100%, 500px);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
   }
 
-  /* السؤال */
-  .q-text{text-align:center;font-size:20px;font-weight:800;color:#4c1d95;margin:2px 0; text-shadow:0 2px 0 #fff}
-  .visual{
-    min-height:116px;display:flex;align-items:center;justify-content:center;
-    background:linear-gradient(160deg,#faf5ff,#ede9fe);
-    border-radius:20px;padding:12px;border:2px dashed #ddd6fe;
-    box-shadow:inset 0 6px 14px rgba(139,92,246,.16), inset 0 -3px 0 #fff;
-  }
-  .emoji-grid{display:flex;flex-wrap:wrap;gap:1px 6px;justify-content:center}
-  .emoji{
-    font-size:32px;line-height:1.15;display:inline-block;
-    animation:pop .42s cubic-bezier(.34,1.56,.64,1) backwards;
-    filter:drop-shadow(0 4px 3px rgba(0,0,0,.22));
-  }
-  .emoji.gone{opacity:.2;filter:grayscale(1)}
-  @keyframes pop{
-    from{transform:scale(.15);opacity:0}
-    to{transform:scale(1);opacity:1}
+  /* ================= الشريط العلوي ================= */
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
   }
 
-  .seq{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;direction:ltr}
-  .term{
-    min-width:50px;height:58px;display:flex;align-items:center;justify-content:center;
-    font-size:24px;font-weight:800;color:#4c1d95;
-    background:linear-gradient(#fff,#f1f0ff);border-radius:14px;
-    border:3px solid #ddd6fe;
-    box-shadow:0 6px 0 #c7d2fe, 0 10px 16px -4px rgba(76,29,149,.35), inset 0 2px 0 #fff;
-    animation:pop .42s cubic-bezier(.34,1.56,.64,1) backwards;
+  .stats-box {
+    background: linear-gradient(180deg, #1e3a8a, #0f172a);
+    border: 2px solid #facc15;
+    border-radius: 12px;
+    padding: 5px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 0 10px rgba(250, 204, 21, 0.3);
   }
-  .term.blank{
-    color:#a855f7;border-color:#c4b5fd;border-style:dashed;background:#faf5ff;
-    animation:pulse 1.2s ease-in-out infinite;
+  .stat-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
   }
-  @keyframes pulse{
-    0%,100%{transform:scale(1)}
-    50%{transform:scale(1.07)}
+  .stat-row .val { color: #facc15; font-size: 14px; }
+
+  .top-icons {
+    display: flex;
+    gap: 10px;
+  }
+  .circle-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #3b82f6, #1d4ed8);
+    border: 2px solid #93c5fd;
+    box-shadow: 0 4px 0 #1e3a8a, 0 6px 10px rgba(0,0,0,0.5);
+    color: #fff;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.1s;
+  }
+  .circle-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 #1e3a8a;
   }
 
-  .add-row{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;direction:ltr}
-  .grp{
-    display:flex;flex-wrap:wrap;gap:1px;max-width:148px;justify-content:center;
-    background:#fff;border-radius:14px;padding:6px;border:2px solid #ddd6fe;
-    box-shadow:0 5px 0 #c7d2fe, 0 8px 14px -4px rgba(76,29,149,.3), inset 0 2px 0 #fff;
+  /* ================= العنوان ================= */
+  .title-area {
+    text-align: center;
+    margin-top: -10px;
+    position: relative;
   }
-  .grp .emoji{font-size:21px}
-  .op{font-size:26px;font-weight:800;color:#7c3aed;text-shadow:0 2px 0 #ddd6fe}
-  .qmark{
-    font-size:26px;font-weight:800;color:#a855f7;min-width:52px;height:56px;
-    display:flex;align-items:center;justify-content:center;
-    border:3px dashed #c4b5fd;border-radius:14px;background:#faf5ff;
-    animation:pulse 1.2s ease-in-out infinite;
+  .crown {
+    font-size: 35px;
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));
+    animation: float 2s infinite ease-in-out;
   }
-
-  .big-shape{font-size:80px;line-height:1;animation:pop .45s cubic-bezier(.34,1.56,.64,1); filter:drop-shadow(0 10px 8px rgba(76,29,149,.35))}
-  .swatch{
-    width:104px;height:104px;border-radius:50%;border:5px solid #fff;
-    box-shadow:0 12px 22px -6px rgba(0,0,0,.45), inset 0 -10px 18px rgba(0,0,0,.25), inset 0 8px 14px rgba(255,255,255,.5);
-    animation:pop .45s cubic-bezier(.34,1.56,.64,1);
+  @keyframes float { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-8px); } }
+  
+  .title-text {
+    font-size: 34px;
+    font-weight: 900;
+    color: #facc15;
+    margin: 0;
+    line-height: 1.1;
+    text-shadow: 
+      0 2px 0 #b45309,
+      0 4px 0 #78350f,
+      0 6px 10px rgba(0,0,0,0.8),
+      0 0 20px rgba(250, 204, 21, 0.6);
+    -webkit-text-stroke: 1px #fff;
   }
-  .cmp{display:flex;align-items:center;gap:12px;}
-  .cmp-num{
-    font-size:42px;font-weight:900;color:#4c1d95;
-    background:linear-gradient(#fff,#f1f0ff);border:3px solid #ddd6fe;border-radius:16px;
-    padding:4px 18px;
-    box-shadow:0 7px 0 #c7d2fe, 0 12px 18px -6px rgba(76,29,149,.35), inset 0 2px 0 #fff;
+  .title-text span {
+    color: #38bdf8;
+    text-shadow: 
+      0 2px 0 #0369a1,
+      0 4px 0 #082f49,
+      0 6px 10px rgba(0,0,0,0.8),
+      0 0 20px rgba(56, 189, 248, 0.6);
   }
-
-  /* الاختيارات */
-  .options{display:grid;gap:10px;margin-top:4px;}
-  .opt{
-    font-family:inherit;font-size:30px;font-weight:800;color:#1e293b;cursor:pointer;
-    padding:13px 6px;border-radius:18px;border:none;
-    background:linear-gradient(#ffffff,#eef2ff);
-    box-shadow:
-      0 8px 0 #a5b4fc,
-      0 14px 20px -6px rgba(76,29,149,.4),
-      inset 0 2px 0 #fff, inset 0 -3px 0 rgba(199,210,254,.9);
-    transition:transform .08s, box-shadow .08s, background .25s;
-  }
-  .opt:active{
-    transform:translateY(6px);
-    box-shadow:0 1px 0 #a5b4fc, 0 3px 6px -3px rgba(76,29,149,.5), inset 0 2px 0 #fff;
-  }
-  .opt.correct{
-    background:linear-gradient(#86efac,#22c55e);color:#fff;
-    box-shadow:0 8px 0 #15803d, 0 16px 26px -6px rgba(34,197,94,.6), inset 0 2px 0 rgba(255,255,255,.5);
-    animation:bounce .5s;
-  }
-  .opt.wrong{
-    background:linear-gradient(#fca5a5,#ef4444);color:#fff;
-    box-shadow:0 8px 0 #b91c1c, 0 12px 18px -6px rgba(239,68,68,.5), inset 0 2px 0 rgba(255,255,255,.4);
-    animation:shake .4s;
-  }
-  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-  @keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
-
-  /* لعبة الذاكرة */
-  .mem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;direction:ltr}
-  .card{
-    aspect-ratio:1/1;border:none;padding:0;background:none;cursor:pointer;font-family:inherit;
-    position:relative;
-    transition:transform .45s cubic-bezier(.4,.15,.2,1);
-    border-radius:16px;
-  }
-  .card.flipped{transform:perspective(600px) rotateY(180deg)}
-  .face{
-    position:absolute;inset:0;border-radius:16px;
-    display:flex;align-items:center;justify-content:center;
-    backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  }
-  .face.front{
-    background:linear-gradient(150deg,#a78bfa,#7c3aed 55%,#5b21b6);
-    box-shadow:0 7px 0 #4c1d95, 0 12px 18px -6px rgba(76,29,149,.55), inset 0 3px 0 rgba(255,255,255,.35), inset 0 -6px 0 rgba(0,0,0,.25);
-  }
-  .face.front::after{
-    content:'?';font-size:30px;font-weight:900;color:rgba(255,255,255,.9);
-    text-shadow:0 3px 6px rgba(0,0,0,.5);
-  }
-  .face.back{
-    transform:rotateY(180deg);
-    background:linear-gradient(#ffffff,#eef2ff);
-    box-shadow:0 7px 0 #c7d2fe, 0 12px 18px -6px rgba(76,29,149,.35), inset 0 2px 0 #fff;
-    font-size:30px;
-  }
-  .card.matched .face.back{
-    background:linear-gradient(#bbf7d0,#4ade80);
-    box-shadow:0 7px 0 #16a34a, 0 0 24px rgba(34,197,94,.7), inset 0 2px 0 rgba(255,255,255,.6);
+  
+  .subtitle {
+    background: linear-gradient(90deg, transparent, #b45309, #f59e0b, #b45309, transparent);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-top: 5px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    border-top: 1px solid #fde047;
+    border-bottom: 1px solid #78350f;
   }
 
-  /* المختلف */
-  .odd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-  .odd-item{
-    aspect-ratio:1/1;font-size:34px;border:none;cursor:pointer;font-family:inherit;
-    background:linear-gradient(#fff,#eef2ff);border-radius:16px;
-    box-shadow:0 7px 0 #a5b4fc, 0 12px 18px -6px rgba(76,29,149,.4), inset 0 2px 0 #fff;
-    transition:transform .08s, box-shadow .08s;
-    animation:pop .4s cubic-bezier(.34,1.56,.64,1) backwards;
+  /* ================= شبكة الألعاب ================= */
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 10px 0;
   }
-  .odd-item:active{transform:translateY(6px);box-shadow:0 1px 0 #a5b4fc}
-  .odd-item.correct{background:linear-gradient(#86efac,#22c55e);box-shadow:0 7px 0 #15803d, 0 0 26px rgba(34,197,94,.75);animation:bounce .5s;}
-  .odd-item.wrong{background:linear-gradient(#fca5a5,#ef4444);box-shadow:0 7px 0 #b91c1c;animation:shake .4s;}
 
-  /* رسائل */
-  .feedback{
-    position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) scale(0);
-    font-size:24px;font-weight:900;padding:11px 22px;border-radius:18px;
-    pointer-events:none;opacity:0;white-space:nowrap;z-index:20;
+  .game-btn {
+    aspect-ratio: 1.1 / 1;
+    border-radius: 16px;
+    border: 2px solid rgba(255,255,255,0.7);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    color: #fff;
+    font-weight: 800;
+    font-size: 13px;
+    cursor: pointer;
+    position: relative;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+      0 6px 0 var(--shadow),
+      0 10px 15px rgba(0,0,0,0.4),
+      inset 0 4px 8px rgba(255,255,255,0.5),
+      inset 0 -4px 8px rgba(0,0,0,0.2);
+    background: linear-gradient(180deg, var(--base), var(--dark));
   }
-  .feedback.show{animation:fbIn .4s cubic-bezier(.34,1.56,.64,1) forwards}
-  @keyframes fbIn{
-    0%{transform:translate(-50%,-50%) scale(.2);opacity:0}
-    60%{transform:translate(-50%,-50%) scale(1.12);opacity:1}
-    100%{transform:translate(-50%,-50%) scale(1);opacity:1}
+
+  .game-btn .icon {
+    font-size: 28px;
+    filter: drop-shadow(0 3px 3px rgba(0,0,0,0.4));
   }
-  .feedback.good{background:linear-gradient(#4ade80,#22c55e);color:#fff;box-shadow:0 10px 0 #15803d, 0 24px 40px -10px rgba(34,197,94,.75);}
-  .feedback.bad{background:linear-gradient(#f87171,#ef4444);color:#fff;box-shadow:0 10px 0 #b91c1c, 0 24px 40px -10px rgba(239,68,68,.7);}
 
-  .confetti-layer{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:15;border-radius:28px;}
-  .confetti{position:absolute;width:10px;height:14px;border-radius:3px;top:-20px;animation:fall linear forwards;}
-  @keyframes fall{to{transform:translateY(680px) rotate(720deg);opacity:0}}
+  .game-btn:active {
+    transform: translateY(6px);
+    box-shadow: 
+      0 0 0 var(--shadow),
+      0 2px 5px rgba(0,0,0,0.4),
+      inset 0 2px 4px rgba(255,255,255,0.3);
+  }
 
-  @media (max-width:420px){
-    .emoji{font-size:26px}
-    .opt{font-size:26px;padding:11px 4px}
-    .brand{font-size:14px}
-    .term{min-width:42px;height:50px;font-size:21px}
-    .q-text{font-size:17px}
-    .cmp-num{font-size:34px;padding:4px 12px}
-    .face.back{font-size:24px}
-    .odd-item{font-size:27px}
-    .game-card{font-size:12px;padding:11px 4px}
-    .game-card .g-icon{font-size:25px}
-    .big-shape{font-size:64px}
-    .swatch{width:86px;height:86px}
+  /* ألوان الأزرار */
+  .btn-purple { --base: #c084fc; --dark: #9333ea; --shadow: #6b21a8; }
+  .btn-green  { --base: #4ade80; --dark: #16a34a; --shadow: #14532d; }
+  .btn-blue   { --base: #38bdf8; --dark: #0284c7; --shadow: #082f49; }
+  .btn-pink   { --base: #f472b6; --dark: #db2777; --shadow: #831843; }
+  .btn-orange { --base: #fb923c; --dark: #ea580c; --shadow: #7c2d12; }
+  .btn-teal   { --base: #2dd4bf; --dark: #0d9488; --shadow: #134e4a; }
+
+  /* ================= الشريط السفلي ================= */
+  .bottom-bar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 5px;
+  }
+
+  /* الأزرار الجانبية */
+  .side-btn {
+    flex: 1;
+    padding: 10px 5px;
+    border-radius: 12px;
+    border: 2px solid rgba(255,255,255,0.6);
+    color: #fff;
+    font-weight: 800;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: 0.1s;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    box-shadow: 
+      0 5px 0 var(--shadow),
+      0 8px 10px rgba(0,0,0,0.4),
+      inset 0 2px 4px rgba(255,255,255,0.4);
+    background: linear-gradient(180deg, var(--base), var(--dark));
+  }
+  .side-btn:active {
+    transform: translateY(5px);
+    box-shadow: 0 0 0 var(--shadow), inset 0 2px 4px rgba(255,255,255,0.3);
+  }
+  
+  .btn-parents { --base: #a78bfa; --dark: #6d28d9; --shadow: #4c1d95; }
+  .btn-reset   { --base: #f87171; --dark: #dc2626; --shadow: #7f1d1d; }
+
+  /* زر البداية الكبير */
+  .play-btn {
+    flex: 1.5;
+    padding: 12px 10px;
+    border-radius: 18px;
+    border: 3px solid #fff;
+    color: #78350f;
+    font-weight: 900;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    position: relative;
+    transition: 0.1s;
+    background: linear-gradient(180deg, #fde047, #f59e0b);
+    box-shadow: 
+      0 7px 0 #b45309,
+      0 12px 15px rgba(0,0,0,0.5),
+      inset 0 4px 8px rgba(255,255,255,0.8),
+      inset 0 -4px 8px rgba(0,0,0,0.2);
+    animation: playPulse 2s infinite;
+  }
+  
+  @keyframes playPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+  }
+
+  .play-btn .icon { font-size: 24px; }
+  .play-btn:active {
+    transform: translateY(7px) scale(0.98);
+    box-shadow: 
+      0 0 0 #b45309,
+      0 4px 8px rgba(0,0,0,0.5),
+      inset 0 2px 4px rgba(255,255,255,0.6);
+    animation: none;
+  }
+
+  /* نجوم حول زر البداية */
+  .play-btn::before, .play-btn::after {
+    content: '⭐';
+    position: absolute;
+    font-size: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
+  }
+  .play-btn::before { right: 8px; }
+  .play-btn::after { left: 8px; }
+
+  /* تجاوب مع الشاشات الصغيرة جداً */
+  @media (max-width: 380px) {
+    .title-text { font-size: 28px; }
+    .game-btn { font-size: 11px; }
+    .game-btn .icon { font-size: 24px; }
+    .play-btn { font-size: 16px; padding: 10px 5px; }
+    .play-btn::before, .play-btn::after { display: none; }
+    .side-btn { font-size: 9px; padding: 8px 2px; }
   }
 </style>
 </head>
 <body>
 
-<div class="bg-shapes" id="bgShapes"></div>
+<!-- النجوم في الخلفية -->
+<div class="stars" id="stars"></div>
 
-<div class="scene">
-  <div class="app" id="app">
-    <header>
-      <div class="brand"><span class="logo">🧠</span><span>ألعاب الذكاء 3D</span></div>
-      <div class="stats">
-        <div class="stat" title="النقاط">⭐<span id="score">0</span></div>
-        <div class="stat" title="المستوى">🏆<span id="level">1</span></div>
-        <div class="stat" title="التتابع">🔥<span id="streak">0</span></div>
-        <button id="homeBtn" class="icon-btn" title="القائمة">🏠</button>
-      </div>
-    </header>
-
-    <div class="progress"><div class="bar" id="bar"></div></div>
-
-    <main id="stage"></main>
-
-    <div id="feedback" class="feedback"></div>
-    <div id="confetti" class="confetti-layer"></div>
+<div class="game-ui">
+  
+  <!-- الشريط العلوي -->
+  <div class="top-bar">
+    <div class="stats-box">
+      <div class="stat-row"><span>⭐ النجوم</span> <span class="val">0</span></div>
+      <div class="stat-row"><span>🏆 المستوى</span> <span class="val">1</span></div>
+      <div class="stat-row"><span>🎮 الألعاب</span> <span class="val">0</span></div>
+    </div>
+    <div class="top-icons">
+      <button class="circle-btn" onclick="playSound()">⚙️</button>
+      <button class="circle-btn" onclick="playSound()">🔊</button>
+    </div>
   </div>
+
+  <!-- العنوان -->
+  <div class="title-area">
+    <div class="crown">👑</div>
+    <h1 class="title-text">مغامرات <span>العباقرة 3D</span></h1>
+    <div class="subtitle">العب بالذكاء .. وتعلم بمتعة</div>
+  </div>
+
+  <!-- شبكة الألعاب -->
+  <div class="games-grid">
+    <button class="game-btn btn-purple" onclick="playSound()"><span class="icon">🧪</span>التجارب</button>
+    <button class="game-btn btn-green" onclick="playSound()"><span class="icon">🌳</span>الطبيعة</button>
+    <button class="game-btn btn-blue" onclick="playSound()"><span class="icon">🚀</span>الفضاء</button>
+    <button class="game-btn btn-pink" onclick="playSound()"><span class="icon">🎵</span>الموسيقى</button>
+    <button class="game-btn btn-orange" onclick="playSound()"><span class="icon">🏴‍☠️</span>المغامرات</button>
+    <button class="game-btn btn-teal" onclick="playSound()"><span class="icon">🧩</span>كل الألعاب</button>
+  </div>
+
+  <!-- الشريط السفلي -->
+  <div class="bottom-bar">
+    <button class="side-btn btn-parents" onclick="playSound()">👨‍👩‍👧 لوحة الأهل</button>
+    <button class="play-btn" onclick="startGame()">
+      <span class="icon">▶️</span> ابدأ اللعب
+    </button>
+    <button class="side-btn btn-reset" onclick="playSound()">🔄 إعادة التقدم</button>
+  </div>
+
 </div>
 
 <script>
-// حماية ضد الشاشة البيضاء: عرض أي خطأ يحدث
-window.onerror = function(msg, url, line) {
-  document.getElementById('stage').innerHTML = `<p style="color:red;text-align:center;padding:20px;font-size:14px;">حدث خطأ: ${msg}<br>سطر: ${line}</p>`;
-};
-
-/* ================= أدوات ================= */
-const $ = id => document.getElementById(id);
-const appEl = $('app'), stage = $('stage'), feedbackEl = $('feedback'), confettiLayer = $('confetti');
-const scoreEl = $('score'), levelEl = $('level'), streakEl = $('streak'), barEl = $('bar');
-
-const EMOJIS = ['🍎','🍌','🍓','🐤','🐟','⭐','🎈','🚗','🌸','🍪','🐞','🧸','🍇','🦋','🍊','🐸','🍉','🌼','🚀','🐬','🍭','🎁'];
-const GOOD = ['أحسنت! 🎉','رائع جداً! ⭐','أنت عبقري! 🧠','ممتاز! 👏','بطل! 🏅','صحيح! 💚'];
-const BAD  = ['حاول مرة ثانية 💪','لا بأس، جرّب! 🤔','قريب جداً! 🙂'];
-
-const randInt = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
-const pick = a => a[Math.floor(Math.random()*a.length)];
-function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-
-/* ================= خلفية ================= */
-(function bg(){
-  const box = $('bgShapes');
-  const items = ['🔢','➕','➖','⭐','🎲','🧩','🔺','🎈','🍎','🧠'];
-  for(let i=0;i<12;i++){
-    const s = document.createElement('span');
-    s.textContent = pick(items);
-    s.style.left = randInt(2,92) + '%';
-    s.style.top  = randInt(2,92) + '%';
-    s.style.fontSize = randInt(28,56) + 'px';
-    s.style.animationDelay = (-Math.random()*14) + 's';
-    s.style.animationDuration = randInt(11,20) + 's';
-    box.appendChild(s);
+  // 1. توليد النجوم في الخلفية ديناميكياً
+  const starsContainer = document.getElementById('stars');
+  for (let i = 0; i < 50; i++) {
+    const star = document.createElement('div');
+    star.classList.add('star');
+    star.style.left = Math.random() * 100 + 'vw';
+    star.style.top = Math.random() * 100 + 'vh';
+    star.style.animationDelay = Math.random() * 3 + 's';
+    // أحجام عشوائية للنجوم
+    const size = Math.random() * 3 + 1;
+    star.style.width = size + 'px';
+    star.style.height = size + 'px';
+    starsContainer.appendChild(star);
   }
-})();
 
-/* ================= الأصوات ================= */
-let actx = null;
-function audio(){ if(!actx){ try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } return actx; }
-function tone(freq, dur, type='sine', vol=0.12, when=0){
-  const ctx = audio(); if(!ctx) return;
-  const o = ctx.createOscillator(), g = ctx.createGain();
-  o.type = type; o.frequency.value = freq;
-  o.connect(g); g.connect(ctx.destination);
-  const t = ctx.currentTime + when;
-  g.gain.setValueAtTime(0, t);
-  g.gain.linearRampToValueAtTime(vol, t + 0.02);
-  g.gain.exponentialRampToValueAtTime(0.001, t + dur);
-  o.start(t); o.stop(t + dur + 0.05);
-}
-const sndCorrect = () => { tone(523.25,.12,'sine',.13,0); tone(659.25,.12,'sine',.13,.10); tone(783.99,.24,'sine',.13,.20); };
-const sndWrong   = () => { tone(220,.18,'sawtooth',.07,0); tone(160,.26,'sawtooth',.07,.13); };
-const sndClick   = () => tone(720,.06,'triangle',.06);
-
-/* ================= 3D Tilt (يعمل فقط على الكمبيوتر لتجنب مشاكل الهاتف) ================= */
-function attachTilt(el){
-  el.addEventListener('pointermove', e => {
-    if(e.pointerType !== 'mouse') return;
-    const r = el.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width  - .5;
-    const py = (e.clientY - r.top ) / r.height - .5;
-    el.style.transform = `perspective(700px) rotateY(${px*20}deg) rotateX(${-py*20}deg) translateZ(10px) scale(1.05)`;
-  });
-  el.addEventListener('pointerleave', () => { el.style.transform = ''; });
-}
-
-/* ================= الحالة ================= */
-const state = {
-  screen:'hub', game:null, score:0, streak:0, level:1,
-  correctInLevel:0, q:null, firstTry:true, locked:true, mem:null
-};
-
-function updateHUD(){
-  scoreEl.textContent = state.score;
-  levelEl.textContent = state.level;
-  streakEl.textContent = state.streak;
-  barEl.style.width = Math.min(100, state.correctInLevel/4*100) + '%';
-}
-
-/* ================= المولدات ================= */
-function makeOptions(correct, min, max, count=4){
-  const set = new Set([correct]);
-  let guard = 0;
-  while(set.size < count && guard++ < 500){
-    let d = randInt(-4,4); if(d === 0) d = 1;
-    const v = correct + d;
-    if(v >= min && v <= max) set.add(v);
+  // 2. محرك صوتي بسيط لنقرات الأزرار (بدون الحاجة لملفات صوتية)
+  let audioCtx = null;
+  function playSound() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.1);
+    
+    gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+    
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.1);
   }
-  let f = min;
-  while(set.size < count && f <= max){ if(!set.has(f)) set.add(f); f++; }
-  while(set.size < count) set.add(randInt(min,max));
-  return shuffle([...set]);
-}
-function emojiOptions(correct, count=4){
-  const set = new Set([correct]);
-  for(const e of shuffle([...EMOJIS])){ if(set.size >= count) break; set.add(e); }
-  return shuffle([...set]);
-}
 
-function qCount(){
-  const max = state.level <= 1 ? 5 : state.level <= 3 ? 8 : 12;
-  const n = randInt(1, max);
-  const e = pick(EMOJIS);
-  let visual = '<div class="emoji-grid">';
-  for(let i=0;i<n;i++) visual += `<span class="emoji" style="animation-delay:${i*50}ms">${e}</span>`;
-  visual += '</div>';
-  return { text:'كم عدد الأشياء؟', visual, answer:n, options: makeOptions(n,1,12) };
-}
+  // 3. حدث عند الضغط على "ابدأ اللعب"
+  function startGame() {
+    playSound();
+    const btn = document.querySelector('.play-btn');
+    btn.innerHTML = '<span class="icon">⏳</span> جاري التحميل...';
+    
+    // محاكاة الانتقال للعبة
+    setTimeout(() => {
+      alert('مرحباً بك في مغامرات العباقرة! 🎮\n(هنا يمكنك ربط الواجهة بلعبة الذكاء الحقيقية)');
+      btn.innerHTML = '<span class="icon">▶️</span> ابدأ اللعب';
+    }, 800);
+  }
+</script>
 
-function qMissing(){
-  const step = state.level <= 1 ? 1 : state.level <= 3 ? 2 : pick([2,3,5,10]);
-  const start = randInt(1, step === 1 ? 8 : 5);
-  const terms = [];
-  for(let i=0;i<5;i++) terms.push(start + i*step);
-  const idx = randInt(1,3);
-  const answer = terms[idx];
-  const visual = '<div class="seq">' + terms.map((t,i)=>
-      i === idx ? '<span class="term blank">?</span>' : `<span class="term" style="animation-delay:${i*60}ms">${t}</span>`
-    ).join('') + '</div>';
-  return { text:'ما هو الرقم الناقص؟', visual, answer, options: makeOptions(answer, Math.max(0, answer-10), answer+10) };
-}
-
-function qAdd(){
-  const m = state.level <= 1 ? 3 : state.level <= 3 ? 5 : 9;
-  const a = randInt(1,m), b = randInt(1,m), e = pick(EMOJIS);
-  const grp = n => '<div class="grp">' + Array.from({length:n},(_,i)=>`<span class="emoji" style="animation-delay:${i*50}ms">${e}</span>`).join('') + '</div>';
-  const visual = `<div class="add-row">${grp(a)}<span class="op">+</span>${grp(b)}<span class="op">=</span><span class="qmark">?</span></div>`;
-  return { text:'كم مجموع الأشياء؟', visual, answer:a+b, options: makeOptions(a+b, 1, 20) };
-}
-
-function qSub(){
-  const m = state.level <= 1 ? 5 : state.level <= 3 ? 8 : 12;
-  const a = randInt(2,m), b = randInt(1,a-1), e = pick(EMOJIS);
-  let visual = '<div class="emoji-grid">';
-  for(let i=0;i<a;i++) visual += `<span class="emoji ${i<b?'gone':''}" style="animation-delay:${i*50}ms">${e}</span>`;
-  visual += '</div>';
-  return { text:`لدينا ${a}، أُخذ منها ${b}. كم بقي؟`, visual, answer:a-b, options: makeOptions(a-b, 0, a) };
-}
-
-function qShapes(){
-  const uniq = [['⚪','دائرة'],['🟥','مربع'],['🔺','مثلث'],['⭐','نجمة'],['❤️','قلب'],['🔶','معين']];
-  const sh = pick(uniq);
-  const opts = new Set([sh[1]]);
-  for(const n of shuffle(uniq.map(s=>s[1]))){ if(opts.size>=4) break; opts.add(n); }
-  return { text:'ما اسم هذا الشكل؟', visual:`<div class="big-shape">${sh[0]}</div>`, answer:sh[1], options: shuffle([...opts]) };
-}
-
-const COLORS = [['#ef4444','أحمر'],['#3b82f6','أزرق'],['#22c55e','أخضر'],['#eab308','أصفر'],['#f97316','برتقالي'],['#a855f7','بنفسجي'],['#ec4899','وردي'],['#78350f','بني'],['#111827','أسود']];
-function qColors(){
-  const c = pick(COLORS);
-  const opts = new Set([c[1]]);
-  for(const n of shuffle(COLORS.map(x=>x[1]))){ if(opts.size>=4) break; opts.add(n); }
-  return { text:'ما هذا اللون؟', visual:`<div class="swatch" style="background:${c[0]}"></div>`, answer:c[1], options: shuffle([...opts]) };
-}
-
-function qCompare(){
-  const max = state.level <= 1 ? 10 : state.level <= 3 ? 20 : 50;
-  let a = r
+</body>
+</html>
