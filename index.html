@@ -3,641 +3,442 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Smart 3D Book</title>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
-* {
-  box-sizing: border-box;
+*{box-sizing:border-box}
+body{
+margin:0;background:#101827;color:white;
+font-family:Arial,sans-serif
 }
-
-body {
-  margin: 0;
-  background: #101827;
-  color: white;
-  font-family: Arial, sans-serif;
+header{
+background:#142c4c;padding:20px;
+text-align:center;border-bottom:2px solid #32aaff
 }
-
-header {
-  background: #172c49;
-  padding: 18px;
-  text-align: center;
-  border-bottom: 2px solid #2789ff;
+header h1{color:#55c5ff;margin:0}
+nav{
+display:flex;justify-content:center;
+gap:10px;padding:15px;flex-wrap:wrap
 }
-
-header h1 {
-  margin: 0;
-  color: #48b5ff;
+button{
+border:0;padding:12px 18px;
+background:#1678d5;color:white;
+border-radius:10px;font-size:15px;
+cursor:pointer
 }
-
-nav {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  padding: 12px;
-  flex-wrap: wrap;
+button:active{transform:scale(.96)}
+.section{display:none;padding:15px}
+.active{display:block}
+.book{
+background:#fff;color:#222;
+max-width:600px;min-height:330px;
+margin:20px auto;padding:25px;
+border-radius:12px;
+box-shadow:0 10px 30px #0008;
+animation:flip .4s
 }
-
-button {
-  background: #1769cc;
-  border: 0;
-  color: white;
-  padding: 12px 18px;
-  border-radius: 9px;
-  cursor: pointer;
-  font-size: 15px;
+@keyframes flip{
+from{opacity:.3;transform:rotateY(30deg)}
+to{opacity:1;transform:rotateY(0)}
 }
-
-button:hover {
-  background: #278eff;
+.book h2{color:#126cc0}
+.book p{font-size:18px;line-height:2}
+.number{text-align:center;color:#777}
+.center{text-align:center;margin:15px}
+.panel{
+max-width:700px;margin:auto;
+background:#1b304a;padding:18px;
+border-radius:15px
 }
-
-button:disabled {
-  opacity: .4;
+.materials{
+display:grid;grid-template-columns:repeat(3,1fr);
+gap:10px
 }
-
-.section {
-  display: none;
-  padding: 15px;
+.material{
+background:#294768;padding:15px 5px;
+border:2px solid transparent
 }
-
-.section.active {
-  display: block;
+.material.selected{border-color:#45d5ff}
+.material span{display:block;font-size:25px}
+#scene{
+width:100%;height:300px;
+background:#071629;border-radius:12px;
+overflow:hidden;margin:15px 0
 }
-
-.book {
-  max-width: 700px;
-  min-height: 360px;
-  margin: 20px auto;
-  background: #fff;
-  color: #222;
-  border-radius: 12px;
-  padding: 25px;
-  box-shadow: 0 10px 35px #0008;
-  animation: appear .3s;
+#scene canvas{display:block}
+#result{
+background:#102239;padding:15px;
+border-radius:10px;line-height:2;
+margin-top:15px
 }
-
-@keyframes appear {
-  from { opacity: 0; transform: rotateY(12deg); }
-  to { opacity: 1; transform: rotateY(0); }
+.formula{
+direction:ltr;text-align:center;
+color:#52d5ff;font-size:19px
 }
-
-.book h2 {
-  color: #1266bd;
-}
-
-.book p {
-  font-size: 18px;
-  line-height: 1.9;
-}
-
-.page-number {
-  text-align: center;
-  color: #777;
-}
-
-.controls {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-#scene {
-  width: 100%;
-  height: 350px;
-  background: #07172b;
-  border-radius: 15px;
-  overflow: hidden;
-  margin-top: 15px;
-}
-
-.lab-panel {
-  max-width: 800px;
-  margin: auto;
-  background: #1b2c43;
-  padding: 18px;
-  border-radius: 15px;
-}
-
-.materials {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.material {
-  background: #263f5e;
-  flex: 1;
-  min-width: 110px;
-  padding: 15px 8px;
-  border: 2px solid transparent;
-  text-align: center;
-  border-radius: 10px;
-}
-
-.material.selected {
-  border-color: #41c6ff;
-  background: #14518a;
-}
-
-.material span {
-  display: block;
-  font-size: 27px;
-  margin-bottom: 8px;
-}
-
-#result {
-  background: #102239;
-  padding: 15px;
-  border-radius: 10px;
-  margin-top: 15px;
-  line-height: 1.9;
-  min-height: 65px;
-}
-
-.formula {
-  direction: ltr;
-  text-align: center;
-  color: #53dcff;
-  font-size: 20px;
-  padding: 12px;
-}
-
-footer {
-  text-align: center;
-  padding: 20px;
-  color: #aaa;
-}
+footer{text-align:center;padding:20px;color:#aaa}
 </style>
 </head>
-
 <body>
 
 <header>
-  <h1>📚 Smart 3D Book</h1>
-  <p>الكتاب المدرسي الذكي ثلاثي الأبعاد</p>
+<h1>📚 Smart 3D Book</h1>
+<p>الكتاب المدرسي الذكي ثلاثي الأبعاد</p>
 </header>
 
 <nav>
-  <button onclick="showSection('book')">📖 الكتاب</button>
-  <button onclick="showSection('lab')">🧪 المختبر</button>
+<button onclick="openPage('book')">📖 الكتاب</button>
+<button onclick="openPage('lab')">🧪 المختبر</button>
+<button onclick="openPage('about')">ℹ️ المشروع</button>
 </nav>
 
 <!-- BOOK -->
 
-<div id="book" class="section active">
+<section id="book" class="section active">
 
-  <div class="book">
+<div class="book">
+<h2 id="title"></h2>
+<p id="content"></p>
+<div id="example"></div>
+<div class="number">
+الصفحة <span id="number"></span> / 5
+</div>
+</div>
 
-    <h2 id="bookTitle">مقدمة في الكيمياء</h2>
+<div class="center">
+<button onclick="previous()">❮ السابقة</button>
+<button onclick="next()">التالية ❯</button>
+</div>
 
-    <p id="bookText">
-      مرحباً بك في الكتاب الذكي.
-      هنا تستطيع دراسة العلوم بطريقة تفاعلية
-      ومشاهدة التجارب العلمية.
-    </p>
+<div class="center">
+<button onclick="openPage('lab')">
+🧪 ابدأ التجربة الافتراضية
+</button>
+</div>
 
-    <div id="bookExample"></div>
+</section>
 
-    <div class="page-number">
-      الصفحة <span id="pageNumber">1</span> / 4
-    </div>
+<!-- LAB -->
 
-  </div>
+<section id="lab" class="section">
 
-  <div class="controls">
-    <button onclick="previousPage()">❮ السابقة</button>
-    <button onclick="nextPage()">التالية ❯</button>
-  </div>
+<div class="panel">
+<h2>🧪 المختبر الكيميائي</h2>
+<p>اختر مادتين لإجراء محاكاة تعليمية.</p>
 
-  <div style="text-align:center;margin-top:20px">
-    <button onclick="showSection('lab')">
-      🧪 افتح المختبر الافتراضي
-    </button>
-  </div>
+<div class="materials">
+
+<button class="material" onclick="choose('water',this)">
+<span>💧</span>الماء
+</button>
+
+<button class="material" onclick="choose('vinegar',this)">
+<span>🧴</span>الخل
+</button>
+
+<button class="material" onclick="choose('baking',this)">
+<span>🧂</span>بيكربونات الصوديوم
+</button>
 
 </div>
 
-<!-- CHEMISTRY LAB -->
+<div id="scene"></div>
 
-<div id="lab" class="section">
-
-  <div class="lab-panel">
-
-    <h2>🧪 المختبر الكيميائي الافتراضي</h2>
-
-    <p>
-      اختر مادة من المواد التالية ثم اختر مادة أخرى
-      واضغط على زر إجراء التجربة.
-    </p>
-
-    <h3>المواد الكيميائية</h3>
-
-    <div class="materials">
-
-      <button class="material" onclick="selectMaterial('water',this)">
-        <span>💧</span>
-        الماء
-      </button>
-
-      <button class="material" onclick="selectMaterial('vinegar',this)">
-        <span>🧴</span>
-        الخل
-      </button>
-
-      <button class="material" onclick="selectMaterial('baking',this)">
-        <span>🧂</span>
-        بيكربونات الصوديوم
-      </button>
-
-    </div>
-
-    <p id="selection">
-      لم يتم اختيار المواد بعد.
-    </p>
-
-    <div id="scene"></div>
-
-    <div class="controls" style="margin-top:15px">
-      <button onclick="mixMaterials()">
-        ⚗️ إجراء التجربة
-      </button>
-
-      <button onclick="resetExperiment()">
-        🔄 إعادة التجربة
-      </button>
-    </div>
-
-    <div id="result">
-      نتيجة التجربة ستظهر هنا.
-    </div>
-
-  </div>
+<div class="center">
+<button onclick="experiment()">⚗️ ابدأ التفاعل</button>
+<button onclick="resetLab()">🔄 إعادة</button>
 </div>
 
-<footer>
-  Smart 3D Book © 2026
-</footer>
+<div id="result">
+اختر مادتين لبدء التجربة.
+</div>
+
+</div>
+</section>
+
+<section id="about" class="section">
+<div class="panel">
+<h2>عن Smart 3D Book</h2>
+<p>مشروع لتحويل الكتب المدرسية التقليدية إلى بيئة تعليمية تفاعلية ثلاثية الأبعاد.</p>
+<p>اقرأ، شاهد، جرّب، وتعلّم.</p>
+</div>
+</section>
+
+<footer>SMART 3D BOOK - 2026</footer>
 
 <script>
 
-// ==========================
-// BOOK SYSTEM
-// ==========================
+// صفحات الكتاب
 
-const pages = [
+const pages=[
 {
- title: "مقدمة في الكيمياء",
- text: "الكيمياء هي العلم الذي يدرس المادة وخصائصها والتغيرات التي تحدث لها.",
- example: "اضغط على المختبر لتجربة التفاعلات الكيميائية."
+title:"مقدمة في الكيمياء",
+content:"الكيمياء علم يدرس المادة وخصائصها والتغيرات التي تحدث لها.",
+example:"مرحباً بك في عالم العلوم التفاعلي."
 },
 {
- title: "المادة",
- text: "المادة هي كل شيء له كتلة ويشغل حيزاً من الفراغ. وتتكون المواد من ذرات وجزيئات.",
- example: "يمكن تمثيل الذرات والجزيئات باستخدام المجسمات ثلاثية الأبعاد."
+title:"المادة",
+content:"المادة هي كل شيء له كتلة ويشغل حيزاً من الفراغ.",
+example:"تتكون المواد من الذرات والجزيئات."
 },
 {
- title: "التفاعلات الكيميائية",
- text: "التفاعل الكيميائي هو عملية تتحول فيها المواد المتفاعلة إلى مواد جديدة تختلف في خصائصها.",
- example: "مثال: تفاعل الخل مع بيكربونات الصوديوم."
+title:"التفاعلات الكيميائية",
+content:"التفاعل الكيميائي هو تحول مواد متفاعلة إلى مواد جديدة.",
+example:"يمكنك مشاهدة محاكاة التفاعلات داخل المختبر."
 },
 {
- title: "المختبر الافتراضي",
- text: "في المختبر الافتراضي تستطيع اختيار المواد ومشاهدة محاكاة علمية للتفاعل.",
- example: "انتقل إلى المختبر وابدأ تجربتك."
+title:"قوانين الفيزياء",
+content:"تدرس الفيزياء الحركة والقوة والطاقة والضوء والكهرباء.",
+example:"سنضيف تجارب فيزيائية ثلاثية الأبعاد لاحقاً."
+},
+{
+title:"المختبر الافتراضي",
+content:"هنا تستطيع إجراء تجارب افتراضية والتعرف على نتائجها.",
+example:"اضغط على زر المختبر للبدء."
 }
 ];
 
-let currentPage = 0;
+let page=0;
 
-function displayPage() {
- const page = pages[currentPage];
-
- document.getElementById("bookTitle").textContent = page.title;
- document.getElementById("bookText").textContent = page.text;
- document.getElementById("bookExample").textContent = page.example;
- document.getElementById("pageNumber").textContent = currentPage + 1;
-
- document.querySelector(".book").style.animation = "none";
- void document.querySelector(".book").offsetWidth;
- document.querySelector(".book").style.animation = "appear .3s";
+function display(){
+let p=pages[page];
+document.getElementById("title").textContent=p.title;
+document.getElementById("content").textContent=p.content;
+document.getElementById("example").textContent=p.example;
+document.getElementById("number").textContent=page+1;
 }
 
-function nextPage() {
- if(currentPage < pages.length - 1) {
-   currentPage++;
-   displayPage();
- }
+function next(){
+if(page<pages.length-1)page++;
+display();
 }
 
-function previousPage() {
- if(currentPage > 0) {
-   currentPage--;
-   displayPage();
- }
+function previous(){
+if(page>0)page--;
+display();
 }
 
-// ==========================
-// NAVIGATION
-// ==========================
+function openPage(id){
+document.querySelectorAll(".section").forEach(s=>{
+s.classList.remove("active");
+});
+document.getElementById(id).classList.add("active");
 
-function showSection(id) {
- document.querySelectorAll(".section").forEach(s => {
-   s.classList.remove("active");
- });
-
- document.getElementById(id).classList.add("active");
-
- if(id === "lab") {
-   setTimeout(() => {
-     if(renderer) {
-       const width = document.getElementById("scene").clientWidth;
-       renderer.setSize(width,350);
-       camera.aspect = width / 350;
-       camera.updateProjectionMatrix();
-     }
-   }, 50);
- }
+if(id==="lab"){
+setTimeout(resizeScene,100);
+}
 }
 
-// ==========================
-// CHEMISTRY MATERIALS
-// ==========================
+// المواد الكيميائية
 
-const names = {
- water: "الماء",
- vinegar: "الخل",
- baking: "بيكربونات الصوديوم"
+let selected=[];
+
+const materialNames={
+water:"الماء",
+vinegar:"الخل",
+baking:"بيكربونات الصوديوم"
 };
 
-let selected = [];
+function choose(type,button){
 
-function selectMaterial(type, button) {
-
- if(selected.includes(type)) {
-   selected = selected.filter(x => x !== type);
-   button.classList.remove("selected");
- } else {
-   if(selected.length >= 2) {
-     document.getElementById("result").textContent =
-       "اختر مادتين فقط في هذه التجربة.";
-     return;
-   }
-
-   selected.push(type);
-   button.classList.add("selected");
- }
-
- document.getElementById("selection").textContent =
- selected.length === 0
- ? "لم يتم اختيار المواد."
- : "المواد المختارة: " + selected.map(x => names[x]).join(" + ");
+if(selected.includes(type)){
+selected=selected.filter(x=>x!==type);
+button.classList.remove("selected");
+}else{
+if(selected.length>=2)return;
+selected.push(type);
+button.classList.add("selected");
 }
 
-// ==========================
-// THREE JS 3D ENGINE
-// ==========================
-
-let scene, camera, renderer;
-let liquid, bubbles = [];
-let animationRunning = false;
-
-function createLab() {
-
- const container = document.getElementById("scene");
-
- scene = new THREE.Scene();
- scene.background = new THREE.Color(0x07172b);
-
- camera = new THREE.PerspectiveCamera(
-   45,
-   container.clientWidth / 350,
-   0.1,
-   100
- );
-
- camera.position.set(0,2.5,7);
- camera.lookAt(0,1,0);
-
- renderer = new THREE.WebGLRenderer({antialias:true});
- renderer.setSize(container.clientWidth,350);
- container.appendChild(renderer.domElement);
-
- const light = new THREE.PointLight(0xffffff,2);
- light.position.set(3,5,5);
- scene.add(light);
-
- scene.add(new THREE.AmbientLight(0xffffff,1));
-
- // Floor
-
- const floor = new THREE.Mesh(
-   new THREE.PlaneGeometry(10,10),
-   new THREE.MeshStandardMaterial({color:0x142d47})
- );
-
- floor.rotation.x = -Math.PI / 2;
- floor.position.y = -0.1;
- scene.add(floor);
-
- // Beaker body
-
- const glass = new THREE.Mesh(
-   new THREE.CylinderGeometry(0.8,0.65,2,32,1,true),
-   new THREE.MeshPhysicalMaterial({
-     color:0x8fdcff,
-     transparent:true,
-     opacity:0.22,
-     side:THREE.DoubleSide
-   })
- );
-
- glass.position.y = 1;
- scene.add(glass);
-
- // Beaker bottom
-
- const bottom = new THREE.Mesh(
-   new THREE.CylinderGeometry(0.65,0.65,0.12,32),
-   new THREE.MeshStandardMaterial({color:0x86caff})
- );
-
- bottom.position.y = 0;
- scene.add(bottom);
-
- // Liquid
-
- liquid = new THREE.Mesh(
-   new THREE.CylinderGeometry(0.62,0.62,0.45,32),
-   new THREE.MeshPhysicalMaterial({
-     color:0x2196ff,
-     transparent:true,
-     opacity:0.7
-   })
- );
-
- liquid.position.y = 0.35;
- scene.add(liquid);
-
- // Bubbles
-
- for(let i=0;i<18;i++) {
-
-   const bubble = new THREE.Mesh(
-     new THREE.SphereGeometry(0.06,12,12),
-     new THREE.MeshStandardMaterial({
-       color:0xffffff,
-       transparent:true,
-       opacity:0.7
-     })
-   );
-
-   bubble.position.set(
-     (Math.random()-0.5)*0.9,
-     Math.random()*1.5,
-     (Math.random()-0.5)*0.5
-   );
-
-   bubble.visible = false;
-   scene.add(bubble);
-   bubbles.push(bubble);
- }
-
- animate();
+document.getElementById("result").textContent=
+selected.map(x=>materialNames[x]).join(" + ") || "اختر مادتين.";
 }
 
-function animate() {
- requestAnimationFrame(animate);
+// محرك 3D
 
- if(animationRunning) {
-   bubbles.forEach(b => {
-     if(b.visible) {
-       b.position.y += 0.025;
+let scene,camera,renderer,liquid;
+let bubbles=[];
+let running=false;
 
-       if(b.position.y > 2.2) {
-         b.position.y = 0.2;
-       }
-     }
-   });
- }
+function createScene(){
 
- renderer.render(scene,camera);
+const area=document.getElementById("scene");
+
+scene=new THREE.Scene();
+scene.background=new THREE.Color(0x071629);
+
+camera=new THREE.PerspectiveCamera(
+45,area.clientWidth/300,.1,100
+);
+
+camera.position.set(0,2.5,7);
+camera.lookAt(0,1,0);
+
+renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(area.clientWidth,300);
+area.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0xffffff,1.5));
+
+let light=new THREE.PointLight(0xffffff,2);
+light.position.set(3,5,5);
+scene.add(light);
+
+// الأرضية
+
+let floor=new THREE.Mesh(
+new THREE.PlaneGeometry(10,10),
+new THREE.MeshStandardMaterial({color:0x18314b})
+);
+floor.rotation.x=-Math.PI/2;
+scene.add(floor);
+
+// الكأس الزجاجي
+
+let glass=new THREE.Mesh(
+new THREE.CylinderGeometry(.8,.65,2,32,1,true),
+new THREE.MeshPhysicalMaterial({
+color:0x9bdfff,transparent:true,
+opacity:.3,side:THREE.DoubleSide
+})
+);
+glass.position.y=1;
+scene.add(glass);
+
+// السائل
+
+liquid=new THREE.Mesh(
+new THREE.CylinderGeometry(.62,.62,.45,32),
+new THREE.MeshStandardMaterial({
+color:0x238bff,
+transparent:true,opacity:.8
+})
+);
+liquid.position.y=.35;
+scene.add(liquid);
+
+// فقاعات
+
+for(let i=0;i<25;i++){
+let b=new THREE.Mesh(
+new THREE.SphereGeometry(.06,12,12),
+new THREE.MeshStandardMaterial({
+color:0xffffff,transparent:true,opacity:.8
+})
+);
+b.position.set(
+(Math.random()-.5)*.8,
+Math.random()*1.5,
+(Math.random()-.5)*.5
+);
+b.visible=false;
+scene.add(b);
+bubbles.push(b);
 }
 
-// ==========================
-// MIXING SIMULATION
-// ==========================
-
-function mixMaterials() {
-
- if(selected.length !== 2) {
-   document.getElementById("result").textContent =
-     "يرجى اختيار مادتين أولاً.";
-   return;
- }
-
- const combination = [...selected].sort().join("+");
-
- if(combination === "baking+vinegar") {
-
-   liquid.material.color.set(0x69c9ff);
-
-   bubbles.forEach(b => {
-     b.visible = true;
-   });
-
-   animationRunning = true;
-
-   document.getElementById("result").innerHTML = `
-     <h3>🫧 محاكاة التفاعل الكيميائي</h3>
-     <p>تفاعل الخل مع بيكربونات الصوديوم ينتج عنه غاز ثاني أكسيد الكربون.</p>
-     <div class="formula">
-       CH₃COOH + NaHCO₃ → CH₃COONa + H₂O + CO₂
-     </div>
-     <p>تلاحظ ظهور فقاعات تمثل غاز ثاني أكسيد الكربون.</p>
-     <p>هذه محاكاة تعليمية وليست قياساً لكمية الغاز الناتج.</p>
-   `;
-
- } else if(combination === "water+vinegar") {
-
-   resetBubbles();
-
-   liquid.material.color.set(0x9acbff);
-
-   document.getElementById("result").innerHTML = `
-     <h3>💧 المحاكاة</h3>
-     <p>الخل والماء يمتزجان لتكوين محلول مخفف.</p>
-     <p>لا يُتوقع ظهور تفاعل كيميائي واضح في هذه الحالة.</p>
-   `;
-
- } else if(combination === "baking+water") {
-
-   resetBubbles();
-
-   liquid.material.color.set(0x91caff);
-
-   document.getElementById("result").innerHTML = `
-     <h3>🧪 المحاكاة</h3>
-     <p>تذوب بيكربونات الصوديوم في الماء جزئياً حتى يتكون محلول.</p>
-     <p>هذه العملية تمثل الذوبان وليست تفاعلاً ينتج عنه غاز.</p>
-   `;
-
- }
+animate();
 }
 
-function resetBubbles() {
- animationRunning = false;
- bubbles.forEach(b => b.visible = false);
+function animate(){
+requestAnimationFrame(animate);
+
+if(running){
+bubbles.forEach(b=>{
+if(b.visible){
+b.position.y+=.025;
+if(b.position.y>2)b.position.y=.2;
+}
+});
 }
 
-function resetExperiment() {
-
- selected = [];
-
- document.querySelectorAll(".material").forEach(b => {
-   b.classList.remove("selected");
- });
-
- resetBubbles();
-
- liquid.material.color.set(0x2196ff);
-
- document.getElementById("selection").textContent =
- "لم يتم اختيار المواد بعد.";
-
- document.getElementById("result").textContent =
- "تم تنظيف المختبر. يمكنك البدء بتجربة جديدة.";
+if(renderer)renderer.render(scene,camera);
 }
 
-// ==========================
-// START
-// ==========================
+function resizeScene(){
+if(!renderer)return;
+let area=document.getElementById("scene");
+renderer.setSize(area.clientWidth,300);
+camera.aspect=area.clientWidth/300;
+camera.updateProjectionMatrix();
+}
 
-displayPage();
+// التجارب
+
+function experiment(){
+
+if(selected.length!==2){
+document.getElementById("result").textContent=
+"يجب اختيار مادتين أولاً.";
+return;
+}
+
+let combo=[...selected].sort().join("+");
+
+if(combo==="baking+vinegar"){
+
+liquid.material.color.set(0x55baff);
+bubbles.forEach(b=>b.visible=true);
+running=true;
+
+document.getElementById("result").innerHTML=`
+<h3>🫧 نتيجة المحاكاة</h3>
+<p>ينتج عن تفاعل الخل مع بيكربونات الصوديوم غاز ثاني أكسيد الكربون.</p>
+<div class="formula">
+CH₃COOH + NaHCO₃ → CH₃COONa + H₂O + CO₂
+</div>
+<p>الفقاعات تمثل الغاز الناتج عن التفاعل.</p>
+<p>هذه محاكاة تعليمية وليست تجربة مخبرية حقيقية.</p>
+`;
+
+}else if(combo==="water+vinegar"){
+
+stopBubbles();
+liquid.material.color.set(0x8bcaff);
+
+document.getElementById("result").innerHTML=`
+<h3>💧 نتيجة المحاكاة</h3>
+<p>يمتزج الماء مع الخل لتكوين محلول مخفف.</p>
+<p>لا يظهر تفاعل كيميائي واضح.</p>
+`;
+
+}else{
+
+stopBubbles();
+liquid.material.color.set(0x8bcaff);
+
+document.getElementById("result").innerHTML=`
+<h3>🧪 نتيجة المحاكاة</h3>
+<p>تذوب بيكربونات الصوديوم في الماء لتكوين محلول.</p>
+<p>هذه عملية ذوبان وليست تفاعلاً ينتج عنه غاز.</p>
+`;
+}
+
+}
+
+function stopBubbles(){
+running=false;
+bubbles.forEach(b=>b.visible=false);
+}
+
+function resetLab(){
+
+selected=[];
+document.querySelectorAll(".material").forEach(b=>{
+b.classList.remove("selected");
+});
+
+stopBubbles();
+liquid.material.color.set(0x238bff);
+
+document.getElementById("result").textContent=
+"تم تنظيف المختبر. اختر مواد جديدة.";
+}
+
+display();
+createScene();
+
+window.addEventListener("resize",resizeScene);
+
 </script>
-
-<script type="importmap">
-{
- "imports": {
-   "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
- }
-}
-</script>
-
-<script type="module">
-import * as THREE from "three";
-
-window.THREE = THREE;
-
-// تشغيل المختبر بعد تحميل محرك 3D
-const start = () => {
-  if(window.createLab) window.createLab();
-};
-
-// إتاحة الدالة من السكربت الرئيسي
-window.addEventListener("load", start);
-</script>
-
 </body>
 </html>
