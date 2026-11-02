@@ -3,118 +3,132 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>عبقري الأرقام - لعبة أطفال</title>
+<title>10 ألعاب ذكاء للأطفال</title>
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{height:100%}
   body{
-    margin:0;
-    font-family:'Tajawal','Cairo','Segoe UI',Tahoma,sans-serif;
+    margin:0;font-family:'Tajawal','Cairo','Segoe UI',Tahoma,sans-serif;
     background:
       radial-gradient(circle at 15% 10%, #8b5cf6 0%, transparent 55%),
       radial-gradient(circle at 88% 88%, #06b6d4 0%, transparent 55%),
       linear-gradient(160deg,#4c1d95,#1e3a8a 60%,#0e7490);
-    min-height:100%;
-    display:flex;align-items:center;justify-content:center;
-    padding:14px;overflow-x:hidden;
+    min-height:100vh;display:flex;align-items:center;justify-content:center;
+    padding:12px;overflow-x:hidden;
   }
   .app{
-    width:min(680px,100%);
-    background:linear-gradient(#ffffff,#f5f3ff);
-    border-radius:30px;padding:16px;
+    width:min(720px,100%);background:linear-gradient(#ffffff,#f5f3ff);
+    border-radius:28px;padding:14px;
     box-shadow:0 25px 60px rgba(0,0,0,.45), inset 0 -6px 0 rgba(139,92,246,.15);
     position:relative;overflow:hidden;
-    min-height:540px;display:flex;flex-direction:column;
+    min-height:560px;display:flex;flex-direction:column;
   }
   header{display:flex;align-items:center;justify-content:space-between;gap:8px}
-  .brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;color:#4c1d95}
-  .brand .logo{font-size:26px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.2))}
-  .stats{display:flex;align-items:center;gap:6px}
+  .brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:#4c1d95}
+  .brand .logo{font-size:25px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.2))}
+  .stats{display:flex;align-items:center;gap:5px}
   .stat{
-    display:flex;align-items:center;gap:4px;
-    background:#ede9fe;color:#5b21b6;font-weight:800;font-size:15px;
-    padding:6px 10px;border-radius:14px;border:2px solid #ddd6fe;
+    display:flex;align-items:center;gap:3px;background:#ede9fe;color:#5b21b6;
+    font-weight:800;font-size:14px;padding:5px 8px;border-radius:13px;border:2px solid #ddd6fe;
   }
   .icon-btn{
-    border:2px solid #ddd6fe;background:#ede9fe;border-radius:14px;
-    padding:7px 10px;font-size:15px;cursor:pointer;font-family:inherit;
+    border:2px solid #ddd6fe;background:#ede9fe;border-radius:13px;
+    padding:6px 9px;font-size:15px;cursor:pointer;font-family:inherit;
   }
   .icon-btn:active{transform:translateY(2px)}
-  .progress{height:12px;background:#ede9fe;border-radius:10px;margin:12px 0 4px;overflow:hidden;border:2px solid #ddd6fe}
+  .progress{height:12px;background:#ede9fe;border-radius:10px;margin:10px 0 4px;overflow:hidden;border:2px solid #ddd6fe}
   .bar{height:100%;width:0;border-radius:10px;background:linear-gradient(90deg,#22c55e,#84cc16);transition:width .35s}
-  main{flex:1;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:6px 0}
+  main{flex:1;display:flex;flex-direction:column;justify-content:center;gap:8px;padding:4px 0}
 
-  /* ===== شاشة البداية ===== */
-  .start{text-align:center;animation:fadeIn .4s}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-  .mascot{font-size:64px;display:inline-block;animation:bob 1.8s ease-in-out infinite}
-  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-  .start h1{margin:6px 0 2px;color:#4c1d95;font-size:29px}
-  .start p{margin:0 0 16px;color:#6b7280;font-weight:600;font-size:15px}
-  .modes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .mode{
-    border:none;cursor:pointer;font-family:inherit;font-weight:800;font-size:16px;color:#1e293b;
-    background:linear-gradient(#fff,#eef2ff);
-    border-radius:20px;padding:16px 8px;
-    box-shadow:0 6px 0 #c7d2fe,0 10px 20px rgba(79,70,229,.15);
-    display:flex;flex-direction:column;align-items:center;gap:6px;
+  /* ===== قائمة الألعاب ===== */
+  .hub-title{text-align:center;color:#4c1d95;font-weight:900;font-size:20px;margin:4px 0 2px}
+  .hub-sub{text-align:center;color:#7c3aed;font-weight:600;font-size:13px;margin:0 0 8px}
+  .hub{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px;padding:2px}
+  .game-card{
+    border:none;cursor:pointer;font-family:inherit;font-weight:800;font-size:13px;color:#1e293b;
+    background:linear-gradient(#fff,#eef2ff);border-radius:18px;padding:14px 6px;
+    display:flex;flex-direction:column;align-items:center;gap:7px;
+    box-shadow:0 5px 0 #c7d2fe,0 8px 18px rgba(79,70,229,.12);
     transition:transform .08s,box-shadow .08s;
   }
-  .mode span{font-size:30px}
-  .mode:active{transform:translateY(5px);box-shadow:0 1px 0 #c7d2fe}
+  .game-card:active{transform:translateY(4px);box-shadow:0 1px 0 #c7d2fe}
+  .game-card .g-icon{font-size:29px;line-height:1}
 
   /* ===== السؤال ===== */
-  .q-text{text-align:center;font-size:21px;font-weight:800;color:#4c1d95;margin:0}
+  .q-text{text-align:center;font-size:20px;font-weight:800;color:#4c1d95;margin:2px 0}
   .visual{
-    min-height:118px;display:flex;align-items:center;justify-content:center;
+    min-height:112px;display:flex;align-items:center;justify-content:center;
     background:#f8f5ff;border-radius:20px;padding:10px;border:2px dashed #ddd6fe;
   }
-  .emoji-grid{display:flex;flex-wrap:wrap;gap:2px 6px;justify-content:center}
-  .emoji{font-size:34px;line-height:1.2;display:inline-block;
-    animation:pop .35s cubic-bezier(.34,1.56,.64,1) backwards}
+  .emoji-grid{display:flex;flex-wrap:wrap;gap:1px 6px;justify-content:center}
+  .emoji{font-size:32px;line-height:1.15;display:inline-block;animation:pop .35s cubic-bezier(.34,1.56,.64,1) backwards}
+  .emoji.gone{opacity:.22;filter:grayscale(1)}
   @keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
 
   .seq{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;direction:ltr}
   .term{
-    min-width:52px;height:60px;display:flex;align-items:center;justify-content:center;
-    font-size:25px;font-weight:800;color:#4c1d95;background:#fff;border-radius:14px;
+    min-width:50px;height:58px;display:flex;align-items:center;justify-content:center;
+    font-size:24px;font-weight:800;color:#4c1d95;background:#fff;border-radius:14px;
     border:3px solid #ddd6fe;box-shadow:0 4px 0 #ddd6fe;
   }
-  .term.blank{color:#a855f7;border-color:#c4b5fd;border-style:dashed;background:#faf5ff;
-    animation:pulse 1.2s infinite}
+  .term.blank{color:#a855f7;border-color:#c4b5fd;border-style:dashed;background:#faf5ff;animation:pulse 1.2s infinite}
   @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 
   .add-row{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;direction:ltr}
-  .grp{display:flex;flex-wrap:wrap;gap:1px;max-width:150px;justify-content:center;
-    background:#fff;border-radius:14px;padding:6px;border:2px solid #ddd6fe}
-  .grp .emoji{font-size:23px}
-  .op{font-size:28px;font-weight:800;color:#7c3aed}
-  .qmark{font-size:28px;font-weight:800;color:#a855f7;min-width:52px;height:56px;
-    display:flex;align-items:center;justify-content:center;
-    border:3px dashed #c4b5fd;border-radius:14px;background:#faf5ff}
+  .grp{display:flex;flex-wrap:wrap;gap:1px;max-width:145px;justify-content:center;background:#fff;border-radius:14px;padding:5px;border:2px solid #ddd6fe}
+  .grp .emoji{font-size:21px}
+  .op{font-size:26px;font-weight:800;color:#7c3aed}
+  .qmark{font-size:26px;font-weight:800;color:#a855f7;min-width:50px;height:54px;display:flex;align-items:center;justify-content:center;border:3px dashed #c4b5fd;border-radius:14px;background:#faf5ff}
+
+  .big-shape{font-size:78px;line-height:1;animation:pop .35s cubic-bezier(.34,1.56,.64,1)}
+  .swatch{width:104px;height:104px;border-radius:50%;border:5px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,.2);animation:pop .35s cubic-bezier(.34,1.56,.64,1)}
+  .cmp{display:flex;align-items:center;gap:12px}
+  .cmp-num{font-size:42px;font-weight:900;color:#4c1d95;background:#fff;border:3px solid #ddd6fe;border-radius:16px;padding:4px 18px;box-shadow:0 4px 0 #ddd6fe}
 
   /* ===== الاختيارات ===== */
-  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+  .options{display:grid;gap:9px;margin-top:4px}
   .opt{
-    font-family:inherit;font-size:32px;font-weight:800;color:#1e293b;cursor:pointer;
-    padding:14px 8px;border-radius:18px;border:none;
+    font-family:inherit;font-size:30px;font-weight:800;color:#1e293b;cursor:pointer;
+    padding:13px 6px;border-radius:18px;border:none;
     background:linear-gradient(#fff,#eef2ff);
     box-shadow:0 6px 0 #c7d2fe,0 8px 16px rgba(79,70,229,.12);
     transition:transform .08s,box-shadow .08s,background .2s;
   }
   .opt:active{transform:translateY(5px);box-shadow:0 1px 0 #c7d2fe}
-  .opt.correct{background:linear-gradient(#86efac,#22c55e);color:#fff;
-    box-shadow:0 6px 0 #15803d;animation:bounce .45s}
-  .opt.wrong{background:linear-gradient(#fca5a5,#ef4444);color:#fff;
-    box-shadow:0 6px 0 #b91c1c;animation:shake .4s}
+  .opt.correct{background:linear-gradient(#86efac,#22c55e);color:#fff;box-shadow:0 6px 0 #15803d;animation:bounce .45s}
+  .opt.wrong{background:linear-gradient(#fca5a5,#ef4444);color:#fff;box-shadow:0 6px 0 #b91c1c;animation:shake .4s}
   @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
   @keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
 
-  /* ===== رسائل التشجيع ===== */
+  /* ===== لعبة الذاكرة ===== */
+  .mem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;direction:ltr}
+  .card{
+    aspect-ratio:1/1;border:none;border-radius:16px;cursor:pointer;font-family:inherit;
+    background:linear-gradient(145deg,#8b5cf6,#6d28d9);
+    box-shadow:0 5px 0 #4c1d95;display:flex;align-items:center;justify-content:center;
+    transition:transform .12s,background .25s;
+  }
+  .card:active{transform:translateY(3px)}
+  .card span{font-size:30px;visibility:hidden;line-height:1}
+  .card.flipped,.card.matched{background:linear-gradient(#fff,#eef2ff);box-shadow:0 5px 0 #c7d2fe}
+  .card.flipped span,.card.matched span{visibility:visible}
+  .card.matched{background:linear-gradient(#bbf7d0,#86efac);box-shadow:0 5px 0 #22c55e}
+
+  /* ===== المختلف ===== */
+  .odd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+  .odd-item{
+    aspect-ratio:1/1;font-size:34px;border:none;cursor:pointer;font-family:inherit;
+    background:linear-gradient(#fff,#eef2ff);border-radius:16px;
+    box-shadow:0 5px 0 #c7d2fe;transition:transform .08s;
+  }
+  .odd-item:active{transform:translateY(4px)}
+  .odd-item.correct{background:linear-gradient(#86efac,#22c55e);box-shadow:0 5px 0 #15803d;animation:bounce .45s}
+  .odd-item.wrong{background:linear-gradient(#fca5a5,#ef4444);box-shadow:0 5px 0 #b91c1c;animation:shake .4s}
+
+  /* ===== رسائل ===== */
   .feedback{
     position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) scale(0);
-    font-size:26px;font-weight:900;padding:10px 22px;border-radius:18px;
-    pointer-events:none;opacity:0;white-space:nowrap;
+    font-size:24px;font-weight:900;padding:10px 20px;border-radius:18px;
+    pointer-events:none;opacity:0;white-space:nowrap;z-index:5;
   }
   .feedback.show{animation:fbIn .35s forwards}
   @keyframes fbIn{
@@ -125,25 +139,29 @@
   .feedback.good{background:#22c55e;color:#fff;box-shadow:0 10px 26px rgba(34,197,94,.55)}
   .feedback.bad{background:#ef4444;color:#fff;box-shadow:0 10px 26px rgba(239,68,68,.55)}
 
-  .confetti-layer{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-  .confetti{position:absolute;width:10px;height:14px;border-radius:3px;top:-20px;
-    animation:fall linear forwards}
-  @keyframes fall{to{transform:translateY(600px) rotate(720deg);opacity:0}}
+  .confetti-layer{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:4}
+  .confetti{position:absolute;width:10px;height:14px;border-radius:3px;top:-20px;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(650px) rotate(720deg);opacity:0}}
 
   @media (max-width:420px){
-    .emoji{font-size:28px}
-    .opt{font-size:27px;padding:12px 6px}
-    .brand{font-size:15px}
-    .term{min-width:44px;height:52px;font-size:22px}
-    .q-text{font-size:18px}
+    .emoji{font-size:26px}
+    .opt{font-size:26px;padding:11px 4px}
+    .brand{font-size:14px}
+    .term{min-width:42px;height:50px;font-size:21px}
+    .q-text{font-size:17px}
+    .cmp-num{font-size:34px;padding:4px 12px}
+    .card span{font-size:24px}
+    .odd-item{font-size:28px}
+    .game-card{font-size:12px;padding:11px 4px}
+    .game-card .g-icon{font-size:25px}
   }
 </style>
 </head>
 <body>
 
-<div class="app" id="app">
+<div class="app">
   <header>
-    <div class="brand"><span class="logo">🧠</span><span>عبقري الأرقام</span></div>
+    <div class="brand"><span class="logo">🧠</span><span>ألعاب الذكاء</span></div>
     <div class="stats">
       <div class="stat" title="النقاط">⭐<span id="score">0</span></div>
       <div class="stat" title="المستوى">🏆<span id="level">1</span></div>
@@ -161,12 +179,12 @@
 </div>
 
 <script>
-/* ================= أدوات مساعدة ================= */
+/* ================= أدوات ================= */
 const $ = id => document.getElementById(id);
 const stage = $('stage'), feedbackEl = $('feedback'), confettiLayer = $('confetti');
 const scoreEl = $('score'), levelEl = $('level'), streakEl = $('streak'), barEl = $('bar');
 
-const EMOJIS = ['🍎','🍌','🍓','🐤','🐟','⭐','🎈','🚗','🌸','🍪','🐞','🧸','🍇','🦋','🍊','🐸'];
+const EMOJIS = ['🍎','🍌','🍓','🐤','🐟','⭐','🎈','🚗','🌸','🍪','🐞','🧸','🍇','🦋','🍊','🐸','🍉','🌼','🚀','🐬','🍭','🎁'];
 const GOOD = ['أحسنت! 🎉','رائع جداً! ⭐','أنت عبقري! 🧠','ممتاز! 👏','بطل! 🏅','صحيح! 💚'];
 const BAD  = ['حاول مرة ثانية 💪','لا بأس، جرّب! 🤔','قريب جداً! 🙂'];
 
@@ -192,42 +210,46 @@ const sndCorrect = () => { tone(523.25,.12,'sine',.13,0); tone(659.25,.12,'sine'
 const sndWrong   = () => { tone(220,.18,'sawtooth',.07,0); tone(160,.26,'sawtooth',.07,.13); };
 const sndClick   = () => tone(700,.06,'triangle',.06);
 
-/* ================= حالة اللعبة ================= */
+/* ================= الحالة ================= */
 const state = {
-  mode:'mixed', score:0, streak:0, level:1,
-  correctInLevel:0, q:null, firstTry:true, locked:false
+  screen:'hub', game:null, score:0, streak:0, level:1,
+  correctInLevel:0, q:null, firstTry:true, locked:true, mem:null
 };
 
 function updateHUD(){
   scoreEl.textContent = state.score;
   levelEl.textContent = state.level;
   streakEl.textContent = state.streak;
-  barEl.style.width = (state.correctInLevel / 4 * 100) + '%';
+  barEl.style.width = Math.min(100, state.correctInLevel/4*100) + '%';
 }
 
-/* ================= توليد الاختيارات ================= */
-function makeOptions(correct, min, max){
+/* ================= مولّدات الاختيارات ================= */
+function makeOptions(correct, min, max, count=4){
   const set = new Set([correct]);
   let guard = 0;
-  while(set.size < 4 && guard++ < 400){
-    let d = randInt(-4,4);
-    if(d === 0) d = 1;
+  while(set.size < count && guard++ < 500){
+    let d = randInt(-4,4); if(d === 0) d = 1;
     const v = correct + d;
     if(v >= min && v <= max) set.add(v);
   }
   let f = min;
-  while(set.size < 4 && f <= max){ if(!set.has(f)) set.add(f); f++; }
-  while(set.size < 4) set.add(randInt(min,max));
+  while(set.size < count && f <= max){ if(!set.has(f)) set.add(f); f++; }
+  while(set.size < count) set.add(randInt(min,max));
+  return shuffle([...set]);
+}
+function emojiOptions(correct, count=4){
+  const set = new Set([correct]);
+  for(const e of shuffle([...EMOJIS])){ if(set.size >= count) break; set.add(e); }
   return shuffle([...set]);
 }
 
-/* ================= أنواع الأسئلة ================= */
+/* ================= مولّدات الأسئلة ================= */
 function qCount(){
-  const max = state.level <= 1 ? 5 : state.level <= 3 ? 8 : 10;
+  const max = state.level <= 1 ? 5 : state.level <= 3 ? 8 : 12;
   const n = randInt(1, max);
   const e = pick(EMOJIS);
   let visual = '<div class="emoji-grid">';
-  for(let i=0;i<n;i++) visual += `<span class="emoji" style="animation-delay:${i*55}ms">${e}</span>`;
+  for(let i=0;i<n;i++) visual += `<span class="emoji" style="animation-delay:${i*50}ms">${e}</span>`;
   visual += '</div>';
   return { text:'كم عدد الأشياء؟', visual, answer:n, options: makeOptions(n,1,12) };
 }
@@ -242,81 +264,100 @@ function qMissing(){
   const visual = '<div class="seq">' + terms.map((t,i)=>
       i === idx ? '<span class="term blank">?</span>' : `<span class="term">${t}</span>`
     ).join('') + '</div>';
-  return {
-    text:'ما هو الرقم الناقص؟',
-    visual,
-    answer,
-    options: makeOptions(answer, Math.max(1, answer-10), answer+10)
-  };
+  return { text:'ما هو الرقم الناقص؟', visual, answer,
+           options: makeOptions(answer, Math.max(0, answer-10), answer+10) };
 }
 
 function qAdd(){
-  const maxA = state.level <= 1 ? 3 : state.level <= 3 ? 5 : 9;
-  const a = randInt(1,maxA), b = randInt(1,maxA);
-  const e = pick(EMOJIS);
+  const m = state.level <= 1 ? 3 : state.level <= 3 ? 5 : 9;
+  const a = randInt(1,m), b = randInt(1,m), e = pick(EMOJIS);
   const grp = n => '<div class="grp">' +
-    Array.from({length:n}, (_,i)=>`<span class="emoji" style="animation-delay:${i*55}ms">${e}</span>`).join('') +
-    '</div>';
+    Array.from({length:n},(_,i)=>`<span class="emoji" style="animation-delay:${i*50}ms">${e}</span>`).join('') + '</div>';
   const visual = `<div class="add-row">${grp(a)}<span class="op">+</span>${grp(b)}<span class="op">=</span><span class="qmark">?</span></div>`;
   return { text:'كم مجموع الأشياء؟', visual, answer:a+b, options: makeOptions(a+b, 1, 20) };
 }
 
-/* ================= سير اللعبة ================= */
-function nextQuestion(){
-  const type = state.mode === 'mixed' ? pick(['count','missing','add']) : state.mode;
-  state.q = type === 'count' ? qCount() : type === 'missing' ? qMissing() : qAdd();
-  state.firstTry = true;
-  state.locked = false;
-  renderQuestion();
+function qSub(){
+  const m = state.level <= 1 ? 5 : state.level <= 3 ? 8 : 12;
+  const a = randInt(2,m), b = randInt(1,a-1);
+  const e = pick(EMOJIS);
+  let visual = '<div class="emoji-grid">';
+  for(let i=0;i<a;i++) visual += `<span class="emoji ${i<b?'gone':''}" style="animation-delay:${i*50}ms">${e}</span>`;
+  visual += '</div>';
+  return { text:`لدينا ${a}، أُخذ منها ${b}. كم بقي؟`, visual,
+           answer:a-b, options: makeOptions(a-b, 0, a) };
 }
 
-function renderQuestion(){
-  stage.innerHTML = `
-    <p class="q-text">${state.q.text}</p>
-    <div class="visual">${state.q.visual}</div>
-    <div class="options" id="options"></div>`;
-  const box = $('options');
-  state.q.options.forEach(n => {
-    const b = document.createElement('button');
-    b.className = 'opt';
-    b.textContent = n;
-    b.addEventListener('click', () => answer(n, b));
-    box.appendChild(b);
-  });
+const SHAPES = [['⚪','دائرة'],['🟥','مربع'],['🔺','مثلث'],['⭐','نجمة'],['❤️','قلب'],['🔶','معين'],['🔷','معين'],['🟣','دائرة']];
+function qShapes(){
+  const uniq = [['⚪','دائرة'],['🟥','مربع'],['🔺','مثلث'],['⭐','نجمة'],['❤️','قلب'],['🔶','معين']];
+  const sh = pick(uniq);
+  const names = shuffle(uniq.map(s=>s[1])).filter((v,i,arr)=>arr.indexOf(v)===i);
+  const opts = new Set([sh[1]]);
+  for(const n of names){ if(opts.size>=4) break; opts.add(n); }
+  return { text:'ما اسم هذا الشكل؟', visual:`<div class="big-shape">${sh[0]}</div>`,
+           answer:sh[1], options: shuffle([...opts]) };
 }
 
-function answer(num, btn){
-  if(state.locked) return;
+const COLORS = [['#ef4444','أحمر'],['#3b82f6','أزرق'],['#22c55e','أخضر'],['#eab308','أصفر'],
+                ['#f97316','برتقالي'],['#a855f7','بنفسجي'],['#ec4899','وردي'],['#78350f','بني'],['#111827','أسود']];
+function qColors(){
+  const c = pick(COLORS);
+  const names = shuffle(COLORS.map(x=>x[1]));
+  const opts = new Set([c[1]]);
+  for(const n of names){ if(opts.size>=4) break; opts.add(n); }
+  return { text:'ما هذا اللون؟',
+           visual:`<div class="swatch" style="background:${c[0]}"></div>`,
+           answer:c[1], options: shuffle([...opts]) };
+}
 
-  if(num === state.q.answer){
-    state.locked = true;
-    btn.classList.add('correct');
-    sndCorrect();
+function qCompare(){
+  const max = state.level <= 1 ? 10 : state.level <= 3 ? 20 : 50;
+  let a = randInt(1,max), b = randInt(1,max);
+  while(b === a) b = randInt(1,max);
+  const big = Math.random() < 0.5;
+  const visual = `<div class="cmp"><div class="cmp-num">${a}</div><div class="op">?</div><div class="cmp-num">${b}</div></div>`;
+  return {
+    text: big ? 'أي الرقمين أكبر؟' : 'أي الرقمين أصغر؟',
+    visual,
+    answer: big ? Math.max(a,b) : Math.min(a,b),
+    options: shuffle([a,b])
+  };
+}
 
-    const pts = state.firstTry ? 10 : 5;
-    state.score += pts;
-    if(state.firstTry) state.streak++;
-    state.correctInLevel++;
+function qPattern(){
+  const items = shuffle([...EMOJIS]).slice(0,3);
+  const period = state.level <= 2 ? 2 : 3;
+  const seq = [];
+  for(let i=0;i<5;i++) seq.push(items[i % period]);
+  const answer = seq[4];
+  const visual = '<div class="seq">' + seq.map((e,i)=>
+      i === 4 ? '<span class="term blank">?</span>' : `<span class="term">${e}</span>`
+    ).join('') + '</div>';
+  return { text:'ما هو الشيء التالي في النمط؟', visual, answer, options: emojiOptions(answer) };
+}
 
-    if(state.correctInLevel >= 4){
-      state.level = Math.min(state.level + 1, 6);
-      state.correctInLevel = 0;
-    }
-    updateHUD();
-    confetti();
-    showFeedback(pick(GOOD), 'good');
+/* ================= تسجيل النقاط ================= */
+function onCorrect(btn){
+  state.locked = true;
+  if(btn) btn.classList.add('correct');
+  sndCorrect(); confetti(); showFeedback(pick(GOOD),'good');
 
-    setTimeout(() => { nextQuestion(); }, 950);
-
-  } else {
-    state.firstTry = false;
-    state.streak = 0;
-    btn.classList.add('wrong');
-    btn.disabled = true;
-    sndWrong();
-    showFeedback(pick(BAD), 'bad');
-    updateHUD();
+  state.score += state.firstTry ? 10 : 5;
+  if(state.firstTry) state.streak++;
+  state.correctInLevel++;
+  if(state.correctInLevel >= 4){
+    state.level = Math.min(state.level + 1, 6);
+    state.correctInLevel = 0;
   }
+  updateHUD();
+}
+function onWrong(btn){
+  state.firstTry = false;
+  state.streak = 0;
+  if(btn){ btn.classList.add('wrong'); btn.disabled = true; }
+  sndWrong(); showFeedback(pick(BAD),'bad');
+  updateHUD();
 }
 
 function showFeedback(text, kind){
@@ -330,7 +371,7 @@ function showFeedback(text, kind){
 
 function confetti(){
   const colors = ['#f43f5e','#f59e0b','#22c55e','#3b82f6','#a855f7','#eab308'];
-  for(let i=0;i<26;i++){
+  for(let i=0;i<24;i++){
     const d = document.createElement('div');
     d.className = 'confetti';
     d.style.left = Math.random()*100 + '%';
@@ -342,43 +383,79 @@ function confetti(){
   }
 }
 
-/* ================= شاشة البداية ================= */
-function showStart(){
-  state.locked = true;
+/* ================= سؤال عام (8 ألعاب) ================= */
+function nextQuestion(){
+  if(state.screen !== 'game') return;
+  const g = GAMES[state.game];
+  if(!g || !g.gen) return;
+  state.q = g.gen();
+  state.firstTry = true;
+  state.locked = false;
+  renderQuiz();
+}
+
+function renderQuiz(){
+  const q = state.q;
+  const cols = Math.min(q.options.length, 4);
   stage.innerHTML = `
-    <div class="start">
-      <div class="mascot">🧠</div>
-      <h1>عبقري الأرقام</h1>
-      <p>اختر لعبتك المفضلة وابدأ المغامرة!</p>
-      <div class="modes">
-        <button class="mode" data-mode="count"><span>🍎</span> عدّ الأشياء</button>
-        <button class="mode" data-mode="missing"><span>🔢</span> الرقم الناقص</button>
-        <button class="mode" data-mode="add"><span>➕</span> الجمع</button>
-        <button class="mode" data-mode="mixed"><span>🎲</span> الكل مختلط</button>
-      </div>
-    </div>`;
-  stage.querySelectorAll('.mode').forEach(b => {
-    b.addEventListener('click', () => { sndClick(); startGame(b.dataset.mode); });
+    <p class="q-text">${q.text}</p>
+    <div class="visual">${q.visual}</div>
+    <div class="options" id="options" style="grid-template-columns:repeat(${cols},1fr)"></div>`;
+  const box = $('options');
+  const gid = state.game;
+  q.options.forEach(v => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.textContent = v;
+    b.addEventListener('click', () => answer(v, b, gid));
+    box.appendChild(b);
   });
 }
 
-function startGame(mode){
-  audio(); // تفعيل الصوت بلمسة المستخدم
-  state.mode = mode;
-  state.score = 0;
-  state.streak = 0;
-  state.level = 1;
-  state.correctInLevel = 0;
-  state.locked = false;
-  updateHUD();
-  nextQuestion();
+function answer(val, btn, gid){
+  if(state.locked) return;
+  if(val === state.q.answer){
+    onCorrect(btn);
+    setTimeout(() => { if(state.game === gid && state.screen === 'game') nextQuestion(); }, 950);
+  } else {
+    onWrong(btn);
+  }
 }
 
-$('homeBtn').addEventListener('click', () => { sndClick(); updateHUD(); showStart(); });
+/* ================= 9) المختلف ================= */
+function initOdd(){
+  if(state.screen !== 'game') return;
+  state.locked = false;
+  state.firstTry = true;
+  const base = pick(EMOJIS);
+  const diff = pick(EMOJIS.filter(e => e !== base));
+  const idx = randInt(0, 8);
+  stage.innerHTML = `<p class="q-text">اضغط على الشيء المختلف 👀</p>
+                     <div class="odd-grid" id="oddGrid"></div>`;
+  const grid = $('oddGrid');
+  const gid = state.game;
+  for(let i=0;i<9;i++){
+    const b = document.createElement('button');
+    b.className = 'odd-item';
+    b.textContent = i === idx ? diff : base;
+    b.addEventListener('click', () => {
+      if(state.locked) return;
+      if(i === idx){
+        onCorrect(b);
+        setTimeout(() => { if(state.game === gid && state.screen === 'game') initOdd(); }, 1000);
+      } else {
+        onWrong(b);
+      }
+    });
+    grid.appendChild(b);
+  }
+}
 
-/* ================= انطلاق ================= */
-updateHUD();
-showStart();
-</script>
-</body>
-</html>
+/* ================= 10) الذاكرة ================= */
+function initMemory(){
+  if(state.screen !== 'game') return;
+  state.locked = false;
+  state.firstTry = true;
+  const pool = shuffle([...EMOJIS]).slice(0,6);
+  const deck = shuffle([...pool, ...pool]);
+  state.mem = { first:null, matched:0, busy:
