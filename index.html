@@ -2,925 +2,509 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
 <meta name="theme-color" content="#101827">
 <title>عالمي تكسي</title>
-
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
---bg:#f3f5f9;
---dark:#101827;
---primary:#f5bd25;
---white:#fff;
---gray:#8993a4;
---green:#13a878;
---red:#e74c3c;
---border:#e7eaf0;
+  --bg:#f3f5f9;
+  --dark:#0f1729;
+  --dark-2:#182337;
+  --primary:#f5bd25;
+  --primary-d:#d9a417;
+  --white:#fff;
+  --gray:#8993a4;
+  --green:#13a878;
+  --red:#e74c3c;
+  --border:#e7eaf0;
+  --shadow:0 4px 14px rgba(15,23,41,.06);
+  --radius:16px;
 }
 body{
-font-family:Tahoma,Arial,sans-serif;
-background:var(--bg);
-color:var(--dark);
-min-height:100vh;
+  font-family:'Tajawal',Tahoma,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--dark);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
 }
-button,input,select{
-font-family:inherit;
-}
-button{
-cursor:pointer;
-border:none;
-}
+button,input,select,textarea{font-family:inherit;outline:none}
+button{cursor:pointer;border:none}
+
 .app{
-max-width:520px;
-margin:auto;
-min-height:100vh;
-background:#fff;
-position:relative;
-padding-bottom:90px;
+  max-width:520px;margin:auto;min-height:100vh;
+  background:#fff;position:relative;
+  padding-bottom:calc(90px + env(safe-area-inset-bottom,0));
+  box-shadow:0 0 40px rgba(0,0,0,.04);
 }
+
+/* ================= Header ================= */
 header{
-background:var(--dark);
-color:white;
-padding:20px;
-border-radius:0 0 25px 25px;
+  background:linear-gradient(135deg,var(--dark),#1e2d47);
+  color:white;padding:22px 20px 26px;
+  border-radius:0 0 26px 26px;
+  position:relative;overflow:hidden;
 }
-.top{
-display:flex;
-justify-content:space-between;
-align-items:center;
+header::before{
+  content:"";position:absolute;width:220px;height:220px;
+  background:radial-gradient(circle,rgba(245,189,37,.18),transparent 70%);
+  top:-80px;left:-80px;pointer-events:none;
 }
-.logo{
-font-size:23px;
-font-weight:bold;
-}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1}
+.logo{font-size:23px;font-weight:900;letter-spacing:-.3px}
 .logo span{color:var(--primary)}
 .profile{
-width:42px;
-height:42px;
-border-radius:50%;
-background:#28364c;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:22px;
+  width:44px;height:44px;border-radius:50%;
+  background:#28364c;display:flex;align-items:center;justify-content:center;
+  font-size:20px;cursor:pointer;transition:.2s;
+  border:1px solid rgba(255,255,255,.08);
 }
-.location{
-margin-top:22px;
-font-size:13px;
-color:#b9c3d3;
-}
-.location strong{
-display:block;
-color:white;
-font-size:16px;
-margin-top:6px;
-}
-.section{
-padding:18px;
-}
-.section-title{
-font-size:18px;
-font-weight:bold;
-margin-bottom:15px;
-}
+.profile:active{transform:scale(.94);background:#324258}
+.location{margin-top:20px;font-size:13px;color:#b9c3d3;position:relative;z-index:1}
+.location strong{display:block;color:white;font-size:15px;margin-top:5px;font-weight:700}
+
+/* ================= Sections ================= */
+.section{padding:18px}
+.section-title{font-size:18px;font-weight:900;margin-bottom:14px;color:var(--dark)}
+
+/* ================= Role switch ================= */
 .role-switch{
-display:flex;
-background:#edf0f5;
-padding:5px;
-border-radius:13px;
-gap:5px;
+  display:flex;background:#edf0f5;padding:5px;border-radius:14px;gap:5px;
 }
 .role-switch button{
-flex:1;
-padding:12px;
-border-radius:10px;
-background:transparent;
-font-weight:bold;
+  flex:1;padding:12px;border-radius:10px;background:transparent;
+  font-weight:700;font-size:14px;color:var(--gray);transition:.25s;
 }
 .role-switch button.active{
-background:var(--dark);
-color:white;
+  background:var(--dark);color:white;box-shadow:0 4px 12px rgba(15,23,41,.25);
 }
+
+/* ================= Map ================= */
+.map-wrap{padding:0 18px;position:relative}
 #map{
-height:280px;
-width:100%;
-border-radius:17px;
-z-index:1;
+  height:280px;width:100%;border-radius:var(--radius);z-index:1;
+  border:1px solid var(--border);
 }
-.map-wrap{
-padding:0 18px;
+.map-actions{
+  position:absolute;bottom:14px;left:32px;z-index:2;
+  display:flex;gap:8px;
 }
+.map-btn{
+  width:42px;height:42px;border-radius:50%;
+  background:white;box-shadow:0 2px 10px rgba(0,0,0,.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;transition:.2s;
+}
+.map-btn:active{transform:scale(.92)}
+
+/* ================= Search box ================= */
 .search-box{
-background:white;
-border:1px solid var(--border);
-border-radius:16px;
-padding:15px;
-margin-top:15px;
+  background:white;border:1px solid var(--border);
+  border-radius:var(--radius);padding:14px;margin-top:15px;
+  box-shadow:var(--shadow);
 }
-.input-row{
-display:flex;
-align-items:center;
-gap:10px;
-margin-bottom:14px;
+.input-row{display:flex;align-items:center;gap:10px;padding:8px 0}
+.input-row:first-child{padding-bottom:12px;border-bottom:1px solid var(--border)}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--green);flex-shrink:0;box-shadow:0 0 0 4px rgba(19,168,120,.12)}
+.dot.destination{background:var(--red);box-shadow:0 0 0 4px rgba(231,76,60,.12)}
+.input-row input{width:100%;border:none;font-size:14px;background:transparent;color:var(--dark)}
+.input-row input::placeholder{color:#b8bfcc}
+.clear-btn{
+  background:transparent;color:#b8bfcc;font-size:18px;padding:4px 6px;
+  border-radius:50%;transition:.15s;
 }
-.input-row:last-child{margin-bottom:0}
-.dot{
-width:12px;
-height:12px;
-border-radius:50%;
-background:var(--green);
-}
-.dot.destination{background:var(--red)}
-.input-row input{
-width:100%;
-border:none;
-outline:none;
-font-size:14px;
-padding:10px 0;
-background:transparent;
-}
+.clear-btn:active{background:#f0f2f6;color:#666}
+
+/* ================= Buttons ================= */
 .primary-btn{
-width:100%;
-padding:15px;
-border-radius:13px;
-background:var(--primary);
-font-weight:bold;
-font-size:16px;
-margin-top:15px;
-color:#171717;
+  width:100%;padding:15px;border-radius:13px;
+  background:linear-gradient(135deg,var(--primary),#f7c944);
+  font-weight:900;font-size:15px;margin-top:14px;color:#2a1e00;
+  box-shadow:0 6px 16px rgba(245,189,37,.35);
+  transition:.18s;
 }
-.primary-btn:active{transform:scale(.98)}
-.services{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-}
+.primary-btn:active{transform:scale(.97);box-shadow:0 3px 8px rgba(245,189,37,.35)}
+
+/* ================= Services ================= */
+.services{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .service{
-border:1px solid var(--border);
-padding:15px 5px;
-border-radius:14px;
-text-align:center;
-background:white;
+  border:1.5px solid var(--border);padding:14px 5px;
+  border-radius:14px;text-align:center;background:white;
+  transition:.2s;cursor:pointer;
 }
+.service:active{transform:scale(.96)}
 .service.active{
-border:2px solid var(--primary);
-background:#fffaf0;
+  border-color:var(--primary);background:linear-gradient(180deg,#fffbf0,#fff5e0);
+  box-shadow:0 4px 14px rgba(245,189,37,.22);
 }
-.service-icon{
-font-size:30px;
-margin-bottom:8px;
-}
-.service-name{
-font-size:13px;
-font-weight:bold;
-}
-.service-price{
-font-size:12px;
-color:var(--gray);
-margin-top:6px;
-}
+.service-icon{font-size:28px;margin-bottom:6px}
+.service-name{font-size:12px;font-weight:700;color:var(--dark)}
+.service-price{font-size:10.5px;color:var(--gray);margin-top:5px}
+
+/* ================= Cards ================= */
 .card{
-border:1px solid var(--border);
-padding:15px;
-border-radius:15px;
-margin-bottom:12px;
+  border:1px solid var(--border);padding:15px;
+  border-radius:14px;margin-bottom:11px;
+  background:white;box-shadow:var(--shadow);
+  transition:.2s;cursor:pointer;
 }
-.row{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:10px;
-}
-.muted{
-color:var(--gray);
-font-size:12px;
-}
-.price{
-font-weight:bold;
-font-size:19px;
-}
+.card:active{transform:scale(.985)}
+.card.static{cursor:default;box-shadow:none;background:#fafbfd}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.muted{color:var(--gray);font-size:12px}
+.price{font-weight:900;font-size:18px;color:var(--dark)}
 .badge{
-background:#e8f8f1;
-color:var(--green);
-padding:6px 10px;
-border-radius:20px;
-font-size:11px;
+  background:#e8f8f1;color:var(--green);padding:5px 10px;
+  border-radius:20px;font-size:11px;font-weight:700;
 }
+.badge.warn{background:#fff5e0;color:#b58100}
+.badge.err{background:#fee;color:var(--red)}
+
+/* ================= Nav ================= */
 .nav{
-position:fixed;
-bottom:0;
-left:50%;
-transform:translateX(-50%);
-width:100%;
-max-width:520px;
-background:white;
-border-top:1px solid var(--border);
-display:flex;
-justify-content:space-around;
-padding:12px 5px;
-z-index:1000;
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:520px;background:white;
+  border-top:1px solid var(--border);
+  display:flex;justify-content:space-around;
+  padding:10px 5px calc(10px + env(safe-area-inset-bottom,0));
+  z-index:1000;
+  box-shadow:0 -4px 20px rgba(0,0,0,.04);
 }
 .nav button{
-background:transparent;
-color:var(--gray);
-font-size:11px;
-display:flex;
-flex-direction:column;
-align-items:center;
-gap:5px;
+  background:transparent;color:var(--gray);font-size:10.5px;font-weight:700;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:6px 10px;border-radius:10px;position:relative;
+  transition:.2s;
 }
-.nav button.active{color:#d59b00}
-.nav-icon{font-size:21px}
-.page{display:none}
+.nav button.active{color:var(--primary-d)}
+.nav button.active::before{
+  content:"";position:absolute;top:-10px;left:20%;right:20%;
+  height:3px;background:var(--primary);border-radius:0 0 3px 3px;
+}
+.nav-icon{font-size:20px}
+
+/* ================= Pages ================= */
+.page{display:none;animation:fadeIn .25s ease}
 .page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .hidden{display:none!important}
+
+/* ================= Sub-page header ================= */
+.sub-header{
+  display:flex;align-items:center;gap:12px;
+  padding:16px 18px;border-bottom:1px solid var(--border);
+  background:white;position:sticky;top:0;z-index:10;
+}
+.back-btn{
+  width:38px;height:38px;border-radius:50%;
+  background:#f5f6f9;display:flex;align-items:center;justify-content:center;
+  font-size:18px;color:var(--dark);transition:.15s;flex-shrink:0;
+}
+.back-btn:active{background:#e7eaf0;transform:scale(.94)}
+.sub-header h2{font-size:17px;font-weight:900;color:var(--dark)}
+
+/* ================= Inputs ================= */
 .field{
-width:100%;
-padding:13px;
-border:1px solid var(--border);
-border-radius:10px;
-outline:none;
-margin-top:8px;
+  width:100%;padding:13px 14px;
+  border:1.5px solid var(--border);border-radius:12px;
+  font-size:14px;margin-top:8px;background:white;
+  transition:.18s;color:var(--dark);
 }
+.field:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(245,189,37,.15)}
+.field::placeholder{color:#b8bfcc}
+
+/* ================= Payment cards ================= */
+.payment-card{
+  display:flex;align-items:center;gap:12px;
+  border:1.5px solid var(--border);padding:14px;
+  border-radius:12px;margin-bottom:10px;background:white;
+  transition:.2s;cursor:pointer;font-size:14px;font-weight:500;
+}
+.payment-card:active{transform:scale(.98)}
+.payment-card.active{
+  border-color:var(--primary);
+  background:linear-gradient(135deg,#fffbf0,#fff5e0);
+  box-shadow:0 4px 14px rgba(245,189,37,.2);
+}
+.payment-card .check{
+  width:22px;height:22px;border-radius:50%;
+  border:2px solid var(--border);margin-right:auto;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;color:white;transition:.2s;
+}
+.payment-card.active .check{
+  background:var(--primary);border-color:var(--primary);color:#2a1e00;
+}
+
+/* ================= Modal ================= */
 .modal{
-position:fixed;
-inset:0;
-background:#0009;
-z-index:2000;
-display:none;
-align-items:flex-end;
-justify-content:center;
+  position:fixed;inset:0;background:rgba(10,15,26,.55);
+  z-index:2000;display:none;align-items:flex-end;justify-content:center;
+  backdrop-filter:blur(2px);
 }
-.modal.show{display:flex}
+.modal.show{display:flex;animation:fadeIn .2s}
 .modal-content{
-background:white;
-width:100%;
-max-width:520px;
-border-radius:24px 24px 0 0;
-padding:24px;
-max-height:85vh;
-overflow:auto;
+  background:white;width:100%;max-width:520px;
+  border-radius:24px 24px 0 0;padding:12px 22px 22px;
+  max-height:85vh;overflow:auto;
+  animation:slideUp .3s cubic-bezier(.2,.8,.2,1);
+  padding-bottom:calc(22px + env(safe-area-inset-bottom,0));
 }
-.modal h3{margin-bottom:17px}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{
+  width:44px;height:5px;background:#e7eaf0;border-radius:3px;
+  margin:0 auto 14px;
+}
+.modal h3{margin-bottom:16px;font-size:17px;font-weight:900;display:flex;align-items:center;gap:8px}
 .close{
-float:left;
-font-size:23px;
-background:none;
+  position:absolute;top:14px;left:14px;
+  font-size:22px;background:#f5f6f9;color:var(--gray);
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
 }
+
+/* ================= Driver panel ================= */
 .driver-status{
-padding:15px;
-border-radius:14px;
-background:#f1f3f6;
-margin-bottom:15px;
+  padding:16px;border-radius:14px;
+  background:linear-gradient(135deg,#f1f3f6,#e8ebf1);
+  margin-bottom:15px;
 }
 .switch{
-width:50px;
-height:27px;
-background:#aaa;
-border-radius:20px;
-position:relative;
+  width:52px;height:28px;background:#c5cbd6;
+  border-radius:20px;position:relative;transition:.25s;flex-shrink:0;
 }
 .switch::after{
-content:"";
-position:absolute;
-width:21px;
-height:21px;
-background:white;
-border-radius:50%;
-top:3px;
-right:3px;
-transition:.2s;
+  content:"";position:absolute;width:22px;height:22px;
+  background:white;border-radius:50%;top:3px;right:3px;transition:.25s;
+  box-shadow:0 2px 5px rgba(0,0,0,.15);
 }
 .switch.on{background:var(--green)}
-.switch.on::after{right:26px}
-.history-item{
-padding:15px 0;
-border-bottom:1px solid var(--border);
-}
-.history-icon{
-font-size:25px;
-}
-.stat-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-}
+.switch.on::after{right:27px}
+
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .stat{
-background:#f5f6f9;
-padding:17px;
-border-radius:14px;
+  background:linear-gradient(135deg,#f8f9fc,#f0f2f7);
+  padding:16px;border-radius:14px;
 }
-.stat strong{
-display:block;
-font-size:23px;
-margin-top:8px;
+.stat .muted{font-size:11px;margin-bottom:6px;display:block}
+.stat strong{font-size:20px;color:var(--dark);font-weight:900}
+
+/* ================= Empty state ================= */
+.empty-state{
+  text-align:center;padding:30px 20px;
+  color:var(--gray);font-size:13px;
+  background:#fafbfd;border:1.5px dashed var(--border);
+  border-radius:14px;
 }
+.empty-state .ico{font-size:38px;margin-bottom:8px;display:block;opacity:.6}
+
+/* ================= History ================= */
+.history-item{
+  padding:15px 0;border-bottom:1px solid var(--border);
+}
+.history-item:last-child{border-bottom:none}
+
+/* ================= Toast ================= */
 .toast{
-position:fixed;
-bottom:100px;
-left:50%;
-transform:translateX(-50%);
-background:#182337;
-color:white;
-padding:13px 20px;
-border-radius:12px;
-z-index:5000;
-display:none;
-white-space:nowrap;
+  position:fixed;bottom:110px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--dark-2);color:white;
+  padding:13px 20px;border-radius:14px;z-index:5000;
+  opacity:0;pointer-events:none;transition:.3s;
+  font-size:13px;font-weight:500;max-width:90vw;
+  display:flex;align-items:center;gap:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,.25);
 }
-.toast.show{display:block}
-hr{
-border:none;
-border-top:1px solid var(--border);
-margin:15px 0;
-}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast-icon{font-size:16px}
+
+/* ================= Misc ================= */
+hr{border:none;border-top:1px solid var(--border);margin:14px 0}
 </style>
 </head>
-
 <body>
 <div class="app">
 
+<!-- ================= HEADER ================= -->
 <header>
-<div class="top">
-<div class="logo">عالمي <span>تكسي 🚕</span></div>
-<div class="profile" onclick="openPage('profile')">👤</div>
-</div>
-<div class="location">
-موقعك الحالي
-<strong id="currentLocation">جاري تحديد الموقع...</strong>
-</div>
+  <div class="top">
+    <div class="logo">عالمي <span>تكسي 🚕</span></div>
+    <div class="profile" onclick="openPage('profile')">👤</div>
+  </div>
+  <div class="location">
+    موقعك الحالي
+    <strong id="currentLocation">جاري تحديد الموقع...</strong>
+  </div>
 </header>
 
-<!-- CUSTOMER PAGE -->
-
+<!-- ================= HOME ================= -->
 <div id="home" class="page active">
+  <div class="section">
+    <div class="role-switch">
+      <button class="active" id="customerTab" onclick="setRole('customer')">👤 زبون</button>
+      <button id="driverTab" onclick="setRole('driver')">🚕 سائق</button>
+    </div>
+  </div>
 
-<div class="section">
-<div class="role-switch">
-<button class="active" id="customerTab" onclick="setRole('customer')">👤 زبون</button>
-<button id="driverTab" onclick="setRole('driver')">🚕 سائق</button>
-</div>
-</div>
+  <!-- CUSTOMER -->
+  <div id="customerInterface">
+    <div class="map-wrap">
+      <div id="map"></div>
+      <div class="map-actions">
+        <button class="map-btn" onclick="useCurrentLocation()" title="موقعي">📍</button>
+        <button class="map-btn" onclick="resetMap()" title="إعادة">🔄</button>
+      </div>
+    </div>
 
-<div id="customerInterface">
+    <div class="section">
+      <div class="section-title">إلى أين تريد الذهاب؟</div>
+      <div class="search-box">
+        <div class="input-row">
+          <div class="dot"></div>
+          <input id="pickup" placeholder="موقع الانطلاق">
+          <button class="clear-btn" onclick="clearField('pickup')">×</button>
+        </div>
+        <div class="input-row">
+          <div class="dot destination"></div>
+          <input id="destination" placeholder="حدد وجهتك">
+          <button class="clear-btn" onclick="clearField('destination')">×</button>
+        </div>
+      </div>
+      <button class="primary-btn" onclick="requestRide()">🔍 طلب الرحلة</button>
+    </div>
 
-<div class="map-wrap">
-<div id="map"></div>
-</div>
+    <div class="section">
+      <div class="section-title">اختر نوع الرحلة</div>
+      <div class="services">
+        <div class="service active" onclick="selectService(this,'اقتصادي',1500)"><div class="service-icon">🚗</div><div class="service-name">اقتصادي</div><div class="service-price">من 1500 د.ع</div></div>
+        <div class="service" onclick="selectService(this,'مريح',2500)"><div class="service-icon">🚙</div><div class="service-name">مريح</div><div class="service-price">من 2500 د.ع</div></div>
+        <div class="service" onclick="selectService(this,'عائلي',4000)"><div class="service-icon">🚐</div><div class="service-name">عائلي</div><div class="service-price">من 4000 د.ع</div></div>
+        <div class="service" onclick="selectService(this,'دراجة',1000)"><div class="service-icon">🏍️</div><div class="service-name">دراجة</div><div class="service-price">من 1000 د.ع</div></div>
+        <div class="service" onclick="selectService(this,'VIP',6000)"><div class="service-icon">🚘</div><div class="service-name">VIP</div><div class="service-price">من 6000 د.ع</div></div>
+        <div class="service" onclick="selectService(this,'شحن',3000)"><div class="service-icon">📦</div><div class="service-name">توصيل</div><div class="service-price">من 3000 د.ع</div></div>
+      </div>
+    </div>
 
-<div class="section">
-<div class="section-title">إلى أين تريد الذهاب؟</div>
+    <div class="section">
+      <div class="section-title">خدمات إضافية</div>
+      <div class="card" onclick="openPage('scheduled')"><div class="row"><div>📅 حجز رحلة مسبقاً</div><span>←</span></div></div>
+      <div class="card" onclick="openPage('delivery')"><div class="row"><div>📦 إرسال طرد</div><span>←</span></div></div>
+      <div class="card" onclick="openPage('intercity')"><div class="row"><div>🛣️ السفر بين المحافظات</div><span>←</span></div></div>
+      <div class="card" onclick="openPage('favorites')"><div class="row"><div>⭐ الأماكن المفضلة</div><span>←</span></div></div>
+    </div>
+  </div>
 
-<div class="search-box">
+  <!-- DRIVER -->
+  <div id="driverInterface" class="hidden">
+    <div class="section">
+      <div class="driver-status">
+        <div class="row">
+          <div>
+            <strong id="driverStatusText">أنت غير متصل</strong>
+            <div class="muted" style="margin-top:4px">فعّل وضع العمل لاستقبال الطلبات</div>
+          </div>
+          <div class="switch" id="driverSwitch" onclick="toggleDriver()"></div>
+        </div>
+      </div>
 
-<div class="input-row">
-<div class="dot"></div>
-<input id="pickup" placeholder="موقع الانطلاق">
-</div>
+      <div class="stat-grid">
+        <div class="stat"><span class="muted">أرباح اليوم</span><strong id="driverEarnings">0 د.ع</strong></div>
+        <div class="stat"><span class="muted">الرحلات</span><strong id="driverTrips">0</strong></div>
+        <div class="stat"><span class="muted">التقييم</span><strong>⭐ 5.0</strong></div>
+        <div class="stat"><span class="muted">الحالة</span><strong style="font-size:15px">نشط</strong></div>
+      </div>
 
-<hr>
+      <div class="section-title" style="margin-top:22px">طلبات الرحلات</div>
+      <div id="driverRequests">
+        <div class="empty-state"><span class="ico">🚕</span>لا توجد طلبات حالياً</div>
+      </div>
 
-<div class="input-row">
-<div class="dot destination"></div>
-<input id="destination" placeholder="حدد وجهتك">
-</div>
-
-</div>
-
-<button class="primary-btn" onclick="useCurrentLocation()">
-📍 استخدام موقعي الحالي
-</button>
-</div>
-
-<div class="section">
-<div class="section-title">اختر نوع الرحلة</div>
-
-<div class="services">
-
-<div class="service active" onclick="selectService(this,'اقتصادي',1500)">
-<div class="service-icon">🚗</div>
-<div class="service-name">اقتصادي</div>
-<div class="service-price">من 1500 د.ع</div>
-</div>
-
-<div class="service" onclick="selectService(this,'مريح',2500)">
-<div class="service-icon">🚙</div>
-<div class="service-name">مريح</div>
-<div class="service-price">من 2500 د.ع</div>
-</div>
-
-<div class="service" onclick="selectService(this,'عائلي',4000)">
-<div class="service-icon">🚐</div>
-<div class="service-name">عائلي</div>
-<div class="service-price">من 4000 د.ع</div>
-</div>
-
-<div class="service" onclick="selectService(this,'دراجة',1000)">
-<div class="service-icon">🏍️</div>
-<div class="service-name">دراجة</div>
-<div class="service-price">من 1000 د.ع</div>
-</div>
-
-<div class="service" onclick="selectService(this,'VIP',6000)">
-<div class="service-icon">🚘</div>
-<div class="service-name">VIP</div>
-<div class="service-price">من 6000 د.ع</div>
-</div>
-
-<div class="service" onclick="selectService(this,'شحن',3000)">
-<div class="service-icon">📦</div>
-<div class="service-name">توصيل</div>
-<div class="service-price">من 3000 د.ع</div>
-</div>
-
-</div>
-
-<button class="primary-btn" onclick="requestRide()">
-🔍 البحث عن سائق
-</button>
-</div>
-
-<div class="section">
-<div class="section-title">خدمات إضافية</div>
-
-<div class="card" onclick="openPage('scheduled')">
-<div class="row">
-<div>📅 حجز رحلة مسبقاً</div>
-<span>←</span>
-</div>
+      <button class="primary-btn" onclick="openPage('driverProfile')">إعدادات السائق</button>
+    </div>
+  </div>
 </div>
 
-<div class="card" onclick="openPage('delivery')">
-<div class="row">
-<div>📦 إرسال طرد أو غرض</div>
-<span>←</span>
-</div>
-</div>
-
-<div class="card" onclick="openPage('intercity')">
-<div class="row">
-<div>🛣️ السفر بين المحافظات</div>
-<span>←</span>
-</div>
-</div>
-
-<div class="card" onclick="openPage('favorites')">
-<div class="row">
-<div>⭐ الأماكن المفضلة</div>
-<span>←</span>
-</div>
-</div>
-
-</div>
-</div>
-
-<!-- DRIVER INTERFACE -->
-
-<div id="driverInterface" class="hidden">
-
-<div class="section">
-<div class="section-title">لوحة تحكم السائق</div>
-
-<div class="driver-status">
-<div class="row">
-<div>
-<strong id="driverStatusText">أنت غير متصل</strong>
-<div class="muted">فعّل وضع العمل لاستقبال الطلبات</div>
-</div>
-<div class="switch" id="driverSwitch" onclick="toggleDriver()"></div>
-</div>
-</div>
-
-<div class="stat-grid">
-<div class="stat">
-<span class="muted">أرباح اليوم</span>
-<strong id="driverEarnings">0 د.ع</strong>
-</div>
-<div class="stat">
-<span class="muted">الرحلات</span>
-<strong id="driverTrips">0</strong>
-</div>
-<div class="stat">
-<span class="muted">التقييم</span>
-<strong>⭐ 5.0</strong>
-</div>
-<div class="stat">
-<span class="muted">حالة الحساب</span>
-<strong style="font-size:16px">نشط</strong>
-</div>
-</div>
-
-<div class="section-title" style="margin-top:25px">
-طلبات الرحلات
-</div>
-
-<div id="driverRequests">
-<div class="card">
-<div class="muted">لا توجد طلبات حالياً</div>
-</div>
-</div>
-
-<button class="primary-btn" onclick="openPage('driverProfile')">
-إعدادات السائق
-</button>
-</div>
-</div>
-</div>
-
-<!-- HISTORY PAGE -->
-
+<!-- ================= HISTORY ================= -->
 <div id="history" class="page">
-<div class="section">
-<div class="section-title">سجل الرحلات</div>
-<div id="historyList">
-<div class="card muted">لا توجد رحلات حتى الآن</div>
-</div>
-</div>
+  <div class="sub-header">
+    <button class="back-btn" onclick="openPage('home')">→</button>
+    <h2>سجل الرحلات</h2>
+  </div>
+  <div class="section">
+    <div id="historyList">
+      <div class="empty-state"><span class="ico">🧾</span>لا توجد رحلات حتى الآن</div>
+    </div>
+  </div>
 </div>
 
-<!-- WALLET PAGE -->
-
+<!-- ================= WALLET ================= -->
 <div id="wallet" class="page">
-<div class="section">
-<div class="section-title">محفظتي</div>
+  <div class="sub-header">
+    <button class="back-btn" onclick="openPage('home')">→</button>
+    <h2>محفظتي</h2>
+  </div>
+  <div class="section">
+    <div class="card static" style="background:linear-gradient(135deg,var(--dark),#1e2d47);color:white;border:none">
+      <div class="muted" style="color:#b9c3d3">رصيد المحفظة</div>
+      <div class="price" style="font-size:32px;margin-top:12px;color:white" id="walletBalance">0 د.ع</div>
+      <div style="margin-top:16px;font-size:13px;opacity:.8">💳 عالمي باي</div>
+    </div>
 
-<div class="card" style="background:#101827;color:white">
-<div class="muted" style="color:#bbb">رصيد المحفظة</div>
-<div class="price" style="font-size:30px;margin-top:15px" id="walletBalance">
-0 د.ع
+    <div class="section-title" style="margin-top:22px">طرق الدفع</div>
+    <div class="payment-card active" data-payment="نقداً" onclick="setPayment('نقداً',this)">
+      <span>💵</span><span>الدفع نقداً</span><span class="check">✓</span>
+    </div>
+    <div class="payment-card" data-payment="المحفظة" onclick="setPayment('المحفظة',this)">
+      <span>👛</span><span>المحفظة الإلكترونية</span><span class="check"></span>
+    </div>
+    <div class="payment-card" data-payment="البطاقة" onclick="setPayment('البطاقة',this)">
+      <span>💳</span><span>البطاقة المصرفية</span><span class="check"></span>
+    </div>
+
+    <div class="section-title" style="margin-top:22px">العروض</div>
+    <div class="card static">
+      🎁 استخدم الرمز <b>GLOBAL10</b> للحصول على خصم 10%
+    </div>
+  </div>
 </div>
-<div style="margin-top:20px">💳 عالمي باي</div>
-</div>
 
-<div class="section-title">طرق الدفع</div>
-
-<div class="card" onclick="setPayment('نقداً')">💵 الدفع نقداً</div>
-<div class="card" onclick="setPayment('المحفظة')">👛 المحفظة الإلكترونية</div>
-<div class="card" onclick="setPayment('البطاقة')">💳 البطاقة المصرفية</div>
-
-<div class="section-title">العروض والخصومات</div>
-<div class="card">
-🎁 استخدم الرمز GLOBAL10 للحصول على خصم تجريبي
-</div>
-</div>
-</div>
-
-<!-- OFFERS PAGE -->
-
+<!-- ================= OFFERS ================= -->
 <div id="offers" class="page">
-<div class="section">
-<div class="section-title">العروض والمكافآت</div>
-
-<div class="card">
-<div class="row">
-<strong>🎁 خصم الرحلة الأولى</strong>
-<span class="badge">10%</span>
-</div>
-<p class="muted" style="margin-top:10px">عرض تجريبي للمستخدمين الجدد</p>
-</div>
-
-<div class="card">
-<div class="row">
-<strong>⭐ نقاط الولاء</strong>
-<span>0 نقطة</span>
-</div>
-<p class="muted" style="margin-top:10px">اجمع النقاط مع كل رحلة</p>
-</div>
-
-<div class="card">
-<strong>👥 دعوة الأصدقاء</strong>
-<p class="muted" style="margin-top:10px">شارك التطبيق مع أصدقائك</p>
-<button class="primary-btn" onclick="shareApp()">مشاركة التطبيق</button>
-</div>
-</div>
+  <div class="sub-header">
+    <button class="back-btn" onclick="openPage('home')">→</button>
+    <h2>العروض والمكافآت</h2>
+  </div>
+  <div class="section">
+    <div class="card static">
+      <div class="row"><strong>🎁 خصم الرحلة الأولى</strong><span class="badge">10%</span></div>
+      <p class="muted" style="margin-top:10px">عرض للمستخدمين الجدد</p>
+    </div>
+    <div class="card static">
+      <div class="row"><strong>⭐ نقاط الولاء</strong><span>0 نقطة</span></div>
+      <p class="muted" style="margin-top:10px">اجمع النقاط مع كل رحلة</p>
+    </div>
+    <div class="card static">
+      <strong>👥 دعوة الأصدقاء</strong>
+      <p class="muted" style="margin-top:10px">شارك التطبيق مع أصدقائك</p>
+      <button class="primary-btn" onclick="shareApp()">مشاركة</button>
+    </div>
+  </div>
 </div>
 
-<!-- PROFILE PAGE -->
-
+<!-- ================= PROFILE ================= -->
 <div id="profile" class="page">
-<div class="section">
-<div class="section-title">حسابي الشخصي</div>
+  <div class="sub-header">
+    <button class="back-btn" onclick="openPage('home')">→</button>
+    <h2>حسابي</h2>
+  </div>
+  <div class="section">
+    <div class="card static" style="text-align:center;padding:24px">
+      <div style="font-size:52px;margin-bottom:10px">👤</div>
+      <input class="field" id="userName" placeholder="الاسم الكامل">
+      <input class="field" id="userPhone" placeholder="رقم الهاتف" inputmode="tel">
+      <button class="primary-btn" onclick="saveProfile()">حفظ المعلومات</button>
+    </div>
 
-<div class="card">
-<div style="font-size:45px;text-align:center">👤</div>
-<input class="field" id="userName" placeholder="الاسم الكامل">
-<input class="field" id="userPhone" placeholder="رقم الهاتف">
-<button class="primary-btn" onclick="saveProfile()">حفظ المعلومات</button>
-</div>
-
-<div class="card" onclick="openPage('settings')">⚙️ الإعدادات</div>
-<div class="card" onclick="openPage('support')">🎧 خدمة العملاء</div>
-<div class="card" onclick="openPage('safety')">🛡️ الأمان والسلامة</div>
-<div class="card" onclick="openPage('about')">ℹ️ حول التطبيق</div>
-</div>
-</div>
-
-<!-- SCHEDULED PAGE -->
-
-<div id="scheduled" class="page">
-<div class="section">
-<div class="section-title">حجز رحلة مسبقاً</div>
-<label>مكان الانطلاق</label>
-<input class="field" id="scheduledPickup" placeholder="من أين؟">
-<label>الوجهة</label>
-<input class="field" id="scheduledDestination" placeholder="إلى أين؟">
-<label>تاريخ الرحلة</label>
-<input class="field" id="scheduledDate" type="date">
-<label>وقت الرحلة</label>
-<input class="field" id="scheduledTime" type="time">
-<button class="primary-btn" onclick="scheduleRide()">تأكيد الحجز</button>
-</div>
-</div>
-
-<!-- DELIVERY PAGE -->
-
-<div id="delivery" class="page">
-<div class="section">
-<div class="section-title">خدمة توصيل الطرود</div>
-<input class="field" id="deliveryFrom" placeholder="عنوان الاستلام">
-<input class="field" id="deliveryTo" placeholder="عنوان التسليم">
-<select class="field" id="deliveryType">
-<option>مستندات</option>
-<option>طعام</option>
-<option>ملابس</option>
-<option>أغراض شخصية</option>
-<option>طرود أخرى</option>
-</select>
-<input class="field" id="deliveryReceiver" placeholder="اسم المستلم">
-<input class="field" id="deliveryPhone" placeholder="رقم المستلم">
-<button class="primary-btn" onclick="sendDelivery()">طلب توصيل</button>
-</div>
-</div>
-
-<!-- INTERCITY PAGE -->
-
-<div id="intercity" class="page">
-<div class="section">
-<div class="section-title">السفر بين المحافظات</div>
-<select class="field" id="cityFrom">
-<option>الناصرية</option>
-<option>بغداد</option>
-<option>البصرة</option>
-<option>النجف</option>
-<option>كربلاء</option>
-<option>أربيل</option>
-<option>الموصل</option>
-<option>السليمانية</option>
-<option>كركوك</option>
-<option>الديوانية</option>
-<option>الحلة</option>
-<option>العمارة</option>
-<option>الكوت</option>
-<option>السماوة</option>
-<option>تكريت</option>
-</select>
-<select class="field" id="cityTo">
-<option>بغداد</option>
-<option>الناصرية</option>
-<option>البصرة</option>
-<option>النجف</option>
-<option>كربلاء</option>
-<option>أربيل</option>
-<option>الموصل</option>
-<option>السليمانية</option>
-<option>كركوك</option>
-<option>الديوانية</option>
-<option>الحلة</option>
-<option>العمارة</option>
-<option>الكوت</option>
-<option>السماوة</option>
-<option>تكريت</option>
-</select>
-<input class="field" id="intercityDate" type="date">
-<select class="field" id="intercitySeats">
-<option value="1">راكب واحد</option>
-<option value="2">راكبان</option>
-<option value="3">3 ركاب</option>
-<option value="4">4 ركاب</option>
-</select>
-<button class="primary-btn" onclick="intercityRequest()">البحث عن رحلة</button>
-</div>
-</div>
-
-<!-- FAVORITES -->
-
-<div id="favorites" class="page">
-<div class="section">
-<div class="section-title">الأماكن المفضلة</div>
-<input class="field" id="favoriteInput" placeholder="اسم المكان">
-<button class="primary-btn" onclick="addFavorite()">إضافة مكان</button>
-<div id="favoritesList" style="margin-top:20px"></div>
-</div>
-</div>
-
-<!-- DRIVER PROFILE -->
-
-<div id="driverProfile" class="page">
-<div class="section">
-<div class="section-title">ملف السائق</div>
-<input class="field" id="driverName" placeholder="اسم السائق">
-<input class="field" id="driverPhone" placeholder="رقم الهاتف">
-<input class="field" id="carType" placeholder="نوع السيارة">
-<input class="field" id="carColor" placeholder="لون السيارة">
-<input class="field" id="carNumber" placeholder="رقم لوحة السيارة">
-<select class="field" id="carYear">
-<option>2020</option>
-<option>2021</option>
-<option>2022</option>
-<option>2023</option>
-<option>2024</option>
-<option>2025</option>
-<option>2026</option>
-</select>
-<button class="primary-btn" onclick="saveDriver()">حفظ بيانات السائق</button>
-</div>
-</div>
-
-<!-- SETTINGS -->
-
-<div id="settings" class="page">
-<div class="section">
-<div class="section-title">الإعدادات</div>
-
-<div class="card">
-<div class="row">
-<span>الإشعارات</span>
-<input type="checkbox" checked>
-</div>
-</div>
-
-<div class="card">
-<div class="row">
-<span>الاهتزاز</span>
-<input type="checkbox" checked>
-</div>
-</div>
-
-<div class="card">
-<div class="row">
-<span>اللغة</span>
-<select class="field" style="width:120px;margin:0">
-<option>العربية</option>
-<option>English</option>
-</select>
-</div>
-</div>
-
-<div class="card">
-<div class="row">
-<span>المظهر</span>
-<select class="field" style="width:120px;margin:0">
-<option>فاتح</option>
-<option>داكن</option>
-</select>
-</div>
-</div>
-
-</div>
-</div>
-
-<!-- SUPPORT -->
-
-<div id="support" class="page">
-<div class="section">
-<div class="section-title">خدمة العملاء</div>
-
-<div class="card">🎧 الدعم الفني</div>
-<div class="card">🚕 مشكلة في الرحلة</div>
-<div class="card">💳 مشكلة في الدفع</div>
-<div class="card">👤 مشكلة في الحساب</div>
-
-<textarea id="supportMessage" class="field" rows="5" placeholder="اكتب مشكلتك هنا"></textarea>
-
-<button class="primary-btn" onclick="sendSupport()">إرسال</button>
-</div>
-</div>
-
-<!-- SAFETY -->
-
-<div id="safety" class="page">
-<div class="section">
-<div class="section-title">الأمان والسلامة</div>
-
-<div class="card">
-🛡️ مشاركة تفاصيل الرحلة مع شخص تثق به
-<button class="primary-btn" onclick="shareRide()">مشاركة الرحلة</button>
-</div>
-
-<div class="card">
-🚨 زر الطوارئ
-<p class="muted" style="margin-top:10px">في حالة الخطر استخدم رقم الطوارئ المحلي المناسب.</p>
-<button class="primary-btn" style="background:#e74c3c;color:white" onclick="emergency()">اتصال بالطوارئ</button>
-</div>
-
-<div class="card">
-📍 تتبع موقع الرحلة
-<p class="muted">تتبع الموقع يحتاج اتصالاً فعالاً وخدمة خلفية.</p>
-</div>
-</div>
-</div>
-
-<!-- ABOUT -->
-
-<div id="about" class="page">
-<div class="section">
-<div style="font-size:55px;text-align:center">🚕</div>
-<div class="section-title" style="text-align:center">عالمي تكسي</div>
-<p style="text-align:center;color:#888;line-height:2">
-منصة نقل ذكية تجمع خدمات النقل والتوصيل والحجز والسفر في مكان واحد.
-</p>
-<hr>
-<div class="card">الإصدار 1.0.0</div>
-<div class="card">خدمات النقل الذكي</div>
-<div class="card">نظام الزبائن والسائقين</div>
-</div>
-</div>
-
-<!-- BOTTOM NAVIGATION -->
-
-<nav class="nav">
-<button class="active" onclick="openPage('home',this)">
-<span class="nav-icon">🏠</span>الرئيسية
-</button>
-<button onclick="openPage('history',this)">
-<span class="nav-icon">🧾</span>الرحلات
-</button>
-<button onclick="openPage('wallet',this)">
-<span class="nav-icon">👛</span>المحفظة
-</button>
-<button onclick="openPage('offers',this)">
-<span class="nav-icon">🎁</span>العروض
-</button>
-<button onclick="openPage('profile',this)">
-<span class="nav-icon">👤</span>حسابي
-</button>
-</nav>
-
-</div>
-
-<div class="modal" id="rideModal">
-<div class="modal-content">
-<button class="close" onclick="closeModal()">×</button>
-<h3>تفاصيل الرحلة 🚕</h3>
-<div id="rideDetails"></div>
-<button class="primary-btn" onclick="confirmRide()">تأكيد طلب الرحلة</button>
-</div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<script>
-/* =========================================
-   GLOBAL VARIABLES
-========================================= */
-
-let currentRole="customer";
-let selectedService="اقتصادي";
-let selectedPrice=1500;
-let selectedPayment="نقداً";
-let driverOnline=false;
-let currentRide=null;
-let rides=JSON.parse(localStorage.getItem("globalRides")||"[]");
-let favorites=JSON.parse(localStorage.getItem("globalFavorites")||"[]");
-let wallet=Number(localStorage.getItem("globalWallet")||0);
-let earnings=Number(localStorage.getItem("globalEarnings")||0);
-let trips=Number(localStorage.getItem("globalTrips")||0);
-let currentLat=null;
-let currentLng=null;
-let map=null;
-let pickupMarker=null;
-let destinationMarker=null;
-
-/* =========================================
-   INITIALIZATION
-========================================= */
-
-document.addEventListener("DOMContentLoaded",function(){
-
-updateWallet();
-renderHistory();
-renderFavorites();
-getLocation();
-initMap();
-
-document.getElementById("userName").value=
-localStorage.getItem("globalName")||"";
-
-document.getElementById("userPhone").value=
-localStorage.getItem("globalPhone")||"";
-
-document.getElementById("driverName").value=
-localStorage.getItem("driverName")||"";
-
-document.getElementById("driverPhone").value=
-localStorage.getItem("driverPhone")||"";
-
-document.getElementById("carType").value=
-localStorage.getItem("carType")||"";
-
-document.g
+    <div class="card" onclick="openPage('settings')"><div class="row"><span>⚙️
