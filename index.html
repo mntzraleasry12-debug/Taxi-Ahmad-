@@ -1,285 +1,643 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>الكتاب الذكي 3D — الفيزياء</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart 3D Book</title>
+
 <style>
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body {
-    margin: 0; padding: 0; height: 100%; overflow: hidden;
-    background: radial-gradient(ellipse at 50% 30%, #1e2a44 0%, #0a0e17 70%);
-    font-family: 'Tajawal', 'Segoe UI', sans-serif;
-    color: #e8eefc; user-select: none; -webkit-user-select: none;
-    touch-action: manipulation;
-  }
-  #app {
-    position: fixed; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    padding: 2vh 2vw;
-  }
-  .book-scene {
-    width: min(95vw, 145vh, 1200px);
-    aspect-ratio: 1.55 / 1;
-    perspective: 2800px;
-    perspective-origin: 50% 40%;
-    position: relative;
-  }
-  .book {
-    position: absolute; inset: 0;
-    transform-style: preserve-3d;
-    transform: rotateX(6deg);
-  }
-  .book::before {
-    content: ''; position: absolute; inset: -30px;
-    background: radial-gradient(ellipse at 50% 100%, rgba(0,0,0,0.55), transparent 65%);
-    transform: translateZ(-40px); filter: blur(25px); pointer-events: none;
-  }
-  .page {
-    position: absolute;
-    width: 50%; height: 100%;
-    right: 0; top: 0;
-    transform-origin: left center;
-    transform-style: preserve-3d;
-    transition: transform 0.9s cubic-bezier(0.33, 0.1, 0.3, 1);
-    will-change: transform;
-  }
-  .page.flipped { transform: rotateY(-180deg); }
-  .page-face {
-    position: absolute; inset: 0;
-    backface-visibility: hidden; -webkit-backface-visibility: hidden;
-    background: linear-gradient(135deg, #fcf8ed 0%, #f2e9d4 100%);
-    color: #1a2332;
-    padding: 28px 34px;
-    overflow: hidden;
-    display: flex; flex-direction: column;
-    box-shadow:
-      inset 0 0 90px rgba(139, 106, 52, 0.08),
-      0 0 30px rgba(0,0,0,0.12);
-  }
-  .page-face.front {
-    border-radius: 4px 10px 10px 4px;
-  }
-  .page-face.front::after {
-    content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 40px;
-    background: linear-gradient(to right, rgba(0,0,0,0.14), transparent);
-    pointer-events: none;
-  }
-  .page-face.back {
-    border-radius: 10px 4px 4px 10px;
-    transform: rotateY(180deg);
-  }
-  .page-face.back::after {
-    content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 40px;
-    background: linear-gradient(to left, rgba(0,0,0,0.14), transparent);
-    pointer-events: none;
-  }
+* {
+  box-sizing: border-box;
+}
 
-  /* الغلاف */
-  .page.cover .page-face.front {
-    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #172554 100%);
-    color: #e8eefc;
-  }
-  .page.cover .page-face.front::before {
-    content: ''; position: absolute; inset: 18px;
-    border: 1.5px solid rgba(255,255,255,0.18);
-    border-radius: 8px; pointer-events: none;
-  }
-  .cover-content {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    height: 100%; text-align: center; padding: 16px; position: relative; z-index: 1;
-  }
-  .cover-content .badge {
-    font-size: 11px; letter-spacing: 3px; opacity: 0.8;
-    margin-bottom: 18px; border: 1px solid rgba(255,255,255,0.35);
-    padding: 4px 14px; border-radius: 20px;
-  }
-  .cover-content h1 {
-    font-size: clamp(30px, 4.5vw, 54px); margin: 0 0 6px;
-    font-weight: 900; letter-spacing: -1px;
-    text-shadow: 0 4px 24px rgba(0,0,0,0.5);
-  }
-  .cover-content h2 {
-    font-size: clamp(13px, 1.8vw, 19px); margin: 0 0 30px;
-    opacity: 0.9; font-weight: 500;
-  }
-  .cover-content .author { font-size: 11px; opacity: 0.65; margin-top: auto; }
-  .cover-illustration {
-    width: 110px; height: 110px; margin-bottom: 26px; border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, #93c5fd, #1e40af 70%);
-    box-shadow:
-      0 0 60px rgba(96, 165, 250, 0.55),
-      inset -10px -10px 30px rgba(0,0,0,0.35),
-      inset 10px 10px 30px rgba(255,255,255,0.25);
-    animation: pulse 3s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.06); }
-  }
+body {
+  margin: 0;
+  background: #101827;
+  color: white;
+  font-family: Arial, sans-serif;
+}
 
-  .page-content {
-    flex: 1; overflow-y: auto; overflow-x: hidden;
-    font-size: clamp(12px, 1.5vw, 15px);
-    line-height: 1.75; color: #334155; padding-left: 4px;
-  }
-  .page-content::-webkit-scrollbar { width: 4px; }
-  .page-content::-webkit-scrollbar-thumb { background: rgba(30,58,138,0.3); border-radius: 4px; }
+header {
+  background: #172c49;
+  padding: 18px;
+  text-align: center;
+  border-bottom: 2px solid #2789ff;
+}
 
-  .page-title {
-    font-size: clamp(17px, 2.4vw, 26px); color: #1e3a8a;
-    margin: 0 0 14px; font-weight: 900;
-    border-bottom: 2px solid #dbeafe;
-    padding-bottom: 9px; position: relative;
-  }
-  .page-title::after {
-    content: ''; position: absolute; bottom: -2px; right: 0;
-    width: 55px; height: 2px; background: #2563eb; border-radius: 2px;
-  }
-  .page-num {
-    position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
-    font-size: 10px; color: #94a3b8; letter-spacing: 1px;
-  }
-  .formula-box {
-    background: linear-gradient(135deg, #eff6ff, #dbeafe);
-    border-right: 4px solid #2563eb;
-    padding: 14px 20px; border-radius: 10px; margin: 16px 0;
-    display: flex; align-items: center; justify-content: center; gap: 16px;
-  }
-  .formula {
-    font-family: 'Cambria Math', 'Times New Roman', serif;
-    font-size: clamp(22px, 2.8vw, 32px); font-style: italic;
-    color: #1e3a8a; font-weight: 600; letter-spacing: 1px;
-  }
-  .formula .var { color: #2563eb; }
-  .formula .op { color: #64748b; font-weight: 400; }
+header h1 {
+  margin: 0;
+  color: #48b5ff;
+}
 
-  .tip-box {
-    background: #fef3c7; border-right: 4px solid #f59e0b;
-    padding: 10px 14px; border-radius: 8px; margin: 12px 0;
-    font-size: clamp(11px, 1.3vw, 13px); color: #78350f;
-  }
-  .tip-box strong { color: #92400e; }
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+  flex-wrap: wrap;
+}
 
-  /* صفحة المحاكاة */
-  .sim-page { display: flex; flex-direction: column; height: 100%; gap: 8px; }
-  .sim-canvas-wrap {
-    flex: 1; min-height: 0;
-    background: linear-gradient(135deg, #0f172a, #1e293b);
-    border-radius: 10px; overflow: hidden; position: relative;
-    box-shadow: inset 0 0 40px rgba(0,0,0,0.4);
-  }
-  .sim-canvas-wrap canvas { display: block; width: 100% !important; height: 100% !important; }
-  .sim-hud {
-    position: absolute; top: 8px; right: 8px;
-    display: flex; flex-direction: column; gap: 5px;
-    font-size: 11px; color: #e2e8f0; pointer-events: none;
-  }
-  .hud-item {
-    background: rgba(15, 23, 42, 0.78);
-    padding: 4px 10px; border-radius: 6px;
-    border: 1px solid rgba(96, 165, 250, 0.35);
-    backdrop-filter: blur(6px);
-    font-family: 'Courier New', monospace;
-    direction: ltr; text-align: left;
-  }
-  .hud-item b { color: #60a5fa; }
+button {
+  background: #1769cc;
+  border: 0;
+  color: white;
+  padding: 12px 18px;
+  border-radius: 9px;
+  cursor: pointer;
+  font-size: 15px;
+}
 
-  .sim-controls {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-    font-size: 11px;
-  }
-  .slider-group {
-    background: #eff6ff; padding: 7px 11px; border-radius: 8px;
-    border: 1px solid #dbeafe;
-  }
-  .slider-label {
-    display: flex; justify-content: space-between; align-items: baseline;
-    margin-bottom: 5px; color: #1e3a8a; font-weight: 700; font-size: 11px;
-  }
-  .slider-label b { font-family: 'Courier New', monospace; color: #dc2626; direction: ltr; }
-  .slider-group input[type=range] {
-    width: 100%; -webkit-appearance: none; appearance: none;
-    height: 4px; border-radius: 4px; background: #cbd5e1; outline: none; cursor: pointer;
-  }
-  .slider-group input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 16px; height: 16px;
-    border-radius: 50%; background: #2563eb; border: 2px solid white;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-  }
-  .slider-group input[type=range]::-moz-range-thumb {
-    width: 16px; height: 16px; border-radius: 50%;
-    background: #2563eb; border: 2px solid white; cursor: pointer;
-  }
-  .sim-buttons { display: flex; gap: 8px; justify-content: center; }
-  .btn {
-    padding: 7px 18px; border-radius: 8px; border: none;
-    background: linear-gradient(135deg, #2563eb, #1e40af);
-    color: white; font-family: inherit; font-size: 12px; font-weight: 700;
-    cursor: pointer; transition: all 0.15s;
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
-  }
-  .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.45); }
-  .btn:active { transform: translateY(0); }
-  .btn.secondary {
-    background: linear-gradient(135deg, #64748b, #475569);
-    box-shadow: 0 2px 8px rgba(71, 85, 105, 0.35);
-  }
+button:hover {
+  background: #278eff;
+}
 
-  /* اختبار */
-  .quiz-option {
-    display: block; width: 100%; text-align: right;
-    padding: 12px 16px; margin: 7px 0;
-    border: 2px solid #dbeafe; background: #f8fafc;
-    border-radius: 10px; font-family: inherit;
-    font-size: clamp(12px, 1.4vw, 14px);
-    color: #1e293b; cursor: pointer; transition: all 0.2s;
-  }
-  .quiz-option:hover { border-color: #93c5fd; background: #eff6ff; }
-  .quiz-option.correct { border-color: #10b981; background: #d1fae5; color: #065f46; }
-  .quiz-option.wrong { border-color: #ef4444; background: #fee2e2; color: #991b1b; }
-  .quiz-option.disabled { pointer-events: none; opacity: 0.75; }
-  .quiz-feedback {
-    margin-top: 12px; padding: 10px 14px; border-radius: 8px;
-    font-size: clamp(11px, 1.3vw, 13px);
-    display: none; animation: fadeIn 0.35s;
-  }
-  .quiz-feedback.show { display: block; }
-  .quiz-feedback.ok { background: #d1fae5; color: #065f46; border-right: 4px solid #10b981; }
-  .quiz-feedback.bad { background: #fee2e2; color: #991b1b; border-right: 4px solid #ef4444; }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+button:disabled {
+  opacity: .4;
+}
 
-  /* TOC */
-  .toc-list { list-style: none; padding: 0; margin: 14px 0; }
-  .toc-list li {
-    padding: 9px 12px; margin: 5px 0;
-    background: #f8fafc; border-radius: 8px;
-    border-right: 3px solid #cbd5e1;
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: clamp(12px, 1.4vw, 13px);
-  }
-  .toc-list li.active {
-    background: #dbeafe; border-right-color: #2563eb;
-    color: #1e3a8a; font-weight: 700;
-  }
-  .toc-list li .num { color: #64748b; font-family: monospace; font-size: 11px; }
+.section {
+  display: none;
+  padding: 15px;
+}
 
-  /* الغلاف الخلفي */
-  .page-face.back.cover-back {
-    padding: 0;
-    background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%);
-    border: none;
-  }
-  .back-cover {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    height: 100%; text-align: center; color: #e8eefc; padding: 30px;
-  }
-  .back-cover h2 { font-size: clamp(20px, 2.5vw, 26px); margin-bottom: 10px; }
-  .back-cover p { opacity: 0.72; font-size: clamp(11px, 1.3vw, 13px); max-width: 85%; line-height: 1.7; }
+.section.active {
+  display: block;
+}
 
-  .nav-hint {
-    position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%
+.book {
+  max-width: 700px;
+  min-height: 360px;
+  margin: 20px auto;
+  background: #fff;
+  color: #222;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 10px 35px #0008;
+  animation: appear .3s;
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: rotateY(12deg); }
+  to { opacity: 1; transform: rotateY(0); }
+}
+
+.book h2 {
+  color: #1266bd;
+}
+
+.book p {
+  font-size: 18px;
+  line-height: 1.9;
+}
+
+.page-number {
+  text-align: center;
+  color: #777;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+#scene {
+  width: 100%;
+  height: 350px;
+  background: #07172b;
+  border-radius: 15px;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+.lab-panel {
+  max-width: 800px;
+  margin: auto;
+  background: #1b2c43;
+  padding: 18px;
+  border-radius: 15px;
+}
+
+.materials {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.material {
+  background: #263f5e;
+  flex: 1;
+  min-width: 110px;
+  padding: 15px 8px;
+  border: 2px solid transparent;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.material.selected {
+  border-color: #41c6ff;
+  background: #14518a;
+}
+
+.material span {
+  display: block;
+  font-size: 27px;
+  margin-bottom: 8px;
+}
+
+#result {
+  background: #102239;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 15px;
+  line-height: 1.9;
+  min-height: 65px;
+}
+
+.formula {
+  direction: ltr;
+  text-align: center;
+  color: #53dcff;
+  font-size: 20px;
+  padding: 12px;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #aaa;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>📚 Smart 3D Book</h1>
+  <p>الكتاب المدرسي الذكي ثلاثي الأبعاد</p>
+</header>
+
+<nav>
+  <button onclick="showSection('book')">📖 الكتاب</button>
+  <button onclick="showSection('lab')">🧪 المختبر</button>
+</nav>
+
+<!-- BOOK -->
+
+<div id="book" class="section active">
+
+  <div class="book">
+
+    <h2 id="bookTitle">مقدمة في الكيمياء</h2>
+
+    <p id="bookText">
+      مرحباً بك في الكتاب الذكي.
+      هنا تستطيع دراسة العلوم بطريقة تفاعلية
+      ومشاهدة التجارب العلمية.
+    </p>
+
+    <div id="bookExample"></div>
+
+    <div class="page-number">
+      الصفحة <span id="pageNumber">1</span> / 4
+    </div>
+
+  </div>
+
+  <div class="controls">
+    <button onclick="previousPage()">❮ السابقة</button>
+    <button onclick="nextPage()">التالية ❯</button>
+  </div>
+
+  <div style="text-align:center;margin-top:20px">
+    <button onclick="showSection('lab')">
+      🧪 افتح المختبر الافتراضي
+    </button>
+  </div>
+
+</div>
+
+<!-- CHEMISTRY LAB -->
+
+<div id="lab" class="section">
+
+  <div class="lab-panel">
+
+    <h2>🧪 المختبر الكيميائي الافتراضي</h2>
+
+    <p>
+      اختر مادة من المواد التالية ثم اختر مادة أخرى
+      واضغط على زر إجراء التجربة.
+    </p>
+
+    <h3>المواد الكيميائية</h3>
+
+    <div class="materials">
+
+      <button class="material" onclick="selectMaterial('water',this)">
+        <span>💧</span>
+        الماء
+      </button>
+
+      <button class="material" onclick="selectMaterial('vinegar',this)">
+        <span>🧴</span>
+        الخل
+      </button>
+
+      <button class="material" onclick="selectMaterial('baking',this)">
+        <span>🧂</span>
+        بيكربونات الصوديوم
+      </button>
+
+    </div>
+
+    <p id="selection">
+      لم يتم اختيار المواد بعد.
+    </p>
+
+    <div id="scene"></div>
+
+    <div class="controls" style="margin-top:15px">
+      <button onclick="mixMaterials()">
+        ⚗️ إجراء التجربة
+      </button>
+
+      <button onclick="resetExperiment()">
+        🔄 إعادة التجربة
+      </button>
+    </div>
+
+    <div id="result">
+      نتيجة التجربة ستظهر هنا.
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  Smart 3D Book © 2026
+</footer>
+
+<script>
+
+// ==========================
+// BOOK SYSTEM
+// ==========================
+
+const pages = [
+{
+ title: "مقدمة في الكيمياء",
+ text: "الكيمياء هي العلم الذي يدرس المادة وخصائصها والتغيرات التي تحدث لها.",
+ example: "اضغط على المختبر لتجربة التفاعلات الكيميائية."
+},
+{
+ title: "المادة",
+ text: "المادة هي كل شيء له كتلة ويشغل حيزاً من الفراغ. وتتكون المواد من ذرات وجزيئات.",
+ example: "يمكن تمثيل الذرات والجزيئات باستخدام المجسمات ثلاثية الأبعاد."
+},
+{
+ title: "التفاعلات الكيميائية",
+ text: "التفاعل الكيميائي هو عملية تتحول فيها المواد المتفاعلة إلى مواد جديدة تختلف في خصائصها.",
+ example: "مثال: تفاعل الخل مع بيكربونات الصوديوم."
+},
+{
+ title: "المختبر الافتراضي",
+ text: "في المختبر الافتراضي تستطيع اختيار المواد ومشاهدة محاكاة علمية للتفاعل.",
+ example: "انتقل إلى المختبر وابدأ تجربتك."
+}
+];
+
+let currentPage = 0;
+
+function displayPage() {
+ const page = pages[currentPage];
+
+ document.getElementById("bookTitle").textContent = page.title;
+ document.getElementById("bookText").textContent = page.text;
+ document.getElementById("bookExample").textContent = page.example;
+ document.getElementById("pageNumber").textContent = currentPage + 1;
+
+ document.querySelector(".book").style.animation = "none";
+ void document.querySelector(".book").offsetWidth;
+ document.querySelector(".book").style.animation = "appear .3s";
+}
+
+function nextPage() {
+ if(currentPage < pages.length - 1) {
+   currentPage++;
+   displayPage();
+ }
+}
+
+function previousPage() {
+ if(currentPage > 0) {
+   currentPage--;
+   displayPage();
+ }
+}
+
+// ==========================
+// NAVIGATION
+// ==========================
+
+function showSection(id) {
+ document.querySelectorAll(".section").forEach(s => {
+   s.classList.remove("active");
+ });
+
+ document.getElementById(id).classList.add("active");
+
+ if(id === "lab") {
+   setTimeout(() => {
+     if(renderer) {
+       const width = document.getElementById("scene").clientWidth;
+       renderer.setSize(width,350);
+       camera.aspect = width / 350;
+       camera.updateProjectionMatrix();
+     }
+   }, 50);
+ }
+}
+
+// ==========================
+// CHEMISTRY MATERIALS
+// ==========================
+
+const names = {
+ water: "الماء",
+ vinegar: "الخل",
+ baking: "بيكربونات الصوديوم"
+};
+
+let selected = [];
+
+function selectMaterial(type, button) {
+
+ if(selected.includes(type)) {
+   selected = selected.filter(x => x !== type);
+   button.classList.remove("selected");
+ } else {
+   if(selected.length >= 2) {
+     document.getElementById("result").textContent =
+       "اختر مادتين فقط في هذه التجربة.";
+     return;
+   }
+
+   selected.push(type);
+   button.classList.add("selected");
+ }
+
+ document.getElementById("selection").textContent =
+ selected.length === 0
+ ? "لم يتم اختيار المواد."
+ : "المواد المختارة: " + selected.map(x => names[x]).join(" + ");
+}
+
+// ==========================
+// THREE JS 3D ENGINE
+// ==========================
+
+let scene, camera, renderer;
+let liquid, bubbles = [];
+let animationRunning = false;
+
+function createLab() {
+
+ const container = document.getElementById("scene");
+
+ scene = new THREE.Scene();
+ scene.background = new THREE.Color(0x07172b);
+
+ camera = new THREE.PerspectiveCamera(
+   45,
+   container.clientWidth / 350,
+   0.1,
+   100
+ );
+
+ camera.position.set(0,2.5,7);
+ camera.lookAt(0,1,0);
+
+ renderer = new THREE.WebGLRenderer({antialias:true});
+ renderer.setSize(container.clientWidth,350);
+ container.appendChild(renderer.domElement);
+
+ const light = new THREE.PointLight(0xffffff,2);
+ light.position.set(3,5,5);
+ scene.add(light);
+
+ scene.add(new THREE.AmbientLight(0xffffff,1));
+
+ // Floor
+
+ const floor = new THREE.Mesh(
+   new THREE.PlaneGeometry(10,10),
+   new THREE.MeshStandardMaterial({color:0x142d47})
+ );
+
+ floor.rotation.x = -Math.PI / 2;
+ floor.position.y = -0.1;
+ scene.add(floor);
+
+ // Beaker body
+
+ const glass = new THREE.Mesh(
+   new THREE.CylinderGeometry(0.8,0.65,2,32,1,true),
+   new THREE.MeshPhysicalMaterial({
+     color:0x8fdcff,
+     transparent:true,
+     opacity:0.22,
+     side:THREE.DoubleSide
+   })
+ );
+
+ glass.position.y = 1;
+ scene.add(glass);
+
+ // Beaker bottom
+
+ const bottom = new THREE.Mesh(
+   new THREE.CylinderGeometry(0.65,0.65,0.12,32),
+   new THREE.MeshStandardMaterial({color:0x86caff})
+ );
+
+ bottom.position.y = 0;
+ scene.add(bottom);
+
+ // Liquid
+
+ liquid = new THREE.Mesh(
+   new THREE.CylinderGeometry(0.62,0.62,0.45,32),
+   new THREE.MeshPhysicalMaterial({
+     color:0x2196ff,
+     transparent:true,
+     opacity:0.7
+   })
+ );
+
+ liquid.position.y = 0.35;
+ scene.add(liquid);
+
+ // Bubbles
+
+ for(let i=0;i<18;i++) {
+
+   const bubble = new THREE.Mesh(
+     new THREE.SphereGeometry(0.06,12,12),
+     new THREE.MeshStandardMaterial({
+       color:0xffffff,
+       transparent:true,
+       opacity:0.7
+     })
+   );
+
+   bubble.position.set(
+     (Math.random()-0.5)*0.9,
+     Math.random()*1.5,
+     (Math.random()-0.5)*0.5
+   );
+
+   bubble.visible = false;
+   scene.add(bubble);
+   bubbles.push(bubble);
+ }
+
+ animate();
+}
+
+function animate() {
+ requestAnimationFrame(animate);
+
+ if(animationRunning) {
+   bubbles.forEach(b => {
+     if(b.visible) {
+       b.position.y += 0.025;
+
+       if(b.position.y > 2.2) {
+         b.position.y = 0.2;
+       }
+     }
+   });
+ }
+
+ renderer.render(scene,camera);
+}
+
+// ==========================
+// MIXING SIMULATION
+// ==========================
+
+function mixMaterials() {
+
+ if(selected.length !== 2) {
+   document.getElementById("result").textContent =
+     "يرجى اختيار مادتين أولاً.";
+   return;
+ }
+
+ const combination = [...selected].sort().join("+");
+
+ if(combination === "baking+vinegar") {
+
+   liquid.material.color.set(0x69c9ff);
+
+   bubbles.forEach(b => {
+     b.visible = true;
+   });
+
+   animationRunning = true;
+
+   document.getElementById("result").innerHTML = `
+     <h3>🫧 محاكاة التفاعل الكيميائي</h3>
+     <p>تفاعل الخل مع بيكربونات الصوديوم ينتج عنه غاز ثاني أكسيد الكربون.</p>
+     <div class="formula">
+       CH₃COOH + NaHCO₃ → CH₃COONa + H₂O + CO₂
+     </div>
+     <p>تلاحظ ظهور فقاعات تمثل غاز ثاني أكسيد الكربون.</p>
+     <p>هذه محاكاة تعليمية وليست قياساً لكمية الغاز الناتج.</p>
+   `;
+
+ } else if(combination === "water+vinegar") {
+
+   resetBubbles();
+
+   liquid.material.color.set(0x9acbff);
+
+   document.getElementById("result").innerHTML = `
+     <h3>💧 المحاكاة</h3>
+     <p>الخل والماء يمتزجان لتكوين محلول مخفف.</p>
+     <p>لا يُتوقع ظهور تفاعل كيميائي واضح في هذه الحالة.</p>
+   `;
+
+ } else if(combination === "baking+water") {
+
+   resetBubbles();
+
+   liquid.material.color.set(0x91caff);
+
+   document.getElementById("result").innerHTML = `
+     <h3>🧪 المحاكاة</h3>
+     <p>تذوب بيكربونات الصوديوم في الماء جزئياً حتى يتكون محلول.</p>
+     <p>هذه العملية تمثل الذوبان وليست تفاعلاً ينتج عنه غاز.</p>
+   `;
+
+ }
+}
+
+function resetBubbles() {
+ animationRunning = false;
+ bubbles.forEach(b => b.visible = false);
+}
+
+function resetExperiment() {
+
+ selected = [];
+
+ document.querySelectorAll(".material").forEach(b => {
+   b.classList.remove("selected");
+ });
+
+ resetBubbles();
+
+ liquid.material.color.set(0x2196ff);
+
+ document.getElementById("selection").textContent =
+ "لم يتم اختيار المواد بعد.";
+
+ document.getElementById("result").textContent =
+ "تم تنظيف المختبر. يمكنك البدء بتجربة جديدة.";
+}
+
+// ==========================
+// START
+// ==========================
+
+displayPage();
+</script>
+
+<script type="importmap">
+{
+ "imports": {
+   "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+ }
+}
+</script>
+
+<script type="module">
+import * as THREE from "three";
+
+window.THREE = THREE;
+
+// تشغيل المختبر بعد تحميل محرك 3D
+const start = () => {
+  if(window.createLab) window.createLab();
+};
+
+// إتاحة الدالة من السكربت الرئيسي
+window.addEventListener("load", start);
+</script>
+
+</body>
+</html>
