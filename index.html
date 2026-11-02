@@ -3,495 +3,774 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>تاكسي أحمد 🚕</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تاكسي أحمد</title>
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
 <style>
-:root{
-  --yellow:#ffc107;--dark:#151a22;--bg:#f3f5f8;
-  --green:#10a56b;--red:#e74c3c;--blue:#2674db;
-}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);font-family:Tahoma,Arial,sans-serif;color:var(--dark)}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer;border:0}
-#app{max-width:520px;margin:auto;min-height:100vh;background:white;position:relative}
-header{background:var(--dark);color:white;padding:17px;display:flex;justify-content:space-between;align-items:center}
-.logo{font-size:20px;font-weight:bold}
-.badge{background:var(--yellow);color:#111;padding:5px 10px;border-radius:20px;font-size:12px}
-.page{padding:17px;padding-bottom:90px}
-.card{background:white;border-radius:17px;padding:16px;margin:12px 0;box-shadow:0 3px 15px #0000000d;border:1px solid #eee}
-h2{font-size:20px;margin:8px 0 17px}
-h3{font-size:16px;margin:5px 0 12px}
-label{display:block;font-size:13px;font-weight:bold;margin:12px 0 6px}
-input,select,textarea{width:100%;padding:13px;border:1px solid #ddd;border-radius:11px;background:#fafafa;outline:none}
-input:focus,select:focus,textarea:focus{border-color:var(--yellow)}
-.btn{padding:14px;border-radius:12px;width:100%;font-weight:bold;margin-top:10px}
-.primary{background:var(--yellow);color:#111}
-.green{background:var(--green);color:white}
-.blue{background:var(--blue);color:white}
-.red{background:var(--red);color:white}
-.dark{background:var(--dark);color:white}
-.gray{background:#edf0f4;color:#222}
-.row{display:flex;gap:9px}
-.row>*{flex:1;min-width:0}
+body{
+ margin:0;
+ font-family:Tahoma,Arial,sans-serif;
+ background:#101318;
+ color:white;
+}
+:root{
+ --yellow:#ffc107;
+ --dark:#171c24;
+ --gray:#252c36;
+ --green:#16a36a;
+}
+header{
+ background:#171c24;
+ padding:18px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ border-bottom:2px solid var(--yellow);
+}
+.logo{
+ font-size:23px;
+ font-weight:bold;
+ color:var(--yellow);
+}
+.container{
+ max-width:650px;
+ margin:auto;
+ padding:15px;
+}
+.card{
+ background:var(--dark);
+ padding:18px;
+ border-radius:17px;
+ margin:13px 0;
+ border:1px solid #303945;
+}
+h2{font-size:21px}
+h3{font-size:17px}
+input,select{
+ width:100%;
+ padding:14px;
+ margin:8px 0;
+ background:#252c36;
+ color:white;
+ border:1px solid #3d4653;
+ border-radius:10px;
+ font-size:15px;
+}
+button{
+ border:0;
+ border-radius:11px;
+ padding:13px;
+ font-size:15px;
+ font-weight:bold;
+ cursor:pointer;
+}
+.primary{
+ background:var(--yellow);
+ color:#171717;
+ width:100%;
+}
+.secondary{
+ background:#303945;
+ color:white;
+}
+.danger{
+ background:#a92d35;
+ color:white;
+}
+.green{
+ background:var(--green);
+ color:white;
+}
+.grid{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:10px;
+}
+.menu{
+ display:flex;
+ gap:8px;
+ flex-wrap:wrap;
+ margin:12px 0;
+}
+.menu button{
+ flex:1;
+ min-width:100px;
+}
 .hidden{display:none!important}
-.muted{color:#777;font-size:12px}
-#map{height:270px;border-radius:15px;z-index:1}
-.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;background:white;display:flex;justify-content:space-around;padding:10px;border-top:1px solid #eee;z-index:500}
-.nav button{background:white;font-size:12px;color:#555}
-.nav span{display:block;font-size:20px;margin-bottom:4px}
-.car{border:2px solid #eee;border-radius:13px;padding:12px;text-align:center;flex:1}
-.car.active{border-color:var(--yellow);background:#fff9df}
-.price{background:#fff5d4;padding:17px;border-radius:13px;display:flex;justify-content:space-between;align-items:center;margin:15px 0}
-.price strong{font-size:23px}
-.trip{border-right:4px solid var(--yellow)}
-.status{font-size:12px;color:var(--green);font-weight:bold}
-.stat{background:#f4f5f7;padding:14px;border-radius:12px;text-align:center}
-.stat b{font-size:20px;display:block}
-.avatar{width:55px;height:55px;border-radius:50%;background:var(--yellow);display:grid;place-items:center;font-size:27px}
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#222;color:white;padding:13px 20px;border-radius:12px;z-index:2000;display:none;width:max-content;max-width:90%}
-.item{padding:12px 0;border-bottom:1px solid #eee}
-.item:last-child{border:0}
-.star{font-size:30px;color:#ddd;background:none;padding:3px}
-.star.active{color:#ffb900}
+#map{
+ height:260px;
+ border-radius:14px;
+ margin:12px 0;
+ z-index:1;
+}
+.item{
+ background:#252c36;
+ padding:13px;
+ border-radius:12px;
+ margin:9px 0;
+}
+.price{
+ color:var(--yellow);
+ font-weight:bold;
+ font-size:20px;
+}
+.small{
+ color:#aab2bd;
+ font-size:12px;
+}
+.center{text-align:center}
+footer{
+ text-align:center;
+ padding:25px;
+ color:#89919c;
+}
 </style>
 </head>
+
 <body>
-<div id="app">
+
 <header>
  <div class="logo">🚕 تاكسي أحمد</div>
- <div class="badge" id="roleBadge">خدمة النقل</div>
+ <div id="headerUser" class="small">خدمة النقل الذكي</div>
 </header>
-<main id="main"></main>
+
+<main class="container">
+
+<!-- تسجيل الدخول -->
+<section id="login">
+
+ <div class="card center">
+  <div style="font-size:65px">🚕</div>
+  <h2>أهلاً بك في تاكسي أحمد</h2>
+  <p class="small">رحلتك أصبحت أسهل وأسرع</p>
+ </div>
+
+ <div class="card">
+  <h3>إنشاء حساب جديد</h3>
+
+  <input id="name" placeholder="الاسم الكامل">
+  <input id="phone" placeholder="رقم الهاتف"
+  type="tel">
+
+  <select id="role">
+   <option value="customer">تسجيل كزبون</option>
+   <option value="driver">تسجيل كسائق</option>
+   <option value="admin">مدير تجريبي</option>
+  </select>
+
+  <input id="password" type="password"
+  placeholder="كلمة المرور">
+
+  <button class="primary" onclick="register()">
+   دخول إلى التطبيق
+  </button>
+
+  <p class="small center">
+   نسخة تجريبية محلية
+  </p>
+ </div>
+
+ <div class="card">
+  <h3>مميزات التطبيق</h3>
+  <div class="grid">
+   <div class="item">📍 تحديد الموقع</div>
+   <div class="item">🚘 طلب سيارة</div>
+   <div class="item">💰 حساب الأجرة</div>
+   <div class="item">⭐ تقييم السائق</div>
+  </div>
+ </div>
+
+</section>
+
+<!-- واجهة الزبون -->
+<section id="customer" class="hidden">
+
+ <div class="card">
+  <h2>مرحباً بك 👋</h2>
+  <p>حدد موقعك واطلب سيارة الآن.</p>
+  <div id="map"></div>
+
+  <button class="secondary" onclick="getLocation()">
+   📍 تحديد موقعي الحالي
+  </button>
+
+  <input id="from" placeholder="موقع الانطلاق">
+  <input id="to" placeholder="الوجهة المطلوبة">
+
+  <select id="car">
+   <option value="1500">سيارة اقتصادية</option>
+   <option value="2500">سيارة عائلية</option>
+   <option value="4000">سيارة VIP</option>
+  </select>
+
+  <button class="primary" onclick="createTrip()">
+   🚕 اطلب سيارة الآن
+  </button>
+ </div>
+
+ <div class="card">
+  <h3>رحلتي الحالية</h3>
+  <div id="myTrip">لا توجد رحلة حالياً</div>
+ </div>
+
+ <div class="card">
+  <h3>سجل رحلاتي</h3>
+  <div id="customerHistory"></div>
+ </div>
+
+</section>
+
+<!-- واجهة السائق -->
+<section id="driver" class="hidden">
+
+ <div class="card">
+  <h2>لوحة السائق 🚘</h2>
+  <p>أهلاً بك في لوحة عمل السائق.</p>
+
+  <div class="grid">
+   <div class="item">
+    <div class="small">حالة العمل</div>
+    <h3 id="driverStatus">متوقف</h3>
+   </div>
+   <div class="item">
+    <div class="small">عدد الرحلات</div>
+    <h3 id="driverCount">0</h3>
+   </div>
+  </div>
+
+  <button class="green" onclick="toggleDriver()">
+   تغيير حالة العمل
+  </button>
+ </div>
+
+ <div class="card">
+  <h3>طلبات الرحلات</h3>
+  <div id="requests"></div>
+ </div>
+
+ <div class="card">
+  <h3>رحلاتي المكتملة</h3>
+  <div id="driverHistory"></div>
+ </div>
+
+</section>
+
+<!-- لوحة المدير -->
+<section id="admin" class="hidden">
+
+ <div class="card">
+  <h2>لوحة الإدارة ⚙️</h2>
+  <div class="grid">
+   <div class="item">
+    <div class="small">المستخدمون</div>
+    <h2 id="totalUsers">0</h2>
+   </div>
+   <div class="item">
+    <div class="small">الرحلات</div>
+    <h2 id="totalTrips">0</h2>
+   </div>
+  </div>
+ </div>
+
+ <div class="card">
+  <h3>إدارة الرحلات</h3>
+  <div id="adminTrips"></div>
+ </div>
+
+ <div class="card">
+  <h3>المستخدمون</h3>
+  <div id="adminUsers"></div>
+ </div>
+
+</section>
+
+<div class="menu hidden" id="navigation">
+ <button class="secondary" onclick="showPage('home')">
+  🏠 الرئيسية
+ </button>
+ <button class="secondary" onclick="showPage('history')">
+  📋 الرحلات
+ </button>
+ <button class="secondary" onclick="logout()">
+  خروج
+ </button>
 </div>
-<div class="toast" id="toast"></div>
-<nav class="nav hidden" id="nav">
- <button onclick="go('home')"><span>🏠</span>الرئيسية</button>
- <button onclick="go('trips')"><span>🧾</span>رحلاتي</button>
- <button onclick="go('wallet')"><span>💳</span>المحفظة</button>
- <button onclick="go('profile')"><span>👤</span>حسابي</button>
-</nav>
+
+</main>
+
+<footer>
+ تاكسي أحمد © 2026
+</footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
 "use strict";
 
-/* ===================================
-   1 - قاعدة البيانات المحلية التجريبية
-=================================== */
-const DB={
- users:JSON.parse(localStorage.getItem("ah_users")||"[]"),
- trips:JSON.parse(localStorage.getItem("ah_trips")||"[]"),
- wallet:JSON.parse(localStorage.getItem("ah_wallet")||"{}"),
- messages:JSON.parse(localStorage.getItem("ah_messages")||"{}"),
- current:JSON.parse(localStorage.getItem("ah_current")||"null"),
- ratings:JSON.parse(localStorage.getItem("ah_ratings")||"[]"),
- settings:JSON.parse(localStorage.getItem("ah_settings")||'{"base":1000,"km":500,"commission":10}')
-};
+/* قاعدة البيانات التجريبية */
 
-function save(){
- localStorage.setItem("ah_users",JSON.stringify(DB.users));
- localStorage.setItem("ah_trips",JSON.stringify(DB.trips));
- localStorage.setItem("ah_wallet",JSON.stringify(DB.wallet));
- localStorage.setItem("ah_messages",JSON.stringify(DB.messages));
- localStorage.setItem("ah_current",JSON.stringify(DB.current));
- localStorage.setItem("ah_ratings",JSON.stringify(DB.ratings));
- localStorage.setItem("ah_settings",JSON.stringify(DB.settings));
-}
-const $=id=>document.getElementById(id);
-const me=()=>DB.users.find(u=>u.id===DB.current?.id);
-const money=n=>Math.round(n||0).toLocaleString("en-US")+" د.ع";
-const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
-
-function toast(message){
- const t=$("toast");t.textContent=message;t.style.display="block";
- clearTimeout(window.toastTimer);
- window.toastTimer=setTimeout(()=>t.style.display="none",2600);
-}
-function page(html){$("main").innerHTML=html;}
-function go(name){
- if(!me())return login();
- if(name==="home")return home();
- if(name==="trips")return tripsPage();
- if(name==="wallet")return walletPage();
- if(name==="profile")return profilePage();
- if(name==="admin")return adminPage();
-}
-function updateHeader(){
- $("roleBadge").textContent=me()?.role==="driver"?"حساب سائق":
- me()?.role==="admin"?"الإدارة":"حساب راكب";
- $("nav").classList.toggle("hidden",!me());
+function readDB(key, fallback){
+ try{
+  return JSON.parse(localStorage.getItem(key)) ?? fallback;
+ }catch(e){
+  return fallback;
+ }
 }
 
-/* ===================================
-   2 - التسجيل والدخول
-=================================== */
-function login(){
- updateHeader();
- page(`
- <div class="page">
- <div style="text-align:center;padding:28px 0">
-  <div style="font-size:70px">🚕</div>
-  <h2>أهلاً بك في تاكسي أحمد</h2>
-  <p class="muted">تنقّل بسهولة وأمان داخل العراق</p>
- </div>
- <div class="card">
-  <h3>نوع الحساب</h3>
-  <div class="row">
-   <button class="btn primary" onclick="setRole('rider')">👤 راكب</button>
-   <button class="btn blue" onclick="setRole('driver')">🚘 سائق</button>
-  </div>
-  <label>الاسم الكامل</label>
-  <input id="authName" placeholder="اكتب اسمك">
-  <label>رقم الهاتف</label>
-  <input id="authPhone" type="tel" placeholder="07xxxxxxxxx">
-  <label>كلمة المرور</label>
-  <input id="authPass" type="password" placeholder="كلمة المرور">
-  <div id="driverFields" class="hidden">
-   <label>نوع السيارة</label>
-   <input id="carName" placeholder="مثلاً: تويوتا كورولا">
-   <label>رقم لوحة السيارة</label>
-   <input id="plate" placeholder="رقم اللوحة">
-  </div>
-  <button class="btn primary" onclick="register()">إنشاء حساب / دخول</button>
-  <p class="muted">حساب الإدارة التجريبي: admin / 123456</p>
-  <button class="btn dark" onclick="adminLogin()">دخول المدير</button>
- </div>
- </div>`);
- window.selectedRole="rider";
+let users = readDB("ahmed_users",[]);
+let trips = readDB("ahmed_trips",[]);
+let currentUser = readDB("ahmed_current",null);
+let driverOnline = false;
+let map = null;
+let marker = null;
+let userLat = 31.057;
+let userLng = 46.257;
+
+function saveDB(){
+ localStorage.setItem("ahmed_users",JSON.stringify(users));
+ localStorage.setItem("ahmed_trips",JSON.stringify(trips));
+ localStorage.setItem("ahmed_current",JSON.stringify(currentUser));
 }
-function setRole(role){
- window.selectedRole=role;
- $("driverFields").classList.toggle("hidden",role!=="driver");
-}
+
+/* التسجيل */
+
 function register(){
- const name=$("authName").value.trim();
- const phone=$("authPhone").value.trim();
- const pass=$("authPass").value;
- if(name.length<2||phone.length<8||pass.length<4)
-  return toast("تأكد من الاسم والهاتف وكلمة المرور");
- let user=DB.users.find(u=>u.phone===phone);
- if(user){
-  if(user.password!==pass)return toast("كلمة المرور غير صحيحة");
-  if(user.role!==window.selectedRole)return toast("نوع الحساب غير مطابق");
+
+ const name=document.getElementById("name").value.trim();
+ const phone=document.getElementById("phone").value.trim();
+ const password=document.getElementById("password").value;
+ const role=document.getElementById("role").value;
+
+ if(!name || !phone || !password){
+  alert("يرجى ملء جميع الحقول");
+  return;
+ }
+
+ if(role==="admin" && password!=="123456"){
+  alert("كلمة مرور المدير التجريبية هي 123456");
+  return;
+ }
+
+ let existing=users.find(u=>u.phone===phone);
+
+ if(existing){
+  if(existing.password!==password){
+   alert("كلمة المرور غير صحيحة");
+   return;
+  }
+
+  if(existing.role!==role){
+   alert("هذا الحساب مسجل بنوع مستخدم آخر");
+   return;
+  }
+
+  currentUser=existing;
  }else{
-  user={
-   id:uid(),name,phone,password:pass,
-   role:window.selectedRole,
-   car:$("carName")?.value||"",
-   plate:$("plate")?.value||"",
-   online:false,approved:window.selectedRole==="rider",
-   createdAt:new Date().toISOString()
+  currentUser={
+   id:Date.now(),
+   name,
+   phone,
+   password,
+   role,
+   created:new Date().toLocaleString("ar-IQ")
   };
-  DB.users.push(user);
-  DB.wallet[user.id]=0;
+
+  users.push(currentUser);
  }
- DB.current={id:user.id};save();updateHeader();home();
-}
-function adminLogin(){
- const name=prompt("اسم المدير");
- const pass=prompt("كلمة مرور المدير");
- if(name==="admin"&&pass==="123456"){
-  let admin=DB.users.find(u=>u.role==="admin");
-  if(!admin){
-   admin={id:"admin",name:"مدير النظام",phone:"admin",role:"admin",approved:true};
-   DB.users.push(admin);
-  }
-  DB.current={id:"admin"};save();updateHeader();adminPage();
- }else toast("بيانات المدير غير صحيحة");
-}
-function logout(){
- DB.current=null;save();updateHeader();login();
+
+ saveDB();
+ startApp();
 }
 
-/* ===================================
-   3 - واجهة الراكب
-=================================== */
-let selectedCar="اقتصادية";
-const carTypes=[
- {name:"اقتصادية",icon:"🚕",mult:1},
- {name:"عائلية",icon:"🚙",mult:1.4},
- {name:"مميزة",icon:"🚘",mult:1.8},
- {name:"دراجة",icon:"🏍️",mult:.7}
-];
-let pickup=null,destination=null,map=null,routeLine=null;
+/* تشغيل التطبيق */
 
-function home(){
- updateHeader();
- if(me().role==="admin")return adminPage();
- if(me().role==="driver")return driverHome();
- page(`
- <div class="page">
- <h2>مرحباً ${escapeHTML(me().name)} 👋</h2>
- <p class="muted">إلى أين تريد الذهاب اليوم؟</p>
- <div class="card">
-  <div id="map"></div>
-  <button class="btn gray" onclick="myLocation()">📍 تحديد موقعي الحالي</button>
- </div>
- <div class="card">
-  <label>📍 موقع الانطلاق</label>
-  <input id="pickupText" placeholder="من أين ننطلق؟">
-  <label>🏁 الوجهة</label>
-  <input id="destText" placeholder="إلى أين تريد الذهاب؟">
-  <div class="row">
-   <button class="btn gray" onclick="choosePoint('pickup')">تحديد الانطلاق بالخريطة</button>
-   <button class="btn gray" onclick="choosePoint('destination')">تحديد الوجهة بالخريطة</button>
-  </div>
-  <h3 style="margin-top:20px">اختر نوع السيارة</h3>
-  <div class="row">
-   ${carTypes.map(c=>`<div class="car ${c.name===selectedCar?'active':''}" onclick="selectCar('${c.name}')"><div style="font-size:27px">${c.icon}</div><b>${c.name}</b></div>`).join("")}
-  </div>
-  <div class="price">
-   <div><small>السعر التقديري</small><br><strong id="fare">—</strong></div>
-   <span>💰</span>
-  </div>
-  <button class="btn primary" onclick="requestTrip()">🚕 اطلب سيارة الآن</button>
- </div>
- <div class="card">
-  <h3>خدمات إضافية</h3>
-  <div class="row">
-   <button class="btn gray" onclick="toast('خدمة التوصيل ستضاف لاحقاً')">📦 توصيل</button>
-   <button class="btn gray" onclick="toast('خدمة النقل الخاص ستضاف لاحقاً')">🚐 نقل خاص</button>
-  </div>
- </div>
- </div>`);
- setTimeout(initMap,150);
+function startApp(){
+
+ document.getElementById("login").classList.add("hidden");
+ document.getElementById("navigation").classList.remove("hidden");
+
+ document.getElementById("headerUser").textContent=
+ currentUser.name;
+
+ if(currentUser.role==="customer"){
+  showPage("home");
+ }
+
+ if(currentUser.role==="driver"){
+  showPage("home");
+ }
+
+ if(currentUser.role==="admin"){
+  showPage("home");
+ }
+
 }
-function initMap(){
- if(!document.getElementById("map")||!window.L)return;
- if(map){map.remove();map=null;}
- map=L.map("map").setView([31.05,46.26],7);
- L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
-  attribution:"© OpenStreetMap"
- }).addTo(map);
- if(pickup)L.marker(pickup).addTo(map).bindPopup("الانطلاق");
- if(destination)L.marker(destination).addTo(map).bindPopup("الوجهة");
- setTimeout(()=>map.invalidateSize(),200);
-}
-function selectCar(name){
- selectedCar=name;home();
-}
-function myLocation(){
- if(!navigator.geolocation)return toast("المتصفح لا يدعم تحديد الموقع");
- navigator.geolocation.getCurrentPosition(pos=>{
-  pickup=[pos.coords.latitude,pos.coords.longitude];
-  $("pickupText").value="موقعي الحالي";
-  if(map){map.setView(pickup,15);L.marker(pickup).addTo(map);}
-  calculateFare();toast("تم تحديد موقعك");
- },()=>toast("تعذر تحديد الموقع، تحقق من صلاحية الموقع"),{enableHighAccuracy:true});
-}
-function choosePoint(type){
- if(!map)return;
- toast("اضغط على الخريطة لتحديد الموقع");
- map.once("click",e=>{
-  if(type==="pickup"){
-   pickup=[e.latlng.lat,e.latlng.lng];
-   $("pickupText").value="موقع محدد على الخريطة";
-  }else{
-   destination=[e.latlng.lat,e.latlng.lng];
-   $("destText").value="وجهة محددة على الخريطة";
-  }
-  calculateFare();
-  L.marker(e.latlng).addTo(map);
+
+function showPage(page){
+
+ ["customer","driver","admin"].forEach(id=>{
+  document.getElementById(id).classList.add("hidden");
  });
-}
-function distanceKm(a,b){
- const R=6371,rad=x=>x*Math.PI/180;
- const dLat=rad(b[0]-a[0]),dLon=rad(b[1]-a[1]);
- const x=Math.sin(dLat/2)**2+
- Math.cos(rad(a[0]))*Math.cos(rad(b[0]))*Math.sin(dLon/2)**2;
- return 2*R*Math.asin(Math.sqrt(x));
-}
-function fareEstimate(){
- if(!pickup||!destination)return 0;
- const car=carTypes.find(c=>c.name===selectedCar);
- return (DB.settings.base+distanceKm(pickup,destination)*DB.settings.km)*(car?.mult||1);
-}
-function calculateFare(){
- const el=$("fare");if(el)el.textContent=money(fareEstimate());
-}
 
-/* ===================================
-   4 - طلب الرحلة وإدارتها
-=================================== */
-function requestTrip(){
- const from=$("pickupText").value.trim();
- const to=$("destText").value.trim();
- if(!from||!to)return toast("حدد موقع الانطلاق والوجهة");
- if(!pickup||!destination)return toast("حدد الموقعين على الخريطة أولاً");
- const trip={
-  id:uid(),riderId:me().id,riderName:me().name,
-  driverId:null,driverName:null,
-  from,to,pickup,destination,
-  car:selectedCar,distance:distanceKm(pickup,destination),
-  fare:Math.round(fareEstimate()),
-  status:"searching",createdAt:new Date().toISOString(),
-  messages:[]
- };
- DB.trips.unshift(trip);save();
- toast("تم إنشاء طلب الرحلة");
- searchingPage(trip.id);
-}
-function searchingPage(id){
- const trip=DB.trips.find(t=>t.id===id);
- page(`<div class="page">
- <div class="card" style="text-align:center;padding:35px 15px">
-  <div style="font-size:65px">🚕</div>
-  <h2>جاري البحث عن سائق</h2>
-  <p class="muted">طلبك متاح للسائقين في هذا النموذج التجريبي</p>
-  <div class="price"><span>الأجرة التقديرية</span><strong>${money(trip.fare)}</strong></div>
-  <button class="btn red" onclick="cancelTrip('${id}')">إلغاء الطلب</button>
- </div></div>`);
-}
-function cancelTrip(id){
- const t=DB.trips.find(x=>x.id===id);
- if(!t||["completed","cancelled"].includes(t.status))return;
- t.status="cancelled";save();toast("تم إلغاء الرحلة");go("trips");
-}
-function tripsPage(){
- const list=DB.trips.filter(t=>t.riderId===me().id||t.driverId===me().id);
- page(`<div class="page"><h2>🧾 سجل الرحلات</h2>
- ${list.length?list.map(t=>tripCard(t)).join(""):'<div class="card">لا توجد رحلات حتى الآن</div>'}
- </div>`);
-}
-function tripCard(t){
- const states={searching:"قيد البحث",accepted:"تم قبول الرحلة",arrived:"السائق وصل",started:"الرحلة جارية",completed:"مكتملة",cancelled:"ملغاة"};
- return `<div class="card trip">
- <div class="row"><b>${escapeHTML(t.from)}</b><b>${money(t.fare)}</b></div>
- <p class="muted">إلى: ${escapeHTML(t.to)}</p>
- <p class="status">${states[t.status]||t.status}</p>
- <button class="btn gray" onclick="tripDetails('${t.id}')">تفاصيل الرحلة</button>
- </div>`;
-}
-function tripDetails(id){
- const t=DB.trips.find(x=>x.id===id);if(!t)return;
- page(`<div class="page"><h2>تفاصيل الرحلة</h2><div class="card">
- <p>الانطلاق: ${escapeHTML(t.from)}</p>
- <p>الوجهة: ${escapeHTML(t.to)}</p>
- <p>السائق: ${escapeHTML(t.driverName||"لم يتم التعيين")}</p>
- <p>الأجرة: ${money(t.fare)}</p>
- <p>الحالة: ${t.status}</p>
- ${t.driverId?`<button class="btn blue" onclick="chat('${t.id}')">💬 محادثة</button>`:""}
- ${["searching","accepted","arrived"].includes(t.status)?`<button class="btn red" onclick="cancelTrip('${t.id}')">إلغاء الرحلة</button>`:""}
- ${t.status==="completed"&&t.riderId===me().id?`<button class="btn primary" onclick="rateTrip('${t.id}')">⭐ قيّم الرحلة</button>`:""}
- <button class="btn gray" onclick="shareTrip('${t.id}')">مشاركة الرحلة</button>
- <button class="btn gray" onclick="go('trips')">رجوع</button>
- </div></div>`);
-}
+ if(page==="home"){
+  if(currentUser.role==="customer"){
+   document.getElementById("customer").classList.remove("hidden");
+   setTimeout(initMap,200);
+   refreshCustomer();
+  }
 
-/* ===================================
-   5 - واجهة السائق
-=================================== */
-function driverHome(){
- const driver=me();
- const available=DB.trips.filter(t=>t.status==="searching");
- const active=DB.trips.find(t=>t.driverId===driver.id&&
- ["accepted","arrived","started"].includes(t.status));
- page(`<div class="page">
- <h2>أهلاً كابتن ${escapeHTML(driver.name)} 🚘</h2>
- <div class="card">
- <div class="row" style="align-items:center">
- <div><b>حالة استقبال الطلبات</b><p class="muted">فعّل الزر لتصبح متاحاً</p></div>
- <label style="margin:0"><input style="width:25px;height:25px" type="checkbox" ${driver.online?"checked":""} onchange="toggleOnline(this.checked)"></label>
- </div>
- <p class="status">${driver.online?"متصل – تستقبل الطلبات":"غير متصل"}</p>
- </div>
- ${active?driverActiveTrip(active):""}
- <h3>طلبات الرحلات المتاحة (${available.length})</h3>
- ${driver.online?available.map(t=>`
- <div class="card">
- <b>👤 ${escapeHTML(t.riderName)}</b>
- <p>📍 ${escapeHTML(t.from)}</p>
- <p>🏁 ${escapeHTML(t.to)}</p>
- <p>🚕 ${t.car} | ${t.distance.toFixed(1)} كم</p>
- <div class="price"><span>الأجرة</span><strong>${money(t.fare)}</strong></div>
- <button class="btn green" onclick="acceptTrip('${t.id}')">قبول الرحلة</button>
- </div>`).join(""):'<div class="card">اتصل بالإنترنت وفعّل استقبال الطلبات</div>'}
- </div>`);
-}
-function toggleOnline(value){
- me().online=value;save();driverHome();
-}
-function acceptTrip(id){
- const t=DB.trips.find(x=>x.id===id);
- if(!t||t.status!=="searching")return toast("الطلب لم يعد متاحاً");
- t.driverId=me().id;t.driverName=me().name;t.status="accepted";
- save();toast("تم قبول الرحلة");driverHome();
-}
-function driverActiveTrip(t){
- const actions={
- accepted:["arrived","وصلت إلى الراكب"],
- arrived:["started","بدء الرحلة"],
- started:["completed","إنهاء الرحلة"]
- };
- const action=actions[t.status];
- return `<div class="card">
- <h3>🚕 رحلتك الحالية</h3>
- <p>الراكب: ${escapeHTML(t.riderName)}</p>
- <p>من: ${escapeHTML(t.from)}</p><p>إلى: ${escapeHTML(t.to)}</p>
- <p>الأجرة: ${money(t.fare)}</p>
- ${action?`<button class="btn green" onclick="advanceTrip('${t.id}','${action[0]}')">${action[1]}</button>`:""}
- <button class="btn blue" onclick="chat('${t.id}')">مراسلة الراكب</button>
- <button class="btn red" onclick="cancelTrip('${t.id}')">إلغاء الرحلة</button>
- </div>`;
-}
-function advanceTrip(id,status){
- const t=DB.trips.find(x=>x.id===id);if(!t)return;
- t.status=status;
- if(status==="completed"){
-  const commission=Math.round(t.fare*DB.settings.commission/100);
-  DB.wallet[me().id]=(DB.wallet[me().id]||0)+t.fare-commission;
-  t.completedAt=new Date().toISOString();
+  if(currentUser.role==="driver"){
+   document.getElementById("driver").classList.remove("hidden");
+   refreshDriver();
+  }
+
+  if(currentUser.role==="admin"){
+   document.getElementById("admin").classList.remove("hidden");
+   refreshAdmin();
+  }
  }
- save();toast("تم تحديث حالة الرحلة");driverHome();
+
+ if(page==="history"){
+  if(currentUser.role==="customer"){
+   document.getElementById("customer").classList.remove("hidden");
+   refreshCustomer();
+  }
+  if(currentUser.role==="driver"){
+   document.getElementById("driver").classList.remove("hidden");
+   refreshDriver();
+  }
+ }
+
 }
 
-/* ===================================
-   6 - المحفظة والمعاملات
-=================================== */
-function walletPage(){
- const balance=DB.wallet[me().id]||0;
- page(`<div class="page"><h2>💳 المحفظة</h2>
- <div class="card" style="background:#17202b;color:white">
- <p>الرصيد الحالي</p><h2>${money(balance)}</h2>
- <p class="muted" style="color:#ddd">الرصيد التجريبي داخل هذا الجهاز</p>
- </div>
- <div class="card">
- <h3>الخدمات المالية</h3>
- <button class="btn primary" onclick="toast('إضافة الرصيد تتطلب بوابة دفع مرتبطة')">➕ إضافة رصيد</button>
- <button class="btn gray" onclick="toast('السحب يحتاج نظام تحقق وحساب مصرفي')">سحب الأرباح</button>
- <p class="muted">لا تُجرى عمليات مالية حقيقية في النسخة التجريبية.</p>
- </div></div>`);
+/* الخريطة */
+
+function initMap(){
+
+ if(map || !window.L)return;
+
+ map=L.map("map").setView([userLat,userLng],13);
+
+ L.tileLayer(
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  {
+   attribution:"© OpenStreetMap"
+  }
+ ).addTo(map);
+
+ marker=L.marker([userLat,userLng]).addTo(map)
+ .bindPopup("موقعك الحالي");
+
+ map.on("click",function(e){
+  userLat=e.latlng.lat;
+  userLng=e.latlng.lng;
+
+  marker.setLatLng(e.latlng);
+
+  document.getElementById("from").value=
+  userLat.toFixed(5)+","+userLng.toFixed(5);
+ });
+
+ setTimeout(()=>map.invalidateSize(),300);
 }
 
-/* ===================================
-   7 - المحادثة ومشاركة الرحلة والطوارئ
-=================================== */
-function chat(id){
- const t=DB.trips.find(x=>x.id===id);if(!t)return;
- DB.messages[id]=DB.messages[id]||[];
- page(`<div class="page"><h2>💬 محادثة الرحلة</h2>
- <div class="card" id="chatList" style="min-height:200px">
- ${DB.messages[id].map(m=>`<div class="item"><b>${escapeHTML(m.name)}:</b> ${escapeHTML(m.text)}</div>`).join("")||"لا توجد رسائل"}
- </div>
- <input id="chatInput" placeholder="اكتب رسالتك">
- <button class="btn primary" onclick="sendMessage('${id}')">إرسال</button>
- <button class="btn gray" onclick="tripDetails('${id}')">رجوع</button>
- </div>`);
+function getLocation(){
+
+ if(!navigator.geolocation){
+  alert("المتصفح لا يدعم تحديد الموقع");
+  return;
+ }
+
+ navigator.geolocation.getCurrentPosition(
+  position=>{
+   userLat=position.coords.latitude;
+   userLng=position.coords.longitude;
+
+   if(map){
+    map.setView([userLat,userLng],16);
+    marker.setLatLng([userLat,userLng]);
+   }
+
+   document.getElementById("from").value=
+   userLat.toFixed(5)+","+userLng.toFixed(5);
+  },
+  ()=>{
+   alert("تعذر تحديد الموقع. تحقق من صلاحية الموقع والإنترنت");
+  }
+ );
 }
-function sendMessage(id){
- const input=$("chatInput"),text=input.value.trim();
- if(!text)return;
- DB.messages[id]=DB.messages[id]||[];
- DB.messages[id].push({name:me().name,text,time:Date.now()});
- save();chat(id);
+
+/* إنشاء رحلة */
+
+function createTrip(){
+
+ const from=document.getElementById("from").value.trim();
+ const to=document.getElementById("to").value.trim();
+ const car=document.getElementById("car");
+
+ if(!from || !to){
+  alert("حدد الانطلاق والوجهة");
+  return;
+ }
+
+ let active=trips.find(t=>
+  t.customerId===currentUser.id &&
+  ["waiting","accepted","started"].includes(t.status)
+ );
+
+ if(active){
+  alert("لديك رحلة لم تنتهِ بعد");
+  return;
+ }
+
+ let trip={
+  id:Date.now(),
+  customerId:currentUser.id,
+  customerName:currentUser.name,
+  from,
+  to,
+  car:car.options[car.selectedIndex].text,
+  basePrice:Number(car.value),
+  price:Number(car.value),
+  status:"waiting",
+  driverId:null,
+  driverName:null,
+  date:new Date().toLocaleString("ar-IQ")
+ };
+
+ trips.unshift(trip);
+ saveDB();
+ refreshCustomer();
+
+ alert("تم إرسال طلب الرحلة بنجاح");
 }
-function shareTrip(id){
- const t=DB.trips.find(x=>x.id===id);
- const text=`رحلتي في تاكسي أحمد\nمن: ${t.from}\nإلى: ${t.to}\nالسائق: ${t.driverName||"قيد البحث"}`;
- if(navigator.share)navigator.share({title:"مشاركة الرحلة",text});
- else if(navigator.clipboard)navigator.clipboard.writeText(text).then(()=>toast("تم نسخ تفاصيل الرحلة"));
- else toast(text);
+
+/* تحديث واجهة الزبون */
+
+function refreshCustomer(){
+
+ let active=trips.find(t=>
+  t.customerId===currentUser.id &&
+  ["waiting","accepted","started"].includes(t.status)
+ );
+
+ let box=document.getElementById("myTrip");
+
+ if(active){
+
+  box.innerHTML=`
+   <div class="item">
+    <h3>حالة الرحلة</h3>
+    <p>${statusText(active.status)}</p>
+    <p>من: ${safe(active.from)}</p>
+    <p>إلى: ${safe(active.to)}</p>
+    <p>السيارة: ${safe(active.car)}</p>
+    <p class="price">${active.price} دينار</p>
+    <p>السائق: ${safe(active.driverName||"بانتظار السائق")}</p>
+    ${active.status==="started"?
+    `<button class="primary" onclick="finishTrip(${active.id})">إنهاء الرحلة</button>`:""}
+   </div>
+  `;
+ }else{
+  box.innerHTML="<p>لا توجد رحلة حالية</p>";
+ }
+
+ let history=trips.filter(t=>t.customerId===currentUser.id);
+
+ document.getElementById("customerHistory").innerHTML=
+ history.map(t=>`
+  <div class="item">
+   <b>${safe(t.to)}</b>
+   <p>${statusText(t.status)}</p>
+   <span class="price">${t.price} د.ع</span>
+  </div>
+ `).join("") || "لا توجد رحلات";
 }
-function emergency(
+
+/* السائق */
+
+function toggleDriver(){
+
+ driverOnline=!driverOnline;
+
+ document.getElementById("driverStatus").textContent=
+ driverOnline?"متصل ويستقبل الطلبات":"متوقف";
+
+ refreshDriver();
+}
+
+function refreshDriver(){
+
+ const requests=trips.filter(t=>t.status==="waiting");
+
+ document.getElementById("requests").innerHTML=
+ driverOnline?
+ requests.map(t=>`
+  <div class="item">
+   <h3>طلب رحلة جديد 🚕</h3>
+   <p>الزبون: ${safe(t.customerName)}</p>
+   <p>من: ${safe(t.from)}</p>
+   <p>إلى: ${safe(t.to)}</p>
+   <p>السيارة: ${safe(t.car)}</p>
+   <p class="price">${t.price} دينار</p>
+   <button class="green" onclick="acceptTrip(${t.id})">
+    قبول الرحلة
+   </button>
+  </div>
+ `).join("") || "لا توجد طلبات حالياً"
+ :"يجب تشغيل حالة العمل لاستقبال الطلبات";
+
+ let mine=trips.filter(t=>t.driverId===currentUser.id);
+
+ document.getElementById("driverCount").textContent=mine.length;
+
+ document.getElementById("driverHistory").innerHTML=
+ mine.map(t=>`
+  <div class="item">
+   <p>${safe(t.customerName)}</p>
+   <p>${safe(t.to)}</p>
+   <p>${statusText(t.status)}</p>
+  </div>
+ `).join("") || "لا توجد رحلات";
+}
+
+function acceptTrip(id){
+
+ if(!driverOnline){
+  alert("يجب تشغيل حالة العمل");
+  return;
+ }
+
+ let trip=trips.find(t=>t.id===id);
+
+ if(!trip || trip.status!=="waiting"){
+  alert("الطلب لم يعد متاحاً");
+  return;
+ }
+
+ trip.status="accepted";
+ trip.driverId=currentUser.id;
+ trip.driverName=currentUser.name;
+
+ saveDB();
+ refreshDriver();
+
+ alert("تم قبول الرحلة");
+}
+
+function finishTrip(id){
+
+ let trip=trips.find(t=>t.id===id);
+
+ if(!trip || trip.customerId!==currentUser.id)return;
+
+ if(trip.status==="accepted"){
+  trip.status="started";
+ }else if(trip.status==="started"){
+  trip.status="completed";
+ }
+
+ saveDB();
+ refreshCustomer();
+}
+
+/* المدير */
+
+function refreshAdmin(){
+
+ document.getElementById("totalUsers").textContent=users.length;
+ document.getElementById("totalTrips").textContent=trips.length;
+
+ document.getElementById("adminTrips").innerHTML=
+ trips.map(t=>`
+  <div class="item">
+   <b>${safe(t.customerName)}</b>
+   <p>${safe(t.from)} ← ${safe(t.to)}</p>
+   <p>${statusText(t.status)}</p>
+   <p>${t.price} دينار</p>
+   ${t.status!=="cancelled"&&t.status!=="completed"?
+   `<button class="danger" onclick="cancelTrip(${t.id})">إلغاء الرحلة</button>`:""}
+  </div>
+ `).join("") || "لا توجد رحلات";
+
+ document.getElementById("adminUsers").innerHTML=
+ users.map(u=>`
+  <div class="item">
+   <b>${safe(u.name)}</b>
+   <p>${safe(u.phone)}</p>
+   <p>${u.role}</p>
+  </div>
+ `).join("");
+}
+
+function cancelTrip(id){
+
+ let trip=trips.find(t=>t.id===id);
+
+ if(!trip)return;
+
+ trip.status="cancelled";
+ saveDB();
+ refreshAdmin();
+}
+
+/* تسجيل الخروج */
+
+function logout(){
+
+ currentUser=null;
+ localStorage.removeItem("ahmed_current");
+
+ location.reload();
+}
+
+/* أدوات مساعدة */
+
+function statusText(status){
+
+ const values={
+  waiting:"بانتظار السائق",
+  accepted:"تم قبول الرحلة",
+  started:"الرحلة جارية",
+  completed:"رحلة مكتملة",
+  cancelled:"رحلة ملغاة"
+ };
+
+ return values[status]||status;
+}
+
+function safe(value){
+
+ return String(value??"").replace(/[&<>"']/g,char=>({
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#039;"
+ })[char]);
+}
+
+/* استعادة الجلسة */
+
+window.addEventListener("DOMContentLoaded",()=>{
+
+ if(currentUser){
+  const found=users.find(u=>u.id===currentUser.id);
+
+  if(found){
+   currentUser=found;
+   startApp();
+  }else{
+   localStorage.removeItem("ahmed_current");
+  }
+ }
+
+});
+
+</script>
+</body>
+</html>
