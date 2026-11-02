@@ -1,810 +1,459 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#10152f">
-<title>مغامرات العباقرة 3D</title>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>10 ألعاب ذكاء 3D للأطفال</title>
 <style>
-*{box-sizing:border-box}
-body{
- margin:0;background:#10152f;color:white;
- font-family:Tahoma,Arial,sans-serif;
-}
-button,select{font-family:inherit;touch-action:manipulation}
-header{
- background:linear-gradient(120deg,#4935a8,#1477ad);
- text-align:center;padding:20px 10px;
-}
-header h1{margin:0;color:#ffe66d;font-size:25px}
-header p{margin:8px 0 0}
-.container{max-width:1100px;margin:auto;padding:12px}
-.panel{
- background:#20294c;border:1px solid #ffffff22;
- padding:15px;border-radius:20px;margin-bottom:15px;
-}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
-.stat{
- background:#ffffff12;border-radius:14px;
- padding:12px;text-align:center;font-size:13px;
-}
-.stat strong{
- display:block;color:#ffe66d;font-size:23px;margin-top:6px
-}
-h2,h3{color:#ffe66d}
-.grid{
- display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));
- gap:11px;
-}
-.game{
- background:linear-gradient(145deg,#354779,#242d50);
- border:1px solid #ffffff25;border-radius:17px;
- padding:15px 8px;text-align:center;min-height:115px;
- cursor:pointer;transition:.2s;
-}
-.game:active{transform:scale(.95)}
-.game .emoji{font-size:38px;display:block;margin-bottom:9px}
-button{
- background:#ffe66d;color:#222;border:0;border-radius:12px;
- padding:12px 16px;font-weight:bold;font-size:15px;cursor:pointer;
-}
-button:active{transform:scale(.96)}
-button.secondary{background:#4be0c2}
-button.red{background:#ff7373;color:white}
-button:disabled{opacity:.5}
-select{padding:10px;border-radius:10px;border:0}
-#gameScreen,#parent{display:none}
-#stage{
- height:340px;border-radius:18px;overflow:hidden;
- background:#92dfff;position:relative;
-}
-#stage canvas{display:block;width:100%;height:100%;touch-action:pan-y}
-#gameTitle{text-align:center;color:#ffe66d;font-size:22px}
-#instruction{
- text-align:center;background:#fff0a8;color:#222;
- border-radius:13px;padding:13px;margin:12px 0;
- font-weight:bold;line-height:1.9;font-size:17px;
-}
-#actions{
- display:flex;justify-content:center;gap:8px;
- flex-wrap:wrap;margin:12px 0;
-}
-#result{
- text-align:center;font-size:19px;color:#ffe66d;
- min-height:35px;margin:12px;
-}
-#choices{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.answer{
- background:white;color:#222;min-height:65px;font-size:18px;
-}
-.answer.correct{background:#55e5a0}
-.answer.wrong{background:#ff8585}
-#teacher{
- display:flex;gap:10px;align-items:center;
- background:#fff0a8;color:#222;padding:10px;border-radius:14px;
-}
-#teacher .face{font-size:35px}
-#teacherText{font-weight:bold;line-height:1.7}
-.progress{background:#ffffff20;height:13px;border-radius:20px;overflow:hidden}
-#progressBar{height:100%;width:0;background:#ffe66d;transition:.4s}
-#roundInfo{text-align:center;color:#aeeaff;margin:10px}
-#parent input{padding:10px;border-radius:10px;border:0}
-#parentStats{line-height:2}
-footer{text-align:center;color:#aebce5;padding:25px}
-.small{font-size:12px;color:#b8c9ed}
-@media(max-width:500px){
- #stage{height:270px}
- header h1{font-size:21px}
- .container{padding:9px}
- .answer{min-height:58px;font-size:16px}
-}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    margin:0;font-family:'Tajawal','Cairo','Segoe UI',Tahoma,sans-serif;
+    background:
+      radial-gradient(circle at 12% 8%, #8b5cf6 0%, transparent 50%),
+      radial-gradient(circle at 90% 92%, #06b6d4 0%, transparent 50%),
+      linear-gradient(160deg,#3b0764,#1e3a8a 55%,#0e7490);
+    min-height:100vh;display:flex;align-items:center;justify-content:center;
+    padding:12px;overflow-x:hidden;
+  }
+
+  /* خلفية عائمة بدون تعارض 3D */
+  .bg-shapes{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+  .bg-shapes span{
+    position:absolute;font-size:44px;opacity:.15;
+    animation:float 14s ease-in-out infinite;
+  }
+  @keyframes float{
+    0%,100%{transform:translateY(0) rotate(0deg) scale(1)}
+    50%{transform:translateY(-35px) rotate(20deg) scale(1.1)}
+  }
+
+  .scene{
+    width:min(720px,100%);
+    position:relative;z-index:1;
+  }
+  .app{
+    background:linear-gradient(#ffffff,#f5f3ff);
+    border-radius:28px;padding:14px;
+    box-shadow:
+      0 1px 0 #fff inset,
+      0 -8px 0 rgba(139,92,246,.12) inset,
+      0 30px 60px -10px rgba(0,0,0,.55);
+    min-height:560px;display:flex;flex-direction:column;
+    position:relative;
+  }
+
+  header{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:#4c1d95}
+  .brand .logo{font-size:25px;filter:drop-shadow(0 4px 5px rgba(0,0,0,.3));animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+  .stats{display:flex;align-items:center;gap:5px}
+  .stat{
+    display:flex;align-items:center;gap:3px;background:linear-gradient(#ede9fe,#ddd6fe);
+    color:#5b21b6;font-weight:800;font-size:14px;padding:5px 9px;border-radius:13px;
+    border:2px solid #c4b5fd;
+    box-shadow:0 4px 0 #a78bfa, 0 6px 10px rgba(76,29,149,.2), inset 0 1px 0 #fff;
+  }
+  .icon-btn{
+    border:2px solid #c4b5fd;background:linear-gradient(#ede9fe,#ddd6fe);border-radius:13px;
+    padding:6px 10px;font-size:15px;cursor:pointer;font-family:inherit;
+    box-shadow:0 4px 0 #a78bfa, 0 6px 10px rgba(76,29,149,.2), inset 0 1px 0 #fff;
+    transition:transform .07s, box-shadow .07s;
+  }
+  .icon-btn:active{transform:translateY(4px);box-shadow:0 0 0 #a78bfa}
+
+  .progress{
+    height:14px;background:#ede9fe;border-radius:10px;margin:11px 0 4px;overflow:hidden;
+    border:2px solid #ddd6fe;
+    box-shadow:inset 0 3px 6px rgba(76,29,149,.28), inset 0 -2px 0 #fff;
+  }
+  .bar{
+    height:100%;width:0;border-radius:10px;
+    background:linear-gradient(90deg,#22c55e,#84cc16,#eab308);
+    box-shadow:0 0 14px rgba(34,197,94,.85);
+    transition:width .35s cubic-bezier(.34,1.4,.64,1);
+  }
+
+  main{flex:1;display:flex;flex-direction:column;justify-content:center;gap:8px;padding:4px 0;overflow-y:auto;}
+
+  /* قائمة الألعاب */
+  .hub-title{text-align:center;color:#4c1d95;font-weight:900;font-size:20px;margin:4px 0 2px}
+  .hub-sub{text-align:center;color:#7c3aed;font-weight:600;font-size:13px;margin:0 0 10px}
+  .hub{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:11px;padding:2px;}
+
+  .game-card{
+    border:none;cursor:pointer;font-family:inherit;font-weight:800;font-size:13px;color:#1e293b;
+    background:linear-gradient(#ffffff,#eef2ff);
+    border-radius:18px;padding:14px 6px;
+    display:flex;flex-direction:column;align-items:center;gap:7px;
+    box-shadow:
+      0 7px 0 #a5b4fc,
+      0 14px 22px -6px rgba(76,29,149,.45),
+      inset 0 2px 0 #fff, inset 0 -3px 0 rgba(199,210,254,.8);
+    transition:transform .15s ease-out, box-shadow .15s ease-out;
+  }
+  .game-card .g-icon{font-size:29px;line-height:1;filter:drop-shadow(0 3px 3px rgba(0,0,0,.22))}
+  .game-card:active{
+    box-shadow:0 2px 0 #a5b4fc, 0 5px 10px -4px rgba(76,29,149,.5), inset 0 2px 0 #fff;
+  }
+
+  /* السؤال */
+  .q-text{text-align:center;font-size:20px;font-weight:800;color:#4c1d95;margin:2px 0; text-shadow:0 2px 0 #fff}
+  .visual{
+    min-height:116px;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(160deg,#faf5ff,#ede9fe);
+    border-radius:20px;padding:12px;border:2px dashed #ddd6fe;
+    box-shadow:inset 0 6px 14px rgba(139,92,246,.16), inset 0 -3px 0 #fff;
+  }
+  .emoji-grid{display:flex;flex-wrap:wrap;gap:1px 6px;justify-content:center}
+  .emoji{
+    font-size:32px;line-height:1.15;display:inline-block;
+    animation:pop .42s cubic-bezier(.34,1.56,.64,1) backwards;
+    filter:drop-shadow(0 4px 3px rgba(0,0,0,.22));
+  }
+  .emoji.gone{opacity:.2;filter:grayscale(1)}
+  @keyframes pop{
+    from{transform:scale(.15);opacity:0}
+    to{transform:scale(1);opacity:1}
+  }
+
+  .seq{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;direction:ltr}
+  .term{
+    min-width:50px;height:58px;display:flex;align-items:center;justify-content:center;
+    font-size:24px;font-weight:800;color:#4c1d95;
+    background:linear-gradient(#fff,#f1f0ff);border-radius:14px;
+    border:3px solid #ddd6fe;
+    box-shadow:0 6px 0 #c7d2fe, 0 10px 16px -4px rgba(76,29,149,.35), inset 0 2px 0 #fff;
+    animation:pop .42s cubic-bezier(.34,1.56,.64,1) backwards;
+  }
+  .term.blank{
+    color:#a855f7;border-color:#c4b5fd;border-style:dashed;background:#faf5ff;
+    animation:pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.07)}
+  }
+
+  .add-row{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;direction:ltr}
+  .grp{
+    display:flex;flex-wrap:wrap;gap:1px;max-width:148px;justify-content:center;
+    background:#fff;border-radius:14px;padding:6px;border:2px solid #ddd6fe;
+    box-shadow:0 5px 0 #c7d2fe, 0 8px 14px -4px rgba(76,29,149,.3), inset 0 2px 0 #fff;
+  }
+  .grp .emoji{font-size:21px}
+  .op{font-size:26px;font-weight:800;color:#7c3aed;text-shadow:0 2px 0 #ddd6fe}
+  .qmark{
+    font-size:26px;font-weight:800;color:#a855f7;min-width:52px;height:56px;
+    display:flex;align-items:center;justify-content:center;
+    border:3px dashed #c4b5fd;border-radius:14px;background:#faf5ff;
+    animation:pulse 1.2s ease-in-out infinite;
+  }
+
+  .big-shape{font-size:80px;line-height:1;animation:pop .45s cubic-bezier(.34,1.56,.64,1); filter:drop-shadow(0 10px 8px rgba(76,29,149,.35))}
+  .swatch{
+    width:104px;height:104px;border-radius:50%;border:5px solid #fff;
+    box-shadow:0 12px 22px -6px rgba(0,0,0,.45), inset 0 -10px 18px rgba(0,0,0,.25), inset 0 8px 14px rgba(255,255,255,.5);
+    animation:pop .45s cubic-bezier(.34,1.56,.64,1);
+  }
+  .cmp{display:flex;align-items:center;gap:12px;}
+  .cmp-num{
+    font-size:42px;font-weight:900;color:#4c1d95;
+    background:linear-gradient(#fff,#f1f0ff);border:3px solid #ddd6fe;border-radius:16px;
+    padding:4px 18px;
+    box-shadow:0 7px 0 #c7d2fe, 0 12px 18px -6px rgba(76,29,149,.35), inset 0 2px 0 #fff;
+  }
+
+  /* الاختيارات */
+  .options{display:grid;gap:10px;margin-top:4px;}
+  .opt{
+    font-family:inherit;font-size:30px;font-weight:800;color:#1e293b;cursor:pointer;
+    padding:13px 6px;border-radius:18px;border:none;
+    background:linear-gradient(#ffffff,#eef2ff);
+    box-shadow:
+      0 8px 0 #a5b4fc,
+      0 14px 20px -6px rgba(76,29,149,.4),
+      inset 0 2px 0 #fff, inset 0 -3px 0 rgba(199,210,254,.9);
+    transition:transform .08s, box-shadow .08s, background .25s;
+  }
+  .opt:active{
+    transform:translateY(6px);
+    box-shadow:0 1px 0 #a5b4fc, 0 3px 6px -3px rgba(76,29,149,.5), inset 0 2px 0 #fff;
+  }
+  .opt.correct{
+    background:linear-gradient(#86efac,#22c55e);color:#fff;
+    box-shadow:0 8px 0 #15803d, 0 16px 26px -6px rgba(34,197,94,.6), inset 0 2px 0 rgba(255,255,255,.5);
+    animation:bounce .5s;
+  }
+  .opt.wrong{
+    background:linear-gradient(#fca5a5,#ef4444);color:#fff;
+    box-shadow:0 8px 0 #b91c1c, 0 12px 18px -6px rgba(239,68,68,.5), inset 0 2px 0 rgba(255,255,255,.4);
+    animation:shake .4s;
+  }
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+  @keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+
+  /* لعبة الذاكرة */
+  .mem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;direction:ltr}
+  .card{
+    aspect-ratio:1/1;border:none;padding:0;background:none;cursor:pointer;font-family:inherit;
+    position:relative;
+    transition:transform .45s cubic-bezier(.4,.15,.2,1);
+    border-radius:16px;
+  }
+  .card.flipped{transform:perspective(600px) rotateY(180deg)}
+  .face{
+    position:absolute;inset:0;border-radius:16px;
+    display:flex;align-items:center;justify-content:center;
+    backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  }
+  .face.front{
+    background:linear-gradient(150deg,#a78bfa,#7c3aed 55%,#5b21b6);
+    box-shadow:0 7px 0 #4c1d95, 0 12px 18px -6px rgba(76,29,149,.55), inset 0 3px 0 rgba(255,255,255,.35), inset 0 -6px 0 rgba(0,0,0,.25);
+  }
+  .face.front::after{
+    content:'?';font-size:30px;font-weight:900;color:rgba(255,255,255,.9);
+    text-shadow:0 3px 6px rgba(0,0,0,.5);
+  }
+  .face.back{
+    transform:rotateY(180deg);
+    background:linear-gradient(#ffffff,#eef2ff);
+    box-shadow:0 7px 0 #c7d2fe, 0 12px 18px -6px rgba(76,29,149,.35), inset 0 2px 0 #fff;
+    font-size:30px;
+  }
+  .card.matched .face.back{
+    background:linear-gradient(#bbf7d0,#4ade80);
+    box-shadow:0 7px 0 #16a34a, 0 0 24px rgba(34,197,94,.7), inset 0 2px 0 rgba(255,255,255,.6);
+  }
+
+  /* المختلف */
+  .odd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .odd-item{
+    aspect-ratio:1/1;font-size:34px;border:none;cursor:pointer;font-family:inherit;
+    background:linear-gradient(#fff,#eef2ff);border-radius:16px;
+    box-shadow:0 7px 0 #a5b4fc, 0 12px 18px -6px rgba(76,29,149,.4), inset 0 2px 0 #fff;
+    transition:transform .08s, box-shadow .08s;
+    animation:pop .4s cubic-bezier(.34,1.56,.64,1) backwards;
+  }
+  .odd-item:active{transform:translateY(6px);box-shadow:0 1px 0 #a5b4fc}
+  .odd-item.correct{background:linear-gradient(#86efac,#22c55e);box-shadow:0 7px 0 #15803d, 0 0 26px rgba(34,197,94,.75);animation:bounce .5s;}
+  .odd-item.wrong{background:linear-gradient(#fca5a5,#ef4444);box-shadow:0 7px 0 #b91c1c;animation:shake .4s;}
+
+  /* رسائل */
+  .feedback{
+    position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) scale(0);
+    font-size:24px;font-weight:900;padding:11px 22px;border-radius:18px;
+    pointer-events:none;opacity:0;white-space:nowrap;z-index:20;
+  }
+  .feedback.show{animation:fbIn .4s cubic-bezier(.34,1.56,.64,1) forwards}
+  @keyframes fbIn{
+    0%{transform:translate(-50%,-50%) scale(.2);opacity:0}
+    60%{transform:translate(-50%,-50%) scale(1.12);opacity:1}
+    100%{transform:translate(-50%,-50%) scale(1);opacity:1}
+  }
+  .feedback.good{background:linear-gradient(#4ade80,#22c55e);color:#fff;box-shadow:0 10px 0 #15803d, 0 24px 40px -10px rgba(34,197,94,.75);}
+  .feedback.bad{background:linear-gradient(#f87171,#ef4444);color:#fff;box-shadow:0 10px 0 #b91c1c, 0 24px 40px -10px rgba(239,68,68,.7);}
+
+  .confetti-layer{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:15;border-radius:28px;}
+  .confetti{position:absolute;width:10px;height:14px;border-radius:3px;top:-20px;animation:fall linear forwards;}
+  @keyframes fall{to{transform:translateY(680px) rotate(720deg);opacity:0}}
+
+  @media (max-width:420px){
+    .emoji{font-size:26px}
+    .opt{font-size:26px;padding:11px 4px}
+    .brand{font-size:14px}
+    .term{min-width:42px;height:50px;font-size:21px}
+    .q-text{font-size:17px}
+    .cmp-num{font-size:34px;padding:4px 12px}
+    .face.back{font-size:24px}
+    .odd-item{font-size:27px}
+    .game-card{font-size:12px;padding:11px 4px}
+    .game-card .g-icon{font-size:25px}
+    .big-shape{font-size:64px}
+    .swatch{width:86px;height:86px}
+  }
 </style>
 </head>
-
 <body>
 
-<header>
-<h1>🌟 مغامرات العباقرة 3D</h1>
-<p>اكتشف، جرّب، العب، واصنع مغامرتك!</p>
-</header>
+<div class="bg-shapes" id="bgShapes"></div>
 
-<div class="container">
+<div class="scene">
+  <div class="app" id="app">
+    <header>
+      <div class="brand"><span class="logo">🧠</span><span>ألعاب الذكاء 3D</span></div>
+      <div class="stats">
+        <div class="stat" title="النقاط">⭐<span id="score">0</span></div>
+        <div class="stat" title="المستوى">🏆<span id="level">1</span></div>
+        <div class="stat" title="التتابع">🔥<span id="streak">0</span></div>
+        <button id="homeBtn" class="icon-btn" title="القائمة">🏠</button>
+      </div>
+    </header>
 
-<section id="home">
+    <div class="progress"><div class="bar" id="bar"></div></div>
 
-<div class="panel">
-<h3>👋 أهلاً بالمغامر الصغير</h3>
+    <main id="stage"></main>
 
-<div class="stats">
-<div class="stat">⭐ النجوم<strong id="stars">0</strong></div>
-<div class="stat">🏆 المستوى<strong id="level">1</strong></div>
-<div class="stat">🎮 الألعاب<strong id="played">0</strong></div>
+    <div id="feedback" class="feedback"></div>
+    <div id="confetti" class="confetti-layer"></div>
+  </div>
 </div>
-
-<p>اختر عمرك:</p>
-<select id="age" onchange="saveData()">
-<option value="3-5">3 إلى 5 سنوات</option>
-<option value="6-8">6 إلى 8 سنوات</option>
-<option value="9-10">9 إلى 10 سنوات</option>
-</select>
-
-<button class="secondary" onclick="talk('أهلاً بك في مغامرات العباقرة. هيا نلعب!')">
-🔊 تحدث معي
-</button>
-</div>
-
-<div class="panel">
-<h3>🗺️ عوالم المغامرات</h3>
-<div class="grid">
-<div class="game" onclick="filter('space')"><span class="emoji">🚀</span><b>الفضاء</b></div>
-<div class="game" onclick="filter('nature')"><span class="emoji">🌳</span><b>الطبيعة</b></div>
-<div class="game" onclick="filter('music')"><span class="emoji">🎵</span><b>الموسيقى</b></div>
-<div class="game" onclick="filter('adventure')"><span class="emoji">🏴‍☠️</span><b>المغامرات</b></div>
-<div class="game" onclick="filter('science')"><span class="emoji">🧪</span><b>التجارب</b></div>
-<div class="game" onclick="filter('all')"><span class="emoji">🌈</span><b>كل الألعاب</b></div>
-</div>
-</div>
-
-<div class="panel">
-<h3>🎮 اختر مغامرتك</h3>
-<div class="grid" id="gameList"></div>
-</div>
-
-<div class="panel">
-<h3>🏅 إنجازاتك</h3>
-<div id="badges">ابدأ المغامرة لتحصل على الشارات!</div>
-<div class="progress"><div id="progressBar"></div></div>
-<p id="progressText">0% مكتمل</p>
-</div>
-
-<div class="panel">
-<button onclick="parentPanel()">👨‍👩‍👧 لوحة الأهل</button>
-<button class="red" onclick="resetAll()">إعادة التقدم</button>
-</div>
-
-</section>
-
-<section id="gameScreen">
-<div class="panel">
-
-<div style="display:flex;justify-content:space-between;align-items:center">
-<button class="secondary" onclick="home()">الرئيسية</button>
-<span>⭐ <b id="currentStars">0</b></span>
-</div>
-
-<h2 id="gameTitle">المغامرة</h2>
-<div id="roundInfo"></div>
-<div id="stage"></div>
-
-<div id="teacher">
-<span class="face">🧑‍🚀</span>
-<span id="teacherText">أنا صديقك في المغامرات!</span>
-</div>
-
-<div id="instruction"></div>
-<div id="actions"></div>
-<div id="choices"></div>
-<div id="result"></div>
-
-<div style="text-align:center;margin-top:15px">
-<button class="secondary" onclick="repeat()">🔊 اسمع التعليمات</button>
-<button onclick="next()">التالي ➜</button>
-</div>
-
-</div>
-</section>
-
-<section id="parent" class="panel">
-<h2>👨‍👩‍👧 لوحة الأهل</h2>
-<div id="parentStats"></div>
-<p class="small">رمز الدخول الافتراضي: 1234</p>
-<button onclick="closeParent()">إغلاق</button>
-</section>
-
-</div>
-
-<footer>مغامرات العباقرة 3D - التعلم باللعب والإبداع</footer>
 
 <script>
-
-// ======================================
-// 1 - قاعدة البيانات والحفظ
-// ======================================
-
-function loadDB(){
- try{
-  return JSON.parse(localStorage.getItem("adventureGenius")||"{}");
- }catch(e){
-  return {};
- }
-}
-
-let DB=loadDB();
-
-let player={
- stars:Number(DB.stars)||0,
- played:Number(DB.played)||0,
- attempts:Number(DB.attempts)||0,
- level:Number(DB.level)||1,
- age:DB.age||"6-8",
- completed:Array.isArray(DB.completed)?DB.completed:[],
- earned:Array.isArray(DB.earned)?DB.earned:[]
+// حماية ضد الشاشة البيضاء: عرض أي خطأ يحدث
+window.onerror = function(msg, url, line) {
+  document.getElementById('stage').innerHTML = `<p style="color:red;text-align:center;padding:20px;font-size:14px;">حدث خطأ: ${msg}<br>سطر: ${line}</p>`;
 };
 
-function saveData(){
- let age=document.getElementById("age");
- if(age)player.age=age.value;
+/* ================= أدوات ================= */
+const $ = id => document.getElementById(id);
+const appEl = $('app'), stage = $('stage'), feedbackEl = $('feedback'), confettiLayer = $('confetti');
+const scoreEl = $('score'), levelEl = $('level'), streakEl = $('streak'), barEl = $('bar');
 
- player.level=Math.floor(player.stars/10)+1;
+const EMOJIS = ['🍎','🍌','🍓','🐤','🐟','⭐','🎈','🚗','🌸','🍪','🐞','🧸','🍇','🦋','🍊','🐸','🍉','🌼','🚀','🐬','🍭','🎁'];
+const GOOD = ['أحسنت! 🎉','رائع جداً! ⭐','أنت عبقري! 🧠','ممتاز! 👏','بطل! 🏅','صحيح! 💚'];
+const BAD  = ['حاول مرة ثانية 💪','لا بأس، جرّب! 🤔','قريب جداً! 🙂'];
 
- try{
-  localStorage.setItem("adventureGenius",JSON.stringify(player));
- }catch(e){
-  console.log("تعذر الحفظ",e);
- }
- updateUI();
-}
+const randInt = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
+const pick = a => a[Math.floor(Math.random()*a.length)];
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
-function updateUI(){
- document.getElementById("stars").textContent=player.stars;
- document.getElementById("level").textContent=player.level;
- document.getElementById("played").textContent=player.played;
- document.getElementById("currentStars").textContent=player.stars;
-
- let percent=Math.min(100,player.completed.length/games.length*100);
-
- document.getElementById("progressBar").style.width=percent+"%";
- document.getElementById("progressText").textContent=
- Math.round(percent)+"% مكتمل";
-
- let badges="";
- if(player.stars>=2)badges+="⭐ مستكشف ";
- if(player.stars>=10)badges+="🥇 بطل ";
- if(player.stars>=25)badges+="🏆 عبقري ";
- if(player.stars>=50)badges+="👑 أسطورة ";
-
- document.getElementById("badges").textContent=
- badges||"ابدأ اللعب لتحصل على الشارات!";
-}
-
-// ======================================
-// 2 - الأصوات
-// ======================================
-
-let audioContext=null;
-
-function tone(freq,duration=.2){
- try{
-  audioContext=audioContext||
-  new(window.AudioContext||window.webkitAudioContext)();
-
-  if(audioContext.state==="suspended")audioContext.resume();
-
-  let osc=audioContext.createOscillator();
-  let gain=audioContext.createGain();
-
-  osc.type="sine";
-  osc.frequency.value=freq;
-  gain.gain.setValueAtTime(.08,audioContext.currentTime);
-  gain.gain.exponentialRampToValueAtTime(
-   .001,audioContext.currentTime+duration
-  );
-
-  osc.connect(gain);
-  gain.connect(audioContext.destination);
-
-  osc.start();
-  osc.stop(audioContext.currentTime+duration);
- }catch(e){}
-}
-
-function sound(ok){
- if(ok){
-  tone(660,.15);
-  setTimeout(()=>tone(880,.2),150);
- }else{
-  tone(220,.3);
- }
-}
-
-function talk(text){
- document.getElementById("teacherText").textContent=text;
-
- if(!window.speechSynthesis)return;
-
- speechSynthesis.cancel();
-
- let utter=new SpeechSynthesisUtterance(text);
- utter.lang="ar-SA";
- utter.rate=.85;
- utter.pitch=1.1;
-
- let voices=speechSynthesis.getVoices();
- let voice=voices.find(v=>v.lang.startsWith("ar"));
-
- if(voice)utter.voice=voice;
- speechSynthesis.speak(utter);
-}
-
-function repeat(){
- if(current){
-  talk(gameQuestions[index]?.instruction||"أحسنت!");
- }
-}
-
-// ======================================
-// 3 - قائمة الألعاب
-// ======================================
-
-const games=[
-{id:1,name:"هبوط المركبة",emoji:"🚀",world:"space",type:"rocket"},
-{id:2,name:"إنقاذ الديناصور",emoji:"🦕",world:"nature",type:"dino"},
-{id:3,name:"إيقاع الموسيقى",emoji:"🎵",world:"music",type:"music"},
-{id:4,name:"بالونات الألوان",emoji:"🎈",world:"music",type:"balloons"},
-{id:5,name:"النصف المفقود",emoji:"🪞",world:"science",type:"mirror"},
-{id:6,name:"الحديقة السحرية",emoji:"🌱",world:"nature",type:"garden"},
-{id:7,name:"مختبر الألوان",emoji:"🧪",world:"science",type:"mix"},
-{id:8,name:"البحث عن الكنز",emoji:"🏴‍☠️",world:"adventure",type:"treasure"},
-{id:9,name:"إعادة التدوير",emoji:"♻️",world:"nature",type:"recycle"},
-{id:10,name:"إنقاذ الأسماك",emoji:"🐠",world:"nature",type:"fish"},
-{id:11,name:"مطبخ الصغار",emoji:"🧑‍🍳",world:"adventure",type:"cooking"},
-{id:12,name:"الجسر الملون",emoji:"🌈",world:"adventure",type:"bridge"},
-{id:13,name:"آثار الحيوانات",emoji:"🐾",world:"nature",type:"tracks"},
-{id:14,name:"رحلة الكواكب",emoji:"🪐",world:"space",type:"planet"},
-{id:15,name:"المغناطيس",emoji:"🧲",world:"science",type:"magnet"},
-{id:16,name:"اكتشف المختلف",emoji:"🔺",world:"science",type:"odd"},
-{id:17,name:"أكمل التسلسل",emoji:"🔷",world:"science",type:"pattern"},
-{id:18,name:"عد المجسمات",emoji:"🔢",world:"science",type:"count"},
-{id:19,name:"ذاكرة العباقرة",emoji:"🧠",world:"adventure",type:"memory"},
-{id:20,name:"مطابقة الألوان",emoji:"🎨",world:"music",type:"match"},
-{id:21,name:"مدينة المكعبات",emoji:"🧊",world:"adventure",type:"blocks"},
-{id:22,name:"رحلة الأشكال",emoji:"🔵",world:"space",type:"shapes"},
-{id:23,name:"صيد النجوم",emoji:"⭐",world:"space",type:"stars"},
-{id:24,name:"عالم الأرقام",emoji:"🔢",world:"science",type:"numbers"}
-];
-
-let filterWorld="all";
-
-function renderGames(){
- let box=document.getElementById("gameList");
- box.innerHTML="";
-
- games.filter(g=>filterWorld==="all"||g.world===filterWorld)
- .forEach(g=>{
-  let div=document.createElement("div");
-  div.className="game";
-
-  let emoji=document.createElement("span");
-  emoji.className="emoji";
-  emoji.textContent=g.emoji;
-
-  let name=document.createElement("b");
-  name.textContent=g.name;
-
-  div.append(emoji,name);
-  div.onclick=()=>start(g);
-  box.appendChild(div);
- });
-}
-
-function filter(w){
- filterWorld=w;
- renderGames();
-}
-
-// ======================================
-// 4 - محرك 3D
-// ======================================
-
-let scene=null;
-let camera=null;
-let renderer=null;
-let animationId=null;
-let currentObjects=[];
-let raycaster=null;
-let pointer=null;
-let current=null;
-
-function clear3D(){
- if(animationId)cancelAnimationFrame(animationId);
- animationId=null;
-
- if(renderer){
-  renderer.dispose();
-  renderer.domElement.remove();
- }
- renderer=null;
- scene=null;
- camera=null;
- currentObjects=[];
-}
-
-function createScene(){
- clear3D();
-
- let stage=document.getElementById("stage");
- stage.innerHTML="";
-
- if(!window.THREE){
-  stage.innerHTML=
-  "<p style='color:#222;text-align:center;padding:40px'>تعذر تحميل محرك 3D. تحقق من الإنترنت.</p>";
-  return;
- }
-
- scene=new THREE.Scene();
- scene.background=new THREE.Color(0x92dcff);
-
- let w=stage.clientWidth||320;
- let h=stage.clientHeight||270;
-
- camera=new THREE.PerspectiveCamera(45,w/h,.1,100);
- camera.position.set(0,3.5,8);
- camera.lookAt(0,0,0);
-
- renderer=new THREE.WebGLRenderer({
-  antialias:true,
-  alpha:false
- });
-
- renderer.setSize(w,h);
- renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));
- stage.appendChild(renderer.domElement);
-
- scene.add(new THREE.HemisphereLight(0xffffff,0x668899,2));
-
- let light=new THREE.DirectionalLight(0xffffff,2);
- light.position.set(4,8,5);
- scene.add(light);
-
- let floor=new THREE.Mesh(
-  new THREE.PlaneGeometry(30,30),
-  new THREE.MeshStandardMaterial({color:0x63c68b})
- );
- floor.rotation.x=-Math.PI/2;
- floor.position.y=-1.2;
- scene.add(floor);
-
- raycaster=new THREE.Raycaster();
- pointer=new THREE.Vector2();
-
- renderer.domElement.addEventListener("pointerdown",on3DTouch);
-
- animate();
-}
-
-function animate(){
- if(!renderer||!scene)return;
-
- currentObjects.forEach(o=>{
-  if(o.userData.rotate)o.rotation.y+=.008;
-  if(o.userData.float){
-   o.position.y=o.userData.baseY+
-   Math.sin(Date.now()*.002+o.userData.phase)*.08;
+/* ================= خلفية ================= */
+(function bg(){
+  const box = $('bgShapes');
+  const items = ['🔢','➕','➖','⭐','🎲','🧩','🔺','🎈','🍎','🧠'];
+  for(let i=0;i<12;i++){
+    const s = document.createElement('span');
+    s.textContent = pick(items);
+    s.style.left = randInt(2,92) + '%';
+    s.style.top  = randInt(2,92) + '%';
+    s.style.fontSize = randInt(28,56) + 'px';
+    s.style.animationDelay = (-Math.random()*14) + 's';
+    s.style.animationDuration = randInt(11,20) + 's';
+    box.appendChild(s);
   }
- });
+})();
 
- renderer.render(scene,camera);
- animationId=requestAnimationFrame(animate);
+/* ================= الأصوات ================= */
+let actx = null;
+function audio(){ if(!actx){ try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } return actx; }
+function tone(freq, dur, type='sine', vol=0.12, when=0){
+  const ctx = audio(); if(!ctx) return;
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = type; o.frequency.value = freq;
+  o.connect(g); g.connect(ctx.destination);
+  const t = ctx.currentTime + when;
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(vol, t + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+  o.start(t); o.stop(t + dur + 0.05);
+}
+const sndCorrect = () => { tone(523.25,.12,'sine',.13,0); tone(659.25,.12,'sine',.13,.10); tone(783.99,.24,'sine',.13,.20); };
+const sndWrong   = () => { tone(220,.18,'sawtooth',.07,0); tone(160,.26,'sawtooth',.07,.13); };
+const sndClick   = () => tone(720,.06,'triangle',.06);
+
+/* ================= 3D Tilt (يعمل فقط على الكمبيوتر لتجنب مشاكل الهاتف) ================= */
+function attachTilt(el){
+  el.addEventListener('pointermove', e => {
+    if(e.pointerType !== 'mouse') return;
+    const r = el.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width  - .5;
+    const py = (e.clientY - r.top ) / r.height - .5;
+    el.style.transform = `perspective(700px) rotateY(${px*20}deg) rotateX(${-py*20}deg) translateZ(10px) scale(1.05)`;
+  });
+  el.addEventListener('pointerleave', () => { el.style.transform = ''; });
 }
 
-function shape(type,color,x=0,y=0,z=0,value=null){
- let geo;
+/* ================= الحالة ================= */
+const state = {
+  screen:'hub', game:null, score:0, streak:0, level:1,
+  correctInLevel:0, q:null, firstTry:true, locked:true, mem:null
+};
 
- switch(type){
-  case "sphere":
-   geo=new THREE.SphereGeometry(.55,24,18);
-   break;
-  case "cone":
-   geo=new THREE.ConeGeometry(.6,1.2,5);
-   break;
-  case "cylinder":
-   geo=new THREE.CylinderGeometry(.5,.5,1.1,24);
-   break;
-  case "torus":
-   geo=new THREE.TorusGeometry(.5,.17,12,30);
-   break;
-  case "octa":
-   geo=new THREE.OctahedronGeometry(.65);
-   break;
-  case "tetra":
-   geo=new THREE.TetrahedronGeometry(.7);
-   break;
-  case "dodeca":
-   geo=new THREE.DodecahedronGeometry(.65);
-   break;
-  default:
-   geo=new THREE.BoxGeometry(1,1,1);
- }
-
- let mat=new THREE.MeshStandardMaterial({
-  color:color,
-  roughness:.4,
-  metalness:.08
- });
-
- let obj=new THREE.Mesh(geo,mat);
- obj.position.set(x,y,z);
- obj.userData.rotate=true;
- obj.userData.value=value;
- obj.userData.baseY=y;
- obj.userData.float=true;
-
- scene.add(obj);
- currentObjects.push(obj);
- return obj;
+function updateHUD(){
+  scoreEl.textContent = state.score;
+  levelEl.textContent = state.level;
+  streakEl.textContent = state.streak;
+  barEl.style.width = Math.min(100, state.correctInLevel/4*100) + '%';
 }
 
-function showScene(items){
- createScene();
- if(!scene)return;
-
- items.forEach((item,i)=>{
-  let x=item.x!==undefined?item.x:
-  (i-(items.length-1)/2)*1.45;
-
-  let y=item.y!==undefined?item.y:0;
-
-  let obj=shape(
-   item.type||"box",
-   item.color||0xffcc33,
-   x,y,item.z||0,
-   item.value
-  );
-
-  if(item.scale)obj.scale.setScalar(item.scale);
- });
+/* ================= المولدات ================= */
+function makeOptions(correct, min, max, count=4){
+  const set = new Set([correct]);
+  let guard = 0;
+  while(set.size < count && guard++ < 500){
+    let d = randInt(-4,4); if(d === 0) d = 1;
+    const v = correct + d;
+    if(v >= min && v <= max) set.add(v);
+  }
+  let f = min;
+  while(set.size < count && f <= max){ if(!set.has(f)) set.add(f); f++; }
+  while(set.size < count) set.add(randInt(min,max));
+  return shuffle([...set]);
+}
+function emojiOptions(correct, count=4){
+  const set = new Set([correct]);
+  for(const e of shuffle([...EMOJIS])){ if(set.size >= count) break; set.add(e); }
+  return shuffle([...set]);
 }
 
-function on3DTouch(event){
- if(!renderer||!camera||!raycaster)return;
-
- let rect=renderer.domElement.getBoundingClientRect();
-
- pointer.x=((event.clientX-rect.left)/rect.width)*2-1;
- pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;
-
- raycaster.setFromCamera(pointer,camera);
-
- let hits=raycaster.intersectObjects(currentObjects);
-
- if(!hits.length)return;
-
- let value=hits[0].object.userData.value;
-
- if(value!==null&&value!==undefined){
-  checkAnswer(value,null);
- }else{
-  let obj=hits[0].object;
-  obj.scale.setScalar(1.25);
-  setTimeout(()=>obj.scale.setScalar(1),200);
- }
+function qCount(){
+  const max = state.level <= 1 ? 5 : state.level <= 3 ? 8 : 12;
+  const n = randInt(1, max);
+  const e = pick(EMOJIS);
+  let visual = '<div class="emoji-grid">';
+  for(let i=0;i<n;i++) visual += `<span class="emoji" style="animation-delay:${i*50}ms">${e}</span>`;
+  visual += '</div>';
+  return { text:'كم عدد الأشياء؟', visual, answer:n, options: makeOptions(n,1,12) };
 }
 
-function resize3D(){
- if(!renderer||!camera)return;
-
- let stage=document.getElementById("stage");
- let w=stage.clientWidth;
- let h=stage.clientHeight;
-
- if(!w||!h)return;
-
- camera.aspect=w/h;
- camera.updateProjectionMatrix();
- renderer.setSize(w,h);
+function qMissing(){
+  const step = state.level <= 1 ? 1 : state.level <= 3 ? 2 : pick([2,3,5,10]);
+  const start = randInt(1, step === 1 ? 8 : 5);
+  const terms = [];
+  for(let i=0;i<5;i++) terms.push(start + i*step);
+  const idx = randInt(1,3);
+  const answer = terms[idx];
+  const visual = '<div class="seq">' + terms.map((t,i)=>
+      i === idx ? '<span class="term blank">?</span>' : `<span class="term" style="animation-delay:${i*60}ms">${t}</span>`
+    ).join('') + '</div>';
+  return { text:'ما هو الرقم الناقص؟', visual, answer, options: makeOptions(answer, Math.max(0, answer-10), answer+10) };
 }
 
-// ======================================
-// 5 - أدوات الأسئلة
-// ======================================
-
-function shuffle(arr){
- let a=[...arr];
-
- for(let i=a.length-1;i>0;i--){
-  let j=Math.floor(Math.random()*(i+1));
-  [a[i],a[j]]=[a[j],a[i]];
- }
-
- return a;
+function qAdd(){
+  const m = state.level <= 1 ? 3 : state.level <= 3 ? 5 : 9;
+  const a = randInt(1,m), b = randInt(1,m), e = pick(EMOJIS);
+  const grp = n => '<div class="grp">' + Array.from({length:n},(_,i)=>`<span class="emoji" style="animation-delay:${i*50}ms">${e}</span>`).join('') + '</div>';
+  const visual = `<div class="add-row">${grp(a)}<span class="op">+</span>${grp(b)}<span class="op">=</span><span class="qmark">?</span></div>`;
+  return { text:'كم مجموع الأشياء؟', visual, answer:a+b, options: makeOptions(a+b, 1, 20) };
 }
 
-function uniqueChoices(answer,others){
- return shuffle([String(answer),...others
- .map(String).filter(x=>String(x)!==String(answer))])
- .slice(0,4);
+function qSub(){
+  const m = state.level <= 1 ? 5 : state.level <= 3 ? 8 : 12;
+  const a = randInt(2,m), b = randInt(1,a-1), e = pick(EMOJIS);
+  let visual = '<div class="emoji-grid">';
+  for(let i=0;i<a;i++) visual += `<span class="emoji ${i<b?'gone':''}" style="animation-delay:${i*50}ms">${e}</span>`;
+  visual += '</div>';
+  return { text:`لدينا ${a}، أُخذ منها ${b}. كم بقي؟`, visual, answer:a-b, options: makeOptions(a-b, 0, a) };
 }
 
-function question(instruction,answer,choices,visual=[]){
- return {
-  instruction,
-  answer:String(answer),
-  choices:uniqueChoices(answer,choices),
-  visual
- };
+function qShapes(){
+  const uniq = [['⚪','دائرة'],['🟥','مربع'],['🔺','مثلث'],['⭐','نجمة'],['❤️','قلب'],['🔶','معين']];
+  const sh = pick(uniq);
+  const opts = new Set([sh[1]]);
+  for(const n of shuffle(uniq.map(s=>s[1]))){ if(opts.size>=4) break; opts.add(n); }
+  return { text:'ما اسم هذا الشكل؟', visual:`<div class="big-shape">${sh[0]}</div>`, answer:sh[1], options: shuffle([...opts]) };
 }
 
-const COLORS=[
- {name:"أحمر",color:0xff3333},
- {name:"أزرق",color:0x3388ff},
- {name:"أصفر",color:0xffdd33},
- {name:"أخضر",color:0x22bb77},
- {name:"بنفسجي",color:0x9933cc}
-];
+const COLORS = [['#ef4444','أحمر'],['#3b82f6','أزرق'],['#22c55e','أخضر'],['#eab308','أصفر'],['#f97316','برتقالي'],['#a855f7','بنفسجي'],['#ec4899','وردي'],['#78350f','بني'],['#111827','أسود']];
+function qColors(){
+  const c = pick(COLORS);
+  const opts = new Set([c[1]]);
+  for(const n of shuffle(COLORS.map(x=>x[1]))){ if(opts.size>=4) break; opts.add(n); }
+  return { text:'ما هذا اللون؟', visual:`<div class="swatch" style="background:${c[0]}"></div>`, answer:c[1], options: shuffle([...opts]) };
+}
 
-const ANIMALS=[
- {name:"ديناصور",emoji:"🦕"},
- {name:"أسد",emoji:"🦁"},
- {name:"فيل",emoji:"🐘"},
- {name:"أرنب",emoji:"🐰"},
- {name:"قطة",emoji:"🐱"}
-];
-
-// ======================================
-// 6 - بناء الأسئلة
-// ======================================
-
-function makeQuestions(g){
- let list=[];
-
- for(let i=0;i<10;i++){
-  let q;
-  let n=i%5+1;
-
-  switch(g.type){
-
-  case "rocket":{
-   let number=i+1;
-   q=question(
-    "ساعد المركبة على الهبوط. اختر الرقم "+number,
-    number,
-    [number+1,Math.max(1,number-1),number+2],
-    [
-     {type:"cone",color:0xff4444,x:0,y:.3},
-     {type:"cylinder",color:0xaaaaaa,x:1.5,y:0}
-    ]
-   );
-   break;
-  }
-
-  case "dino":{
-   let a=ANIMALS[i%5];
-   q=question(
-    "أي حيوان نريد إنقاذه؟ "+a.emoji,
-    a.name,
-    ANIMALS.map(x=>x.name),
-    [{type:"dodeca",color:0x22bb77}]
-   );
-   break;
-  }
-
-  case "music":{
-   let sounds=["🔴","🔵","🟡","🟢"];
-   let s=sounds[i%4];
-   q=question("استمع واختر الرمز الصحيح "+s,s,sounds);
-   break;
-  }
-
-  case "balloons":{
-   let c=COLORS[i%5];
-   q=question(
-    "اختر لون البالون: "+c.name,
-    c.name,
-    COLORS.map(x=>x.name),
-    [{type:"sphere",color:c.color}]
-   );
-   break;
-  }
-
-  case "mirror":{
-   let pairs=[
-    ["نصف دائرة","دائرة"],
-    ["نصف قلب","قلب"],
-    ["نصف نجمة","نجمة"],
-    ["نصف مربع","مربع"]
-   ];
-   let p=pairs[i%4];
-   q=question("ما الشكل الذي يكمل النصف المفقود؟ "+p[0],
-    p[1],["دائرة","قلب","نجمة","مربع"]);
-   break;
-  }
-
-  case "garden":{
-   q=question("ازرع "+n+" زهور. كم زهرة نحتاج؟",n,
-    [n+1,n+2,Math.max(1,n-1)],
-    Array.from({length:n},()=>({type:"cone",color:0xff55aa,scale:.65}))
-   );
-   break;
-  }
-
-  case "mix":{
-   let combos=[
-    ["أحمر","أصفر","برتقالي"],
-    ["أزرق","أصفر","أخضر"],
-    ["أحمر","أزرق","بنفسجي"]
-   ];
-   let c=combos[i%3];
-   q=question("إذا خلطنا "+c[0]+" مع "+c[1]+" فما اللون الناتج؟",
-    c[2],["برتقالي","أخضر","بنفسجي","أحمر"]);
-   break;
-  }
-
-  case "treasure":{
-   let number=i+1;
-   q=question("وجدت "+number+" صناديق كنز. اختر العدد الصحيح.",
-    number,[number+1,Math.max(1,number-1),number+2],
-    [{type:"box",color:0xffcc33},{type:"box",color:0xffcc33}]
-   );
-   break;
-  }
-
-  case "recycle":{
-   let items=[
-    ["ورق","سلة الورق"],
-    ["قارورة بلاستيك","سلة البلاستيك"],
-    ["علبة معدنية","سلة المعادن"]
-   ];
-   let p=items[i%3];
-   q=question("أين نضع "+p[0]+"؟",p[1],
-    ["سلة الورق","سلة البلاستيك","سلة المعادن"]);
-   break;
-  }
-
-  case "fish":{
-   q=question("أنقذ "+n+" أسماك. كم سمكة؟",n,
-    [n+1,n+2,Math.max(1,n-1)],
-    Array.from({length:n},()=>({type:"sphere",color:0x33aaff,scale:.5}))
-   );
-   break;
-  }
-
-  case "cooking":{
-   let recipes=[
-    ["الحليب","الكوب"],
-    ["الخبز","الصحن"],
-    ["الماء","الكوب"],
-    ["التفاحة","السلة"]
-   ];
-   let p=recipes[i%4];
-   q=question("أين نضع "+p[0]+"؟",p[1],
-    ["الكوب","الصحن","السلة","الصندوق"]);
-   break;
-  }
-
-  case "bridge":{
-   let c=COLORS[i%5];
-   q=question("اختر لون الجسر الصحيح: "+c.name,
-    c.name,COLORS.map(x=>x.name),
-    [{type:"box",color:c.color,scale:1.3}]);
-   break;
-  }
-
-  case "tracks":{
-   let a=ANIMALS[i%5];
-   q=question("أي حيوان ترك هذه الآثار؟ "+a.emoji,
-    a.name,ANIMALS.map(x=>x.name));
-   break;
-  }
-
-  case "planet":{
-   let planets=[
-    ["الأرض","🌍"],
-    ["المريخ","🔴"],
-    ["زحل","🪐"],
-    ["القمر","🌙"]
-   ];
-   let p=planets[i%4];
-   q=question("اختر الجرم السماوي: "+p[1],
-    p[0],["الأرض","المريخ","زحل","القمر"]);
-   break;
-  }
-
-  case "magnet":{
-   let things=[
-    ["مسمار","يجذبه المغناطيس"],
-    ["ورقة","لا يجذبه المغناطيس"],
-    ["قطعة حديد","يجذبه المغناطيس"],
-    ["خشب","لا يجذبه ال
+function qCompare(){
+  const max = state.level <= 1 ? 10 : state.level <= 3 ? 20 : 50;
+  let a = r
