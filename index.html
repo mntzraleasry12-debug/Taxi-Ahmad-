@@ -3,24 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>تكسي أحمد</title>
+    <title>تكسي أحمد - Premium</title>
     
-    <!-- خط تجوال -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-    <!-- أيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- مكتبة الخريطة الحقيقية -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <style>
         :root {
-            --primary-yellow: #F5BD25;
-            --primary-yellow-dark: #E5A916;
-            --dark: #121212;
-            --bg: #F8F9FA;
+            --gold: #FFC107;
+            --gold-dark: #FFA000;
+            --dark: #111111;
+            --dark-light: #222222;
             --white: #FFFFFF;
-            --gray: #6C757D;
-            --border: #EAEAEA;
+            --gray: #888888;
+            --bg-light: #F5F7FA;
         }
 
         * {
@@ -32,7 +29,7 @@
         }
 
         body {
-            background-color: #e0e0e0;
+            background-color: #000;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -40,7 +37,6 @@
             overflow: hidden;
         }
 
-        /* حاوية التطبيق (مقاس الهاتف) */
         .app-container {
             width: 100%;
             max-width: 414px;
@@ -49,142 +45,153 @@
             background: var(--white);
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
-        /* ================= شاشة تسجيل الدخول ================= */
+        /* ================= شاشة تسجيل الدخول الفخمة ================= */
         #login-screen {
             width: 100%;
             height: 100%;
-            display: flex;
-            flex-direction: column;
             position: absolute;
             top: 0;
             left: 0;
-            z-index: 100;
-            background: var(--white);
-            transition: transform 0.4s ease;
+            z-index: 1000;
+            background: linear-gradient(135deg, #111 0%, #222 100%);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        /* تأثير الإضاءة الخلفية */
+        .glow-bg {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: var(--gold);
+            filter: blur(120px);
+            opacity: 0.15;
+            top: -50px;
+            right: -50px;
+            border-radius: 50%;
         }
 
         .login-header {
-            text-align: center;
-            padding: 30px 20px;
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(to bottom, #f9f9f9, #ffffff);
-        }
-
-        .brand-logo {
-            font-size: 38px;
-            font-weight: 900;
-            color: var(--dark);
-            margin-bottom: 5px;
-        }
-        .brand-logo span { color: var(--primary-yellow); }
-        
-        .brand-subtitle {
-            color: var(--gray);
-            font-size: 14px;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-
-        .car-img {
-            width: 85%;
-            max-width: 300px;
-            margin-bottom: 20px;
-            filter: drop-shadow(0 15px 10px rgba(0,0,0,0.15));
-        }
-
-        /* صندوق تسجيل الدخول */
-        .login-box {
-            background: var(--white);
-            border-radius: 30px 30px 0 0;
-            padding: 25px 20px 40px;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.05);
             position: relative;
             z-index: 2;
         }
 
-        /* اختيار نوع الحساب (زبون / سائق) */
+        .brand-logo {
+            font-size: 42px;
+            font-weight: 900;
+            color: var(--white);
+            margin-bottom: 5px;
+            text-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+        }
+        .brand-logo span { color: var(--gold); }
+        
+        .brand-subtitle {
+            color: var(--gray);
+            font-size: 15px;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        /* صندوق تسجيل الدخول الزجاجي */
+        .login-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 40px 40px 0 0;
+            padding: 30px 25px 40px;
+            position: relative;
+            z-index: 3;
+        }
+
         .role-selector {
             display: flex;
-            background: #f0f2f5;
-            border-radius: 15px;
-            padding: 5px;
-            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 16px;
+            padding: 6px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .role-btn {
             flex: 1;
-            padding: 12px;
+            padding: 14px;
             border: none;
             background: transparent;
-            border-radius: 10px;
-            font-size: 15px;
+            border-radius: 12px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--gray);
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .role-btn.active {
-            background: var(--white);
+            background: var(--gold);
             color: var(--dark);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
         }
 
-        /* حقول الإدخال */
         .input-group {
             position: relative;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
 
         .input-group i {
             position: absolute;
-            right: 15px;
+            right: 18px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--gray);
+            color: var(--gold);
             font-size: 18px;
         }
 
         .input-group input {
             width: 100%;
-            padding: 15px 45px 15px 15px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
+            padding: 18px 50px 18px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
             font-size: 15px;
-            background: #FAFAFA;
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--white);
             outline: none;
-            transition: border 0.3s;
+            transition: all 0.3s ease;
         }
 
+        .input-group input::placeholder { color: #777; }
+
         .input-group input:focus {
-            border-color: var(--primary-yellow);
-            background: var(--white);
+            border-color: var(--gold);
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 15px rgba(255, 193, 7, 0.1);
         }
 
         .btn-login {
             width: 100%;
-            padding: 16px;
-            background: var(--primary-yellow);
+            padding: 18px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             color: var(--dark);
             border: none;
-            border-radius: 12px;
+            border-radius: 16px;
             font-size: 18px;
-            font-weight: 800;
+            font-weight: 900;
             cursor: pointer;
             margin-top: 10px;
-            box-shadow: 0 6px 15px rgba(245, 189, 37, 0.3);
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4);
             transition: transform 0.2s;
         }
-        .btn-login:active { transform: scale(0.97); }
+        .btn-login:active { transform: scale(0.96); }
 
-        /* ================= الواجهات بعد الدخول ================= */
+        /* ================= الواجهات ================= */
         .dashboard {
             width: 100%;
             height: 100%;
@@ -193,35 +200,64 @@
             left: 0;
             display: none;
             flex-direction: column;
-            background: var(--bg);
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
 
         .dashboard.active {
             display: flex;
+            opacity: 1;
         }
 
-        /* --- واجهة الزبون --- */
-        #customer-dashboard {
-            background: #fff;
-        }
-
+        /* ----- واجهة الزبون ----- */
         #map {
             width: 100%;
             height: 100%;
             z-index: 1;
         }
 
+        /* فلتر لجعل الخريطة تبدو فخمة وهادئة */
+        .leaflet-layer {
+            filter: grayscale(80%) contrast(110%) brightness(105%);
+        }
+
+        .top-float-bar {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 10;
+        }
+
+        .icon-btn {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            font-size: 20px;
+            color: var(--dark);
+        }
+
         /* بطاقة طلب التاكسي */
         .request-card {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: var(--white);
-            border-radius: 25px 25px 0 0;
-            padding: 20px;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 25px 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
             z-index: 10;
+            border: 1px solid rgba(255,255,255,0.5);
         }
 
         .location-info {
@@ -232,114 +268,132 @@
         }
 
         .location-icon {
-            width: 40px;
-            height: 40px;
-            background: #f0f2f5;
-            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            background: #FFF3E0;
+            border-radius: 14px;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: var(--dark);
+            color: var(--gold-dark);
+            font-size: 20px;
         }
 
         .location-text h3 {
             font-size: 16px;
             color: var(--dark);
-            margin-bottom: 3px;
+            margin-bottom: 4px;
+            font-weight: 800;
         }
 
         .location-text p {
             font-size: 13px;
             color: var(--gray);
+            font-weight: 500;
         }
 
         .btn-request {
             width: 100%;
-            padding: 16px;
-            background: var(--primary-yellow);
-            color: var(--dark);
+            padding: 18px;
+            background: var(--dark);
+            color: var(--white);
             border: none;
-            border-radius: 15px;
+            border-radius: 18px;
             font-size: 18px;
             font-weight: 800;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
         }
+        .btn-request:active { transform: scale(0.97); }
+        .btn-request i { color: var(--gold); }
 
-        /* --- واجهة السائق --- */
+        /* ----- واجهة السائق ----- */
         #driver-dashboard {
-            background: #f8f9fa;
+            background: var(--dark);
+            color: var(--white);
         }
 
         .driver-header {
-            background: var(--dark);
-            color: var(--white);
-            padding: 30px 20px;
-            border-radius: 0 0 25px 25px;
+            padding: 40px 25px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: linear-gradient(to bottom, #1A1A1A, #111);
+            border-radius: 0 0 30px 30px;
         }
 
         .driver-profile h2 {
-            font-size: 20px;
+            font-size: 22px;
             margin-bottom: 5px;
         }
         
         .driver-profile p {
-            font-size: 13px;
-            color: #aaa;
+            font-size: 14px;
+            color: var(--gray);
         }
 
         .status-switch {
-            width: 60px;
-            height: 32px;
-            background: #444;
+            width: 65px;
+            height: 35px;
+            background: #333;
             border-radius: 20px;
             position: relative;
             cursor: pointer;
-            transition: 0.3s;
+            transition: 0.4s;
         }
 
         .status-switch::after {
             content: '';
             position: absolute;
-            width: 24px;
-            height: 24px;
+            width: 27px;
+            height: 27px;
             background: var(--white);
             border-radius: 50%;
             top: 4px;
             right: 4px;
-            transition: 0.3s;
+            transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
         .status-switch.on {
-            background: #13a878;
+            background: #00C853;
+            box-shadow: 0 0 15px rgba(0, 200, 83, 0.4);
         }
 
         .status-switch.on::after {
-            right: 32px;
+            right: 34px;
         }
 
         .driver-content {
-            padding: 20px;
+            padding: 25px;
         }
 
         .stat-cards {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
 
         .stat-card {
-            background: var(--white);
-            padding: 15px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            background: #1A1A1A;
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; width: 40px; height: 40px;
+            background: var(--gold);
+            filter: blur(30px);
+            opacity: 0.2;
         }
 
         .stat-card h4 {
@@ -349,54 +403,65 @@
         }
 
         .stat-card h2 {
-            font-size: 22px;
-            color: var(--dark);
+            font-size: 24px;
+            color: var(--gold);
         }
 
         .section-title {
             font-size: 18px;
             font-weight: 800;
-            color: var(--dark);
+            color: var(--white);
             margin-bottom: 15px;
         }
 
         .request-item {
-            background: var(--white);
-            padding: 15px;
-            border-radius: 15px;
+            background: #1A1A1A;
+            padding: 20px;
+            border-radius: 20px;
             margin-bottom: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-            border: 1px solid var(--border);
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .request-item-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            font-weight: 700;
+            margin-bottom: 15px;
+            font-weight: 800;
+            font-size: 16px;
         }
 
         .request-item-header .price {
-            color: #13a878;
+            color: #00C853;
+            background: rgba(0, 200, 83, 0.1);
+            padding: 4px 10px;
+            border-radius: 10px;
         }
 
         .request-item p {
             font-size: 14px;
             color: var(--gray);
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+
+        .request-item p i { color: var(--gold); }
 
         .btn-accept {
             width: 100%;
-            padding: 12px;
-            background: var(--dark);
-            color: var(--white);
+            padding: 15px;
+            background: var(--white);
+            color: var(--dark);
             border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            margin-top: 10px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 16px;
+            margin-top: 15px;
             cursor: pointer;
+            transition: 0.2s;
         }
+        .btn-accept:active { transform: scale(0.97); }
 
     </style>
 </head>
@@ -406,40 +471,42 @@
 
         <!-- 1. شاشة تسجيل الدخول -->
         <div id="login-screen">
+            <div class="glow-bg"></div>
+            
             <div class="login-header">
                 <div class="brand-logo">تكسي <span>أحمد</span></div>
                 <div class="brand-subtitle">أسرع .. آمن .. أوصلك بكل سهولة</div>
-                <!-- صورة سيارة تاكسي شفافة -->
-                <img src="https://www.pngmart.com/files/22/Taxi-Transparent-Images.png" alt="Taxi" class="car-img">
             </div>
 
             <div class="login-box">
-                <!-- اختيار نوع الحساب -->
                 <div class="role-selector">
                     <button class="role-btn active" id="btn-customer" onclick="selectRole('customer')">زبون</button>
                     <button class="role-btn" id="btn-driver" onclick="selectRole('driver')">سائق</button>
                 </div>
 
-                <!-- رقم الهاتف -->
                 <div class="input-group">
                     <i class="fa-solid fa-phone"></i>
                     <input type="tel" id="phone" placeholder="رقم الهاتف">
                 </div>
 
-                <!-- كلمة المرور -->
                 <div class="input-group">
                     <i class="fa-solid fa-lock"></i>
                     <input type="password" id="password" placeholder="كلمة المرور">
                 </div>
 
-                <!-- زر الدخول -->
                 <button class="btn-login" onclick="login()">تسجيل الدخول</button>
             </div>
         </div>
 
         <!-- 2. واجهة الزبون -->
         <div id="customer-dashboard" class="dashboard">
+            
             <div id="map"></div>
+
+            <div class="top-float-bar">
+                <div class="icon-btn"><i class="fa-solid fa-user"></i></div>
+                <div class="icon-btn"><i class="fa-solid fa-bell"></i></div>
+            </div>
             
             <div class="request-card">
                 <div class="location-info">
@@ -451,7 +518,7 @@
                 </div>
                 <button class="btn-request" onclick="requestTaxi()">
                     <span>اطلب تاكسي الأن</span>
-                    <i class="fa-solid fa-chevron-left"></i>
+                    <i class="fa-solid fa-arrow-left"></i>
                 </button>
             </div>
         </div>
@@ -473,15 +540,14 @@
                         <h2>0 د.ع</h2>
                     </div>
                     <div class="stat-card">
-                        <h4>الرحلات</h4>
+                        <h4>الرحلات المكتملة</h4>
                         <h2>0</h2>
                     </div>
                 </div>
 
-                <div class="section-title">طلبات الرحلات</div>
+                <div class="section-title">طلبات متاحة</div>
 
                 <div id="requests-container">
-                    <!-- طلبات وهمية تظهر للسائق -->
                     <div class="request-item">
                         <div class="request-item-header">
                             <span>رحلة جديدة</span>
@@ -497,22 +563,19 @@
 
     </div>
 
-    <!-- مكتبة الخريطة -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
-        let currentRole = 'customer'; // customer or driver
+        let currentRole = 'customer';
         let map = null;
         let driverOnline = false;
 
-        // 1. دالة اختيار نوع الحساب
         function selectRole(role) {
             currentRole = role;
             document.getElementById('btn-customer').classList.toggle('active', role === 'customer');
             document.getElementById('btn-driver').classList.toggle('active', role === 'driver');
         }
 
-        // 2. دالة تسجيل الدخول
         function login() {
             const phone = document.getElementById('phone').value;
             const pass = document.getElementById('password').value;
@@ -522,82 +585,70 @@
                 return;
             }
 
-            // إخفاء شاشة الدخول
-            document.getElementById('login-screen').style.transform = 'translateY(100%)';
+            // تأثير الانزلاق لشاشة الدخول
+            const loginScreen = document.getElementById('login-screen');
+            loginScreen.style.transform = 'translateY(-100%)';
 
-            if (currentRole === 'customer') {
-                // إظهار واجهة الزبون
-                document.getElementById('customer-dashboard').classList.add('active');
-                // تشغيل الخريطة بعد ظهور الشاشة
-                setTimeout(initMap, 300); 
-            } else {
-                // إظهار واجهة السائق
-                document.getElementById('driver-dashboard').classList.add('active');
-            }
+            setTimeout(() => {
+                if (currentRole === 'customer') {
+                    document.getElementById('customer-dashboard').classList.add('active');
+                    initMap(); 
+                } else {
+                    document.getElementById('driver-dashboard').classList.add('active');
+                }
+            }, 300);
         }
 
-        // 3. دالة تشغيل الخريطة الحقيقية (Leaflet)
+        // 3. خريطة حقيقية ومجانية 100% (بدون API Key)
         function initMap() {
-            if (map) return; // إذا كانت شغالة لا تعيد تشغيلها
+            if (map) return; 
 
-            // إحداثيات افتراضية (الناصرية)
-            map = L.map('map').setView([31.043, 46.257], 14);
+            map = L.map('map', { zoomControl: false }).setView([31.043, 46.257], 14);
 
-            // تصميم الخريطة
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; OpenStreetMap'
+            // استخدام سيرفر OpenStreetMap الرسمي والمفتوح
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap',
+                maxZoom: 19
             }).addTo(map);
 
-            // إضافة علامة (Marker)
-            L.marker([31.043, 46.257]).addTo(map)
-                .bindPopup('موقعك الحالي')
-                .openPopup();
+            // تصميم علامة مخصصة (Marker) باللون الذهبي
+            const customIcon = L.divIcon({
+                className: 'custom-div-icon',
+                html: "<div style='background-color:#FFC107; width:18px; height:18px; border-radius:50%; border:3px solid white; box-shadow:0 0 10px rgba(0,0,0,0.3);'></div>",
+                iconSize: [18, 18],
+                iconAnchor: [9, 9]
+            });
 
-            // تحديث النص بالموقع
-            document.getElementById('current-location').innerText = 'الناصرية - ذي قار';
-
+            // إحداثيات الناصرية الافتراضية
+            L.marker([31.043, 46.257], {icon: customIcon}).addTo(map);
+            
             // محاولة جلب موقع المستخدم الحقيقي
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(position => {
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
                     map.setView([lat, lng], 15);
-                    L.marker([lat, lng]).addTo(map).bindPopup('أنت هنا').openPopup();
-                    document.getElementById('current-location').innerText = 'تم تحديد موقعك';
+                    L.marker([lat, lng], {icon: customIcon}).addTo(map);
+                    document.getElementById('current-location').innerText = 'موقعك محدد بدقة';
                 });
             }
+            
+            // تحديث حجم الخريطة
+            setTimeout(() => { map.invalidateSize(); }, 400);
         }
 
-        // 4. دالة طلب تاكسي للزبون
         function requestTaxi() {
             alert('جاري البحث عن سائق قريب منك...');
         }
 
-        // 5. دالة تغيير حالة السائق (متصل / غير متصل)
         function toggleDriverStatus() {
             driverOnline = !driverOnline;
             const switchEl = document.getElementById('driver-switch');
             const statusText = document.getElementById('driver-status-text');
             
             switchEl.classList.toggle('on', driverOnline);
-            statusText.innerText = driverOnline ? 'أنت متصل الآن (تستقبل طلبات)' : 'أنت غير متصل';
+            statusText.innerText = driverOnline ? 'متصل (يستقبل طلبات)' : 'غير متصل';
+            statusText.style.color = driverOnline ? '#00C853' : '#888';
             
             if (driverOnline) {
-                alert('تم تفعيل وضع السائق! ستصلك طلبات الرحلات.');
-            }
-        }
-
-        // 6. دالة قبول الرحلة للسائق
-        function acceptRide(btn) {
-            if (!driverOnline) {
-                alert('يجب تفعيل زر (متصل) أولاً لتستقبل الطلبات!');
-                return;
-            }
-            btn.innerText = 'تم القبول (جاري التوجه)';
-            btn.style.background = '#13a878';
-            btn.disabled = true;
-            alert('تم قبول الرحلة، توجه إلى موقع الزبون.');
-        }
-    </script>
-</body>
-</html>
+       
