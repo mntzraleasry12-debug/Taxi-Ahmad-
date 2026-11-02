@@ -3,145 +3,303 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>10 ألعاب ذكاء للأطفال</title>
+<title>10 ألعاب ذكاء 3D للأطفال</title>
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
   body{
     margin:0;font-family:'Tajawal','Cairo','Segoe UI',Tahoma,sans-serif;
     background:
-      radial-gradient(circle at 15% 10%, #8b5cf6 0%, transparent 55%),
-      radial-gradient(circle at 88% 88%, #06b6d4 0%, transparent 55%),
-      linear-gradient(160deg,#4c1d95,#1e3a8a 60%,#0e7490);
+      radial-gradient(circle at 12% 8%, #8b5cf6 0%, transparent 50%),
+      radial-gradient(circle at 90% 92%, #06b6d4 0%, transparent 50%),
+      linear-gradient(160deg,#3b0764,#1e3a8a 55%,#0e7490);
     min-height:100vh;display:flex;align-items:center;justify-content:center;
-    padding:12px;overflow-x:hidden;
+    padding:14px;overflow-x:hidden;
+  }
+
+  /* ===== خلفية أشكال عائمة 3D ===== */
+  .bg-shapes{position:fixed;inset:0;pointer-events:none;overflow:hidden;perspective:900px;z-index:0}
+  .bg-shapes span{
+    position:absolute;font-size:44px;opacity:.16;
+    animation:float3d 14s ease-in-out infinite;
+    transform-style:preserve-3d;
+  }
+  @keyframes float3d{
+    0%,100%{transform:translateY(0) rotateY(0deg) rotateX(0deg) scale(1)}
+    50%{transform:translateY(-38px) rotateY(180deg) rotateX(25deg) scale(1.1)}
+  }
+
+  /* ===== المشهد ثلاثي الأبعاد ===== */
+  .scene{
+    perspective:1600px;
+    perspective-origin:50% 40%;
+    width:min(720px,100%);
+    position:relative;z-index:1;
   }
   .app{
-    width:min(720px,100%);background:linear-gradient(#ffffff,#f5f3ff);
+    transform-style:preserve-3d;
+    transform:rotateX(1.5deg);
+    transition:transform .18s ease-out;
+    background:linear-gradient(#ffffff,#f5f3ff);
     border-radius:28px;padding:14px;
-    box-shadow:0 25px 60px rgba(0,0,0,.45), inset 0 -6px 0 rgba(139,92,246,.15);
-    position:relative;overflow:hidden;
+    box-shadow:
+      0 1px 0 #fff inset,
+      0 -8px 0 rgba(139,92,246,.12) inset,
+      0 30px 60px -10px rgba(0,0,0,.55),
+      0 60px 90px -30px rgba(0,0,0,.5);
     min-height:560px;display:flex;flex-direction:column;
+    position:relative;
   }
-  header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+
+  header{display:flex;align-items:center;justify-content:space-between;gap:8px;transform:translateZ(14px)}
   .brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:#4c1d95}
-  .brand .logo{font-size:25px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.2))}
+  .brand .logo{font-size:25px;filter:drop-shadow(0 4px 5px rgba(0,0,0,.3));animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0) rotateY(0)}50%{transform:translateY(-5px) rotateY(20deg)}}
+
   .stats{display:flex;align-items:center;gap:5px}
   .stat{
-    display:flex;align-items:center;gap:3px;background:#ede9fe;color:#5b21b6;
-    font-weight:800;font-size:14px;padding:5px 8px;border-radius:13px;border:2px solid #ddd6fe;
+    display:flex;align-items:center;gap:3px;background:linear-gradient(#ede9fe,#ddd6fe);
+    color:#5b21b6;font-weight:800;font-size:14px;padding:5px 9px;border-radius:13px;
+    border:2px solid #c4b5fd;
+    box-shadow:0 4px 0 #a78bfa, 0 6px 10px rgba(76,29,149,.2), inset 0 1px 0 #fff;
   }
   .icon-btn{
-    border:2px solid #ddd6fe;background:#ede9fe;border-radius:13px;
-    padding:6px 9px;font-size:15px;cursor:pointer;font-family:inherit;
+    border:2px solid #c4b5fd;background:linear-gradient(#ede9fe,#ddd6fe);border-radius:13px;
+    padding:6px 10px;font-size:15px;cursor:pointer;font-family:inherit;
+    box-shadow:0 4px 0 #a78bfa, 0 6px 10px rgba(76,29,149,.2), inset 0 1px 0 #fff;
+    transition:transform .07s, box-shadow .07s;
   }
-  .icon-btn:active{transform:translateY(2px)}
-  .progress{height:12px;background:#ede9fe;border-radius:10px;margin:10px 0 4px;overflow:hidden;border:2px solid #ddd6fe}
-  .bar{height:100%;width:0;border-radius:10px;background:linear-gradient(90deg,#22c55e,#84cc16);transition:width .35s}
+  .icon-btn:active{transform:translateY(4px);box-shadow:0 0 0 #a78bfa}
+
+  .progress{
+    height:14px;background:#ede9fe;border-radius:10px;margin:11px 0 4px;overflow:hidden;
+    border:2px solid #ddd6fe;
+    box-shadow:inset 0 3px 6px rgba(76,29,149,.28), inset 0 -2px 0 #fff;
+  }
+  .bar{
+    height:100%;width:0;border-radius:10px;
+    background:linear-gradient(90deg,#22c55e,#84cc16,#eab308);
+    box-shadow:0 0 14px rgba(34,197,94,.85);
+    transition:width .35s cubic-bezier(.34,1.4,.64,1);
+  }
+
   main{flex:1;display:flex;flex-direction:column;justify-content:center;gap:8px;padding:4px 0}
 
   /* ===== قائمة الألعاب ===== */
   .hub-title{text-align:center;color:#4c1d95;font-weight:900;font-size:20px;margin:4px 0 2px}
-  .hub-sub{text-align:center;color:#7c3aed;font-weight:600;font-size:13px;margin:0 0 8px}
-  .hub{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px;padding:2px}
+  .hub-sub{text-align:center;color:#7c3aed;font-weight:600;font-size:13px;margin:0 0 10px}
+  .hub{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:11px;padding:2px;
+       perspective:900px}
+
   .game-card{
     border:none;cursor:pointer;font-family:inherit;font-weight:800;font-size:13px;color:#1e293b;
-    background:linear-gradient(#fff,#eef2ff);border-radius:18px;padding:14px 6px;
+    background:linear-gradient(#ffffff,#eef2ff);
+    border-radius:18px;padding:14px 6px;
     display:flex;flex-direction:column;align-items:center;gap:7px;
-    box-shadow:0 5px 0 #c7d2fe,0 8px 18px rgba(79,70,229,.12);
-    transition:transform .08s,box-shadow .08s;
+    box-shadow:
+      0 7px 0 #a5b4fc,
+      0 14px 22px -6px rgba(76,29,149,.45),
+      inset 0 2px 0 #fff, inset 0 -3px 0 rgba(199,210,254,.8);
+    transform-style:preserve-3d;
+    transition:transform .16s ease-out, box-shadow .16s ease-out;
+    will-change:transform;
   }
-  .game-card:active{transform:translateY(4px);box-shadow:0 1px 0 #c7d2fe}
-  .game-card .g-icon{font-size:29px;line-height:1}
+  .game-card .g-icon{font-size:29px;line-height:1;filter:drop-shadow(0 3px 3px rgba(0,0,0,.22))}
+  .game-card:active{
+    box-shadow:0 2px 0 #a5b4fc, 0 5px 10px -4px rgba(76,29,149,.5), inset 0 2px 0 #fff;
+  }
 
   /* ===== السؤال ===== */
-  .q-text{text-align:center;font-size:20px;font-weight:800;color:#4c1d95;margin:2px 0}
+  .q-text{text-align:center;font-size:20px;font-weight:800;color:#4c1d95;margin:2px 0;
+          text-shadow:0 2px 0 #fff}
   .visual{
-    min-height:112px;display:flex;align-items:center;justify-content:center;
-    background:#f8f5ff;border-radius:20px;padding:10px;border:2px dashed #ddd6fe;
+    min-height:116px;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(160deg,#faf5ff,#ede9fe);
+    border-radius:20px;padding:12px;border:2px dashed #ddd6fe;
+    box-shadow:inset 0 6px 14px rgba(139,92,246,.16), inset 0 -3px 0 #fff;
+    transform:translateZ(10px);
   }
   .emoji-grid{display:flex;flex-wrap:wrap;gap:1px 6px;justify-content:center}
-  .emoji{font-size:32px;line-height:1.15;display:inline-block;animation:pop .35s cubic-bezier(.34,1.56,.64,1) backwards}
-  .emoji.gone{opacity:.22;filter:grayscale(1)}
-  @keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+  .emoji{
+    font-size:32px;line-height:1.15;display:inline-block;
+    animation:pop3d .42s cubic-bezier(.34,1.56,.64,1) backwards;
+    filter:drop-shadow(0 4px 3px rgba(0,0,0,.22));
+  }
+  .emoji.gone{opacity:.2;filter:grayscale(1) drop-shadow(0 2px 2px rgba(0,0,0,.1))}
+  @keyframes pop3d{
+    from{transform:perspective(400px) scale(.15) rotateY(-140deg) translateZ(-60px);opacity:0}
+    to{transform:perspective(400px) scale(1) rotateY(0deg) translateZ(0);opacity:1}
+  }
 
-  .seq{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;direction:ltr}
+  .seq{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;direction:ltr;perspective:700px}
   .term{
     min-width:50px;height:58px;display:flex;align-items:center;justify-content:center;
-    font-size:24px;font-weight:800;color:#4c1d95;background:#fff;border-radius:14px;
-    border:3px solid #ddd6fe;box-shadow:0 4px 0 #ddd6fe;
+    font-size:24px;font-weight:800;color:#4c1d95;
+    background:linear-gradient(#fff,#f1f0ff);border-radius:14px;
+    border:3px solid #ddd6fe;
+    box-shadow:0 6px 0 #c7d2fe, 0 10px 16px -4px rgba(76,29,149,.35), inset 0 2px 0 #fff;
+    animation:pop3d .42s cubic-bezier(.34,1.56,.64,1) backwards;
   }
-  .term.blank{color:#a855f7;border-color:#c4b5fd;border-style:dashed;background:#faf5ff;animation:pulse 1.2s infinite}
-  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+  .term.blank{
+    color:#a855f7;border-color:#c4b5fd;border-style:dashed;background:#faf5ff;
+    animation:pulse3d 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse3d{
+    0%,100%{transform:perspective(500px) translateZ(0) scale(1)}
+    50%{transform:perspective(500px) translateZ(26px) scale(1.07)}
+  }
 
-  .add-row{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;direction:ltr}
-  .grp{display:flex;flex-wrap:wrap;gap:1px;max-width:145px;justify-content:center;background:#fff;border-radius:14px;padding:5px;border:2px solid #ddd6fe}
+  .add-row{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;direction:ltr}
+  .grp{
+    display:flex;flex-wrap:wrap;gap:1px;max-width:148px;justify-content:center;
+    background:#fff;border-radius:14px;padding:6px;border:2px solid #ddd6fe;
+    box-shadow:0 5px 0 #c7d2fe, 0 8px 14px -4px rgba(76,29,149,.3), inset 0 2px 0 #fff;
+  }
   .grp .emoji{font-size:21px}
-  .op{font-size:26px;font-weight:800;color:#7c3aed}
-  .qmark{font-size:26px;font-weight:800;color:#a855f7;min-width:50px;height:54px;display:flex;align-items:center;justify-content:center;border:3px dashed #c4b5fd;border-radius:14px;background:#faf5ff}
+  .op{font-size:26px;font-weight:800;color:#7c3aed;text-shadow:0 2px 0 #ddd6fe}
+  .qmark{
+    font-size:26px;font-weight:800;color:#a855f7;min-width:52px;height:56px;
+    display:flex;align-items:center;justify-content:center;
+    border:3px dashed #c4b5fd;border-radius:14px;background:#faf5ff;
+    animation:pulse3d 1.2s ease-in-out infinite;
+  }
 
-  .big-shape{font-size:78px;line-height:1;animation:pop .35s cubic-bezier(.34,1.56,.64,1)}
-  .swatch{width:104px;height:104px;border-radius:50%;border:5px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,.2);animation:pop .35s cubic-bezier(.34,1.56,.64,1)}
-  .cmp{display:flex;align-items:center;gap:12px}
-  .cmp-num{font-size:42px;font-weight:900;color:#4c1d95;background:#fff;border:3px solid #ddd6fe;border-radius:16px;padding:4px 18px;box-shadow:0 4px 0 #ddd6fe}
+  .big-shape{font-size:80px;line-height:1;animation:pop3d .45s cubic-bezier(.34,1.56,.64,1);
+             filter:drop-shadow(0 10px 8px rgba(76,29,149,.35))}
+  .swatch{
+    width:104px;height:104px;border-radius:50%;border:5px solid #fff;
+    box-shadow:0 12px 22px -6px rgba(0,0,0,.45), inset 0 -10px 18px rgba(0,0,0,.25),
+               inset 0 8px 14px rgba(255,255,255,.5);
+    animation:pop3d .45s cubic-bezier(.34,1.56,.64,1);
+  }
+  .cmp{display:flex;align-items:center;gap:12px;perspective:700px}
+  .cmp-num{
+    font-size:42px;font-weight:900;color:#4c1d95;
+    background:linear-gradient(#fff,#f1f0ff);border:3px solid #ddd6fe;border-radius:16px;
+    padding:4px 18px;
+    box-shadow:0 7px 0 #c7d2fe, 0 12px 18px -6px rgba(76,29,149,.35), inset 0 2px 0 #fff;
+  }
 
   /* ===== الاختيارات ===== */
-  .options{display:grid;gap:9px;margin-top:4px}
+  .options{display:grid;gap:10px;margin-top:4px;perspective:900px}
   .opt{
     font-family:inherit;font-size:30px;font-weight:800;color:#1e293b;cursor:pointer;
     padding:13px 6px;border-radius:18px;border:none;
-    background:linear-gradient(#fff,#eef2ff);
-    box-shadow:0 6px 0 #c7d2fe,0 8px 16px rgba(79,70,229,.12);
-    transition:transform .08s,box-shadow .08s,background .2s;
+    background:linear-gradient(#ffffff,#eef2ff);
+    box-shadow:
+      0 8px 0 #a5b4fc,
+      0 14px 20px -6px rgba(76,29,149,.4),
+      inset 0 2px 0 #fff, inset 0 -3px 0 rgba(199,210,254,.9);
+    transform-style:preserve-3d;
+    transition:transform .08s, box-shadow .08s, background .25s;
   }
-  .opt:active{transform:translateY(5px);box-shadow:0 1px 0 #c7d2fe}
-  .opt.correct{background:linear-gradient(#86efac,#22c55e);color:#fff;box-shadow:0 6px 0 #15803d;animation:bounce .45s}
-  .opt.wrong{background:linear-gradient(#fca5a5,#ef4444);color:#fff;box-shadow:0 6px 0 #b91c1c;animation:shake .4s}
-  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
-  @keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+  .opt:active{
+    transform:translateY(7px) translateZ(-6px);
+    box-shadow:0 1px 0 #a5b4fc, 0 3px 6px -3px rgba(76,29,149,.5), inset 0 2px 0 #fff;
+  }
+  .opt.correct{
+    background:linear-gradient(#86efac,#22c55e);color:#fff;
+    box-shadow:0 8px 0 #15803d, 0 16px 26px -6px rgba(34,197,94,.6), inset 0 2px 0 rgba(255,255,255,.5);
+    animation:bounce3d .5s;
+  }
+  .opt.wrong{
+    background:linear-gradient(#fca5a5,#ef4444);color:#fff;
+    box-shadow:0 8px 0 #b91c1c, 0 12px 18px -6px rgba(239,68,68,.5), inset 0 2px 0 rgba(255,255,255,.4);
+    animation:shake .4s;
+  }
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px) rotateZ(-2deg)}75%{transform:translateX(8px) rotateZ(2deg)}}
+  @keyframes bounce3d{
+    0%,100%{transform:translateY(0) translateZ(0) scale(1)}
+    50%{transform:translateY(-8px) translateZ(26px) scale(1.08)}
+  }
 
-  /* ===== لعبة الذاكرة ===== */
-  .mem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;direction:ltr}
+  /* ===== لعبة الذاكرة (قلب 3D حقيقي) ===== */
+  .mem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;direction:ltr;perspective:1000px}
   .card{
-    aspect-ratio:1/1;border:none;border-radius:16px;cursor:pointer;font-family:inherit;
-    background:linear-gradient(145deg,#8b5cf6,#6d28d9);
-    box-shadow:0 5px 0 #4c1d95;display:flex;align-items:center;justify-content:center;
-    transition:transform .12s,background .25s;
+    aspect-ratio:1/1;border:none;padding:0;background:none;cursor:pointer;font-family:inherit;
+    position:relative;transform-style:preserve-3d;
+    transition:transform .45s cubic-bezier(.4,.15,.2,1);
+    border-radius:16px;
   }
-  .card:active{transform:translateY(3px)}
-  .card span{font-size:30px;visibility:hidden;line-height:1}
-  .card.flipped,.card.matched{background:linear-gradient(#fff,#eef2ff);box-shadow:0 5px 0 #c7d2fe}
-  .card.flipped span,.card.matched span{visibility:visible}
-  .card.matched{background:linear-gradient(#bbf7d0,#86efac);box-shadow:0 5px 0 #22c55e}
+  .card.flipped{transform:rotateY(180deg)}
+  .face{
+    position:absolute;inset:0;border-radius:16px;
+    display:flex;align-items:center;justify-content:center;
+    backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  }
+  .face.front{
+    background:linear-gradient(150deg,#a78bfa,#7c3aed 55%,#5b21b6);
+    box-shadow:0 7px 0 #4c1d95, 0 12px 18px -6px rgba(76,29,149,.55),
+               inset 0 3px 0 rgba(255,255,255,.35), inset 0 -6px 0 rgba(0,0,0,.25);
+  }
+  .face.front::after{
+    content:'?';font-size:30px;font-weight:900;color:rgba(255,255,255,.9);
+    text-shadow:0 3px 6px rgba(0,0,0,.5);
+  }
+  .face.back{
+    transform:rotateY(180deg);
+    background:linear-gradient(#ffffff,#eef2ff);
+    box-shadow:0 7px 0 #c7d2fe, 0 12px 18px -6px rgba(76,29,149,.35),
+               inset 0 2px 0 #fff;
+    font-size:30px;
+  }
+  .card.matched .face.back{
+    background:linear-gradient(#bbf7d0,#4ade80);
+    box-shadow:0 7px 0 #16a34a, 0 0 24px rgba(34,197,94,.7), inset 0 2px 0 rgba(255,255,255,.6);
+  }
 
   /* ===== المختلف ===== */
-  .odd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+  .odd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;perspective:900px}
   .odd-item{
     aspect-ratio:1/1;font-size:34px;border:none;cursor:pointer;font-family:inherit;
     background:linear-gradient(#fff,#eef2ff);border-radius:16px;
-    box-shadow:0 5px 0 #c7d2fe;transition:transform .08s;
+    box-shadow:0 7px 0 #a5b4fc, 0 12px 18px -6px rgba(76,29,149,.4), inset 0 2px 0 #fff;
+    transition:transform .08s, box-shadow .08s;
+    animation:pop3d .4s cubic-bezier(.34,1.56,.64,1) backwards;
   }
-  .odd-item:active{transform:translateY(4px)}
-  .odd-item.correct{background:linear-gradient(#86efac,#22c55e);box-shadow:0 5px 0 #15803d;animation:bounce .45s}
-  .odd-item.wrong{background:linear-gradient(#fca5a5,#ef4444);box-shadow:0 5px 0 #b91c1c;animation:shake .4s}
+  .odd-item:active{transform:translateY(6px) translateZ(-4px);box-shadow:0 1px 0 #a5b4fc}
+  .odd-item.correct{
+    background:linear-gradient(#86efac,#22c55e);
+    box-shadow:0 7px 0 #15803d, 0 0 26px rgba(34,197,94,.75);
+    animation:bounce3d .5s;
+  }
+  .odd-item.wrong{
+    background:linear-gradient(#fca5a5,#ef4444);
+    box-shadow:0 7px 0 #b91c1c;
+    animation:shake .4s;
+  }
 
   /* ===== رسائل ===== */
   .feedback{
     position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) scale(0);
-    font-size:24px;font-weight:900;padding:10px 20px;border-radius:18px;
-    pointer-events:none;opacity:0;white-space:nowrap;z-index:5;
+    font-size:24px;font-weight:900;padding:11px 22px;border-radius:18px;
+    pointer-events:none;opacity:0;white-space:nowrap;z-index:20;
+    transform-style:preserve-3d;
   }
-  .feedback.show{animation:fbIn .35s forwards}
+  .feedback.show{animation:fbIn .4s cubic-bezier(.34,1.56,.64,1) forwards}
   @keyframes fbIn{
-    0%{transform:translate(-50%,-50%) scale(0);opacity:0}
-    60%{transform:translate(-50%,-50%) scale(1.15);opacity:1}
-    100%{transform:translate(-50%,-50%) scale(1);opacity:1}
+    0%{transform:translate(-50%,-50%) scale(.2) rotateY(-90deg) translateZ(0);opacity:0}
+    60%{transform:translate(-50%,-50%) scale(1.12) rotateY(12deg) translateZ(40px);opacity:1}
+    100%{transform:translate(-50%,-50%) scale(1) rotateY(0) translateZ(20px);opacity:1}
   }
-  .feedback.good{background:#22c55e;color:#fff;box-shadow:0 10px 26px rgba(34,197,94,.55)}
-  .feedback.bad{background:#ef4444;color:#fff;box-shadow:0 10px 26px rgba(239,68,68,.55)}
+  .feedback.good{
+    background:linear-gradient(#4ade80,#22c55e);color:#fff;
+    box-shadow:0 10px 0 #15803d, 0 24px 40px -10px rgba(34,197,94,.75), inset 0 2px 0 rgba(255,255,255,.5);
+  }
+  .feedback.bad{
+    background:linear-gradient(#f87171,#ef4444);color:#fff;
+    box-shadow:0 10px 0 #b91c1c, 0 24px 40px -10px rgba(239,68,68,.7), inset 0 2px 0 rgba(255,255,255,.4);
+  }
 
-  .confetti-layer{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:4}
-  .confetti{position:absolute;width:10px;height:14px;border-radius:3px;top:-20px;animation:fall linear forwards}
-  @keyframes fall{to{transform:translateY(650px) rotate(720deg);opacity:0}}
+  .confetti-layer{
+    position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:15;
+    border-radius:28px;
+  }
+  .confetti{position:absolute;width:10px;height:14px;border-radius:3px;top:-20px;
+            animation:fall linear forwards}
+  @keyframes fall{
+    to{transform:translateY(680px) translateZ(80px) rotate(720deg);opacity:0}
+  }
 
   @media (max-width:420px){
     .emoji{font-size:26px}
@@ -150,38 +308,44 @@
     .term{min-width:42px;height:50px;font-size:21px}
     .q-text{font-size:17px}
     .cmp-num{font-size:34px;padding:4px 12px}
-    .card span{font-size:24px}
-    .odd-item{font-size:28px}
+    .face.back{font-size:24px}
+    .odd-item{font-size:27px}
     .game-card{font-size:12px;padding:11px 4px}
     .game-card .g-icon{font-size:25px}
+    .big-shape{font-size:64px}
+    .swatch{width:86px;height:86px}
   }
 </style>
 </head>
 <body>
 
-<div class="app">
-  <header>
-    <div class="brand"><span class="logo">🧠</span><span>ألعاب الذكاء</span></div>
-    <div class="stats">
-      <div class="stat" title="النقاط">⭐<span id="score">0</span></div>
-      <div class="stat" title="المستوى">🏆<span id="level">1</span></div>
-      <div class="stat" title="التتابع">🔥<span id="streak">0</span></div>
-      <button id="homeBtn" class="icon-btn" title="القائمة">🏠</button>
-    </div>
-  </header>
+<div class="bg-shapes" id="bgShapes"></div>
 
-  <div class="progress"><div class="bar" id="bar"></div></div>
+<div class="scene">
+  <div class="app" id="app">
+    <header>
+      <div class="brand"><span class="logo">🧠</span><span>ألعاب الذكاء 3D</span></div>
+      <div class="stats">
+        <div class="stat" title="النقاط">⭐<span id="score">0</span></div>
+        <div class="stat" title="المستوى">🏆<span id="level">1</span></div>
+        <div class="stat" title="التتابع">🔥<span id="streak">0</span></div>
+        <button id="homeBtn" class="icon-btn" title="القائمة">🏠</button>
+      </div>
+    </header>
 
-  <main id="stage"></main>
+    <div class="progress"><div class="bar" id="bar"></div></div>
 
-  <div id="feedback" class="feedback"></div>
-  <div id="confetti" class="confetti-layer"></div>
+    <main id="stage"></main>
+
+    <div id="feedback" class="feedback"></div>
+    <div id="confetti" class="confetti-layer"></div>
+  </div>
 </div>
 
 <script>
 /* ================= أدوات ================= */
 const $ = id => document.getElementById(id);
-const stage = $('stage'), feedbackEl = $('feedback'), confettiLayer = $('confetti');
+const appEl = $('app'), stage = $('stage'), feedbackEl = $('feedback'), confettiLayer = $('confetti');
 const scoreEl = $('score'), levelEl = $('level'), streakEl = $('streak'), barEl = $('bar');
 
 const EMOJIS = ['🍎','🍌','🍓','🐤','🐟','⭐','🎈','🚗','🌸','🍪','🐞','🧸','🍇','🦋','🍊','🐸','🍉','🌼','🚀','🐬','🍭','🎁'];
@@ -191,6 +355,22 @@ const BAD  = ['حاول مرة ثانية 💪','لا بأس، جرّب! 🤔','
 const randInt = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
 const pick = a => a[Math.floor(Math.random()*a.length)];
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+/* ================= خلفية 3D عائمة ================= */
+(function bg(){
+  const box = $('bgShapes');
+  const items = ['🔢','➕','➖','⭐','🎲','🧩','🔺','🎈','🍎','🧠'];
+  for(let i=0;i<12;i++){
+    const s = document.createElement('span');
+    s.textContent = pick(items);
+    s.style.left = randInt(2,92) + '%';
+    s.style.top  = randInt(2,92) + '%';
+    s.style.fontSize = randInt(28,56) + 'px';
+    s.style.animationDelay = (-Math.random()*14) + 's';
+    s.style.animationDuration = randInt(11,20) + 's';
+    box.appendChild(s);
+  }
+})();
 
 /* ================= الأصوات ================= */
 let actx = null;
@@ -206,9 +386,34 @@ function tone(freq, dur, type='sine', vol=0.12, when=0){
   g.gain.exponentialRampToValueAtTime(0.001, t + dur);
   o.start(t); o.stop(t + dur + 0.05);
 }
-const sndCorrect = () => { tone(523.25,.12,'sine',.13,0); tone(659.25,.12,'sine',.13,.10); tone(783.99,.22,'sine',.13,.20); };
+const sndCorrect = () => { tone(523.25,.12,'sine',.13,0); tone(659.25,.12,'sine',.13,.10); tone(783.99,.24,'sine',.13,.20); };
 const sndWrong   = () => { tone(220,.18,'sawtooth',.07,0); tone(160,.26,'sawtooth',.07,.13); };
-const sndClick   = () => tone(700,.06,'triangle',.06);
+const sndClick   = () => tone(720,.06,'triangle',.06);
+
+/* ================= ميلان التطبيق 3D ================= */
+const DEFAULT_T = 'rotateX(1.5deg)';
+appEl.style.transform = DEFAULT_T;
+
+document.addEventListener('pointermove', e => {
+  if(e.pointerType !== 'mouse') return;
+  const x = (e.clientX / window.innerWidth  - .5) * 2;
+  const y = (e.clientY / window.innerHeight - .5) * 2;
+  appEl.style.transform = `rotateX(${1.5 - y*3}deg) rotateY(${x*3.5}deg)`;
+});
+document.addEventListener('pointerleave', () => { appEl.style.transform = DEFAULT_T; });
+
+/* ميلان البطاقات الفردية */
+function attachTilt(el){
+  el.addEventListener('pointermove', e => {
+    if(e.pointerType !== 'mouse') return;
+    const r = el.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width  - .5;
+    const py = (e.clientY - r.top ) / r.height - .5;
+    el.style.transform =
+      `perspective(700px) rotateY(${px*22}deg) rotateX(${-py*22}deg) translateZ(18px) scale(1.05)`;
+  });
+  el.addEventListener('pointerleave', () => { el.style.transform = ''; });
+}
 
 /* ================= الحالة ================= */
 const state = {
@@ -262,7 +467,9 @@ function qMissing(){
   const idx = randInt(1,3);
   const answer = terms[idx];
   const visual = '<div class="seq">' + terms.map((t,i)=>
-      i === idx ? '<span class="term blank">?</span>' : `<span class="term">${t}</span>`
+      i === idx
+        ? '<span class="term blank">?</span>'
+        : `<span class="term" style="animation-delay:${i*60}ms">${t}</span>`
     ).join('') + '</div>';
   return { text:'ما هو الرقم الناقص؟', visual, answer,
            options: makeOptions(answer, Math.max(0, answer-10), answer+10) };
@@ -272,190 +479,4 @@ function qAdd(){
   const m = state.level <= 1 ? 3 : state.level <= 3 ? 5 : 9;
   const a = randInt(1,m), b = randInt(1,m), e = pick(EMOJIS);
   const grp = n => '<div class="grp">' +
-    Array.from({length:n},(_,i)=>`<span class="emoji" style="animation-delay:${i*50}ms">${e}</span>`).join('') + '</div>';
-  const visual = `<div class="add-row">${grp(a)}<span class="op">+</span>${grp(b)}<span class="op">=</span><span class="qmark">?</span></div>`;
-  return { text:'كم مجموع الأشياء؟', visual, answer:a+b, options: makeOptions(a+b, 1, 20) };
-}
-
-function qSub(){
-  const m = state.level <= 1 ? 5 : state.level <= 3 ? 8 : 12;
-  const a = randInt(2,m), b = randInt(1,a-1);
-  const e = pick(EMOJIS);
-  let visual = '<div class="emoji-grid">';
-  for(let i=0;i<a;i++) visual += `<span class="emoji ${i<b?'gone':''}" style="animation-delay:${i*50}ms">${e}</span>`;
-  visual += '</div>';
-  return { text:`لدينا ${a}، أُخذ منها ${b}. كم بقي؟`, visual,
-           answer:a-b, options: makeOptions(a-b, 0, a) };
-}
-
-const SHAPES = [['⚪','دائرة'],['🟥','مربع'],['🔺','مثلث'],['⭐','نجمة'],['❤️','قلب'],['🔶','معين'],['🔷','معين'],['🟣','دائرة']];
-function qShapes(){
-  const uniq = [['⚪','دائرة'],['🟥','مربع'],['🔺','مثلث'],['⭐','نجمة'],['❤️','قلب'],['🔶','معين']];
-  const sh = pick(uniq);
-  const names = shuffle(uniq.map(s=>s[1])).filter((v,i,arr)=>arr.indexOf(v)===i);
-  const opts = new Set([sh[1]]);
-  for(const n of names){ if(opts.size>=4) break; opts.add(n); }
-  return { text:'ما اسم هذا الشكل؟', visual:`<div class="big-shape">${sh[0]}</div>`,
-           answer:sh[1], options: shuffle([...opts]) };
-}
-
-const COLORS = [['#ef4444','أحمر'],['#3b82f6','أزرق'],['#22c55e','أخضر'],['#eab308','أصفر'],
-                ['#f97316','برتقالي'],['#a855f7','بنفسجي'],['#ec4899','وردي'],['#78350f','بني'],['#111827','أسود']];
-function qColors(){
-  const c = pick(COLORS);
-  const names = shuffle(COLORS.map(x=>x[1]));
-  const opts = new Set([c[1]]);
-  for(const n of names){ if(opts.size>=4) break; opts.add(n); }
-  return { text:'ما هذا اللون؟',
-           visual:`<div class="swatch" style="background:${c[0]}"></div>`,
-           answer:c[1], options: shuffle([...opts]) };
-}
-
-function qCompare(){
-  const max = state.level <= 1 ? 10 : state.level <= 3 ? 20 : 50;
-  let a = randInt(1,max), b = randInt(1,max);
-  while(b === a) b = randInt(1,max);
-  const big = Math.random() < 0.5;
-  const visual = `<div class="cmp"><div class="cmp-num">${a}</div><div class="op">?</div><div class="cmp-num">${b}</div></div>`;
-  return {
-    text: big ? 'أي الرقمين أكبر؟' : 'أي الرقمين أصغر؟',
-    visual,
-    answer: big ? Math.max(a,b) : Math.min(a,b),
-    options: shuffle([a,b])
-  };
-}
-
-function qPattern(){
-  const items = shuffle([...EMOJIS]).slice(0,3);
-  const period = state.level <= 2 ? 2 : 3;
-  const seq = [];
-  for(let i=0;i<5;i++) seq.push(items[i % period]);
-  const answer = seq[4];
-  const visual = '<div class="seq">' + seq.map((e,i)=>
-      i === 4 ? '<span class="term blank">?</span>' : `<span class="term">${e}</span>`
-    ).join('') + '</div>';
-  return { text:'ما هو الشيء التالي في النمط؟', visual, answer, options: emojiOptions(answer) };
-}
-
-/* ================= تسجيل النقاط ================= */
-function onCorrect(btn){
-  state.locked = true;
-  if(btn) btn.classList.add('correct');
-  sndCorrect(); confetti(); showFeedback(pick(GOOD),'good');
-
-  state.score += state.firstTry ? 10 : 5;
-  if(state.firstTry) state.streak++;
-  state.correctInLevel++;
-  if(state.correctInLevel >= 4){
-    state.level = Math.min(state.level + 1, 6);
-    state.correctInLevel = 0;
-  }
-  updateHUD();
-}
-function onWrong(btn){
-  state.firstTry = false;
-  state.streak = 0;
-  if(btn){ btn.classList.add('wrong'); btn.disabled = true; }
-  sndWrong(); showFeedback(pick(BAD),'bad');
-  updateHUD();
-}
-
-function showFeedback(text, kind){
-  feedbackEl.textContent = text;
-  feedbackEl.className = 'feedback ' + kind;
-  void feedbackEl.offsetWidth;
-  feedbackEl.classList.add('show');
-  clearTimeout(showFeedback.t);
-  showFeedback.t = setTimeout(() => { feedbackEl.className = 'feedback ' + kind; }, 900);
-}
-
-function confetti(){
-  const colors = ['#f43f5e','#f59e0b','#22c55e','#3b82f6','#a855f7','#eab308'];
-  for(let i=0;i<24;i++){
-    const d = document.createElement('div');
-    d.className = 'confetti';
-    d.style.left = Math.random()*100 + '%';
-    d.style.background = colors[i % colors.length];
-    d.style.animationDuration = (1 + Math.random()*0.8) + 's';
-    d.style.animationDelay = (Math.random()*0.25) + 's';
-    confettiLayer.appendChild(d);
-    setTimeout(() => d.remove(), 2400);
-  }
-}
-
-/* ================= سؤال عام (8 ألعاب) ================= */
-function nextQuestion(){
-  if(state.screen !== 'game') return;
-  const g = GAMES[state.game];
-  if(!g || !g.gen) return;
-  state.q = g.gen();
-  state.firstTry = true;
-  state.locked = false;
-  renderQuiz();
-}
-
-function renderQuiz(){
-  const q = state.q;
-  const cols = Math.min(q.options.length, 4);
-  stage.innerHTML = `
-    <p class="q-text">${q.text}</p>
-    <div class="visual">${q.visual}</div>
-    <div class="options" id="options" style="grid-template-columns:repeat(${cols},1fr)"></div>`;
-  const box = $('options');
-  const gid = state.game;
-  q.options.forEach(v => {
-    const b = document.createElement('button');
-    b.className = 'opt';
-    b.textContent = v;
-    b.addEventListener('click', () => answer(v, b, gid));
-    box.appendChild(b);
-  });
-}
-
-function answer(val, btn, gid){
-  if(state.locked) return;
-  if(val === state.q.answer){
-    onCorrect(btn);
-    setTimeout(() => { if(state.game === gid && state.screen === 'game') nextQuestion(); }, 950);
-  } else {
-    onWrong(btn);
-  }
-}
-
-/* ================= 9) المختلف ================= */
-function initOdd(){
-  if(state.screen !== 'game') return;
-  state.locked = false;
-  state.firstTry = true;
-  const base = pick(EMOJIS);
-  const diff = pick(EMOJIS.filter(e => e !== base));
-  const idx = randInt(0, 8);
-  stage.innerHTML = `<p class="q-text">اضغط على الشيء المختلف 👀</p>
-                     <div class="odd-grid" id="oddGrid"></div>`;
-  const grid = $('oddGrid');
-  const gid = state.game;
-  for(let i=0;i<9;i++){
-    const b = document.createElement('button');
-    b.className = 'odd-item';
-    b.textContent = i === idx ? diff : base;
-    b.addEventListener('click', () => {
-      if(state.locked) return;
-      if(i === idx){
-        onCorrect(b);
-        setTimeout(() => { if(state.game === gid && state.screen === 'game') initOdd(); }, 1000);
-      } else {
-        onWrong(b);
-      }
-    });
-    grid.appendChild(b);
-  }
-}
-
-/* ================= 10) الذاكرة ================= */
-function initMemory(){
-  if(state.screen !== 'game') return;
-  state.locked = false;
-  state.firstTry = true;
-  const pool = shuffle([...EMOJIS]).slice(0,6);
-  const deck = shuffle([...pool, ...pool]);
-  state.mem = { first:null, matched:0, busy:
+    Array.from({length:n},(_,i)=>`<span class="e
