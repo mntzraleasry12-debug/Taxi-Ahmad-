@@ -4,683 +4,557 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#111114">
-<title>ROYAL TAXI | تكسي أحمد</title>
+<meta name="theme-color" content="#101827">
+<title>ROYAL TAXI</title>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
-:root{
- --gold:#d7b15e;
- --lightgold:#f8dfa0;
- --black:#101115;
- --dark:#202127;
- --cream:#f6f4ee;
-}
 *{box-sizing:border-box}
 body{
- margin:0;background:#dedbd4;color:#171717;
- font-family:Cairo,sans-serif;
+ margin:0;background:#101827;color:white;
+ font-family:Tahoma,Arial,sans-serif;
 }
-button,input,select{font-family:inherit}
-button{cursor:pointer}
-.hidden{display:none!important}
-.app{
- max-width:480px;min-height:100vh;margin:auto;
- background:var(--cream);position:relative;
- padding-bottom:85px;overflow:hidden;
+:root{--gold:#e6b94e;--dark:#101827;--panel:#192538}
+header{
+ height:65px;background:#111c2e;
+ display:flex;align-items:center;justify-content:space-between;
+ padding:0 17px;border-bottom:1px solid #344052;
 }
-button:disabled{opacity:.55;cursor:not-allowed}
-
-/* تسجيل الدخول */
-#authScreen{
- min-height:100vh;max-width:480px;margin:auto;
- background:radial-gradient(circle at top,#34323a,#08090c 70%);
- padding:30px 20px;display:flex;
- flex-direction:column;justify-content:center;
-}
-.logo{text-align:center;color:var(--lightgold);margin-bottom:25px}
-.logo .car{font-size:65px}
-.logo h1{font:900 35px Georgia;margin:0;letter-spacing:3px}
-.logo p{margin:5px;color:#d5bd86}
-.authbox{
- background:#faf8f2;border-radius:25px;padding:23px;
- box-shadow:0 15px 40px #0006;
-}
-.authbox h2{text-align:center;margin:0}
-.authbox .hint{text-align:center;color:#777;font-size:13px;margin:5px 0 20px}
-.field{margin-bottom:13px}
-.field label{display:block;font-weight:800;font-size:13px;margin-bottom:5px}
-.field input,.field select{
- width:100%;padding:13px;border:1px solid #ddd;
- border-radius:12px;background:white;font-size:14px;
-}
-.goldbtn{
- width:100%;padding:14px;border:0;border-radius:13px;
- background:linear-gradient(110deg,#b58935,#f6d78e,#b58935);
- color:#17130a;font-size:15px;font-weight:900;
-}
-.switch{text-align:center;margin-top:15px;font-size:13px}
-.switch button{border:0;background:none;color:#9a7028;font-weight:900}
-
-/* الرأس */
-.header{
- color:white;padding:18px;
- background:radial-gradient(circle at 15% 20%,#37343a,transparent 40%),
- linear-gradient(120deg,#07080b,#242127,#08090c);
- border-bottom:4px solid var(--gold);
- border-radius:0 0 27px 27px;
- box-shadow:0 5px 14px #0003;
-}
-.headrow{display:flex;justify-content:space-between;align-items:center}
-.circle{
- width:47px;height:47px;border:2px solid var(--gold);
- border-radius:50%;display:grid;place-items:center;
- color:var(--lightgold);font-size:23px;background:#ffffff10;
-}
-.brand{text-align:center}
-.brand h1{font:900 27px Georgia;color:var(--lightgold);margin:0}
-.brand span{font-size:13px;color:#d9bd80;font-weight:800}
-.welcome{margin-top:15px}
-.welcome b{font-size:19px;color:var(--lightgold)}
-.welcome p{margin:0;color:#d2c6aa;font-size:12px}
-
-/* الخريطة */
-.mapwrap{
- height:350px;margin:14px 12px;
- border:5px solid #c7b58b;border-radius:25px;
- overflow:hidden;position:relative;box-shadow:0 4px 15px #0002;
-}
-#map{height:100%;width:100%}
-.location{
- position:absolute;z-index:500;top:10px;left:10px;right:10px;
- background:white;border-radius:14px;padding:10px;
- display:flex;justify-content:space-between;align-items:center;
- box-shadow:0 3px 10px #0003;
-}
-.location small{display:block;color:#777}
-.location button{
- background:#f4e6c5;border:0;border-radius:9px;
- padding:9px;color:#71501c;font-weight:900;
-}
-
-/* الخدمات */
-.heading{padding:2px 16px 9px;font-weight:900}
-.services{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 12px}
-.service{
- position:relative;min-height:91px;background:white;
- border:1.5px solid #c9ad72;border-radius:17px;
- display:flex;align-items:center;gap:8px;
- padding:9px;text-align:right;box-shadow:0 3px 9px #0001;
-}
-.service .emoji{font-size:37px}
-.service b{display:block;font-size:14px}
-.service small{color:#777;font-size:10px}
-.service .tag{
- position:absolute;top:-9px;left:12px;
- background:var(--gold);color:white;padding:1px 9px;
- border-radius:7px;font-size:10px;font-weight:900;
-}
-.banner{
- margin:18px 12px;padding:18px;border-radius:20px;
- background:linear-gradient(110deg,#08090c,#28262c,#8d682f);
- color:white;border:2px solid var(--gold);
- min-height:120px;display:flex;align-items:center;
- justify-content:space-between;
-}
-.banner h2{font-size:20px;margin:0}
-.banner p{color:var(--lightgold);font-weight:900;margin:3px 0}
-.banner span{font-size:48px}
-
-/* الصفحات */
-.page{padding:15px}
-.panel{
- background:white;border-radius:17px;padding:16px;
- box-shadow:0 3px 12px #0001;margin-bottom:12px;
-}
-.panel h3{margin:0 0 12px}
-.panel input,.panel select{
- display:block;width:100%;padding:12px;
- border:1px solid #ddd;border-radius:11px;margin:6px 0 13px;
-}
-.action{
- width:100%;border:0;border-radius:12px;padding:13px;
- background:linear-gradient(110deg,#bd8d38,#f4d78d);
- font-weight:900;color:#17130a;
-}
-.cardride{
- background:white;padding:14px;border-radius:15px;
- margin-bottom:11px;border-right:4px solid var(--gold);
- box-shadow:0 2px 8px #0001;
-}
-.cardride p{font-size:13px;margin:5px 0}
-.status{font-weight:900;color:#936a20}
-.note{
- background:#fff2d2;color:#76551d;
- padding:11px;border-radius:11px;font-size:12px;margin:10px 0;
-}
-.bottom{
- position:fixed;bottom:0;left:50%;transform:translateX(-50%);
- width:min(480px,100%);height:77px;z-index:1000;
- background:linear-gradient(#333,#101114);
- border-top:3px solid var(--gold);
- display:flex;align-items:center;justify-content:space-around;
-}
-.nav{
- background:none;border:0;color:#e4ce9b;
- display:flex;flex-direction:column;align-items:center;font-size:12px;
-}
-.nav i{
- font-style:normal;width:38px;height:38px;border-radius:50%;
- border:2px solid var(--gold);background:#17213b;
+.logo{font-size:22px;font-weight:900;color:var(--gold)}
+.logo small{display:block;font-size:10px;color:#ddd}
+.profile{
+ background:#25344a;border-radius:50%;width:40px;height:40px;
  display:grid;place-items:center;font-size:20px;
 }
-.toast{
- position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
- background:#151515;color:white;padding:12px 18px;
- border-radius:12px;z-index:3000;display:none;
- width:max-content;max-width:90%;font-size:13px;
+#map{height:48vh;min-height:310px;width:100%;z-index:1}
+.map-label{
+ position:absolute;z-index:500;top:78px;left:12px;
+ background:#18263a;color:white;padding:11px 13px;
+ border:1px solid #526077;border-radius:12px;font-size:12px;
 }
+.map-btn{
+ position:absolute;z-index:500;left:12px;top:135px;
+ background:var(--gold);border:0;border-radius:12px;
+ padding:12px;font-weight:bold;
+}
+.panel{
+ background:var(--dark);border-radius:23px 23px 0 0;
+ margin-top:-18px;position:relative;z-index:600;
+ padding:20px 15px 35px;
+ box-shadow:0 -5px 20px #0005;
+}
+h3{margin:0 0 15px;font-size:17px}
+.location{
+ background:var(--panel);border-radius:13px;
+ padding:13px;margin-bottom:10px;
+ display:flex;align-items:center;gap:12px;
+}
+.dot{width:12px;height:12px;border-radius:50%;background:#36d28b}
+.dot.red{background:#f05b65}
+.location input{
+ background:transparent;border:0;outline:0;color:white;
+ width:100%;font-size:14px;
+}
+.location input::placeholder{color:#9ca9ba}
+button{cursor:pointer;font-family:inherit}
+.gold-btn{
+ width:100%;border:0;border-radius:13px;
+ background:var(--gold);color:#151b25;
+ padding:15px;font-size:15px;font-weight:900;
+ margin-top:9px;
+}
+.gold-btn:disabled{opacity:.5}
+.secondary{
+ background:#26364d;color:white;border:1px solid #46536a;
+ border-radius:12px;padding:12px;
+}
+.info{font-size:12px;color:#aeb9c8;margin:10px 0}
+#priceSection{display:none;margin-top:20px}
+.car{
+ display:flex;align-items:center;gap:12px;
+ background:#1a293e;border:2px solid transparent;
+ border-radius:15px;padding:13px;margin-bottom:10px;
+}
+.car.selected{border-color:var(--gold);background:#26354a}
+.car-icon{font-size:34px}
+.car-details{flex:1}
+.car-details b{font-size:15px}
+.car-details small{display:block;color:#aab5c4;margin-top:5px}
+.price{color:var(--gold);font-size:17px;font-weight:bold}
+#tripInfo{
+ background:#1c2c42;padding:14px;border-radius:13px;
+ margin:13px 0;font-size:13px;line-height:2;
+}
+#message{
+ display:none;background:#1e4939;color:#b8f8d7;
+ padding:14px;border-radius:12px;margin-top:15px;
+}
+.search-results{
+ background:#202f43;border-radius:10px;
+ margin-top:5px;overflow:hidden;
+}
+.result{
+ padding:12px;border-bottom:1px solid #46536a;
+ font-size:13px;cursor:pointer;
+}
+.result:hover{background:#34465f}
+footer{text-align:center;color:#8996a9;font-size:11px;padding:20px}
 </style>
 </head>
 
 <body>
 
-<!-- شاشة التسجيل -->
-<section id="authScreen">
+<header>
  <div class="logo">
-  <div class="car">🚕</div>
-  <h1>ROYAL TAXI</h1>
-  <p>تكسي أحمد | رحلتك بأمان</p>
+  ROYAL TAXI
+  <small>رحلتك براحة وأمان</small>
  </div>
+ <div class="profile">👤</div>
+</header>
 
- <div class="authbox">
-  <h2 id="authTitle">تسجيل الدخول</h2>
-  <div class="hint">أهلاً بك في رويال تكسي</div>
-
-  <div id="registerFields" class="hidden">
-   <div class="field">
-    <label>الاسم الكامل</label>
-    <input id="fullName" placeholder="اسمك الكامل">
-   </div>
-   <div class="field">
-    <label>رقم الهاتف</label>
-    <input id="phone" type="tel" placeholder="07xxxxxxxxx">
-   </div>
-   <div class="field">
-    <label>نوع الحساب</label>
-    <select id="role">
-     <option value="customer">زبون</option>
-     <option value="driver">التقديم كسائق</option>
-    </select>
-   </div>
-  </div>
-
-  <div class="field">
-   <label>البريد الإلكتروني</label>
-   <input id="email" type="email" placeholder="example@gmail.com">
-  </div>
-  <div class="field">
-   <label>كلمة المرور</label>
-   <input id="password" type="password" placeholder="6 أحرف على الأقل">
-  </div>
-
-  <button class="goldbtn" id="authButton" onclick="authenticate()">دخول</button>
-  <div class="switch">
-   <span id="switchText">ليس لديك حساب؟</span>
-   <button id="switchButton" onclick="toggleAuth()">إنشاء حساب</button>
-  </div>
- </div>
-</section>
-
-<!-- التطبيق الرئيسي -->
-<div class="app hidden" id="appScreen">
-
- <header class="header">
-  <div class="headrow">
-   <div class="circle">♙</div>
-   <div class="brand">
-    <h1>ROYAL 🚕</h1>
-    <span>Taxi Ahmed</span>
-   </div>
-   <div class="circle">♧</div>
-  </div>
-  <div class="welcome">
-   <b id="welcomeName">أهلاً بك</b>
-   <p>Welcome to Royal Taxi</p>
-  </div>
- </header>
-
- <!-- الرئيسية -->
- <main id="homePage">
-  <div class="mapwrap">
-   <div id="map"></div>
-   <div class="location">
-    <div><b>📍 موقعي الحالي</b><small id="locationText">الناصرية - ذي قار</small></div>
-    <button onclick="locateMe()">تحديد موقعي</button>
-   </div>
-  </div>
-
-  <div class="heading">اختر الخدمة التي تريدها</div>
-  <div class="services">
-   <button class="service" onclick="openBooking('tuk')">
-    <span class="tag">TAXI</span><span class="emoji">🛺</span>
-    <span><b>طلب تك تك</b><small>Request TukTuk</small></span>
-   </button>
-   <button class="service" onclick="openBooking('taxi')">
-    <span class="tag">TAXI</span><span class="emoji">🚕</span>
-    <span><b>طلب تكسي</b><small>Request Taxi</small></span>
-   </button>
-   <button class="service" onclick="openBooking('delivery')">
-    <span class="tag">TAXI</span><span class="emoji">🛵</span>
-    <span><b>طلب مندوب</b><small>Request Delivery</small></span>
-   </button>
-   <button class="service" onclick="showPage('support')">
-    <span class="emoji">🎧</span>
-    <span><b>الدعم والمساعدة</b><small>Support & Help</small></span>
-   </button>
-  </div>
-
-  <div class="banner">
-   <div><h2>رحلة آمنة وسريعة</h2><p>مع تكسي أحمد</p><small>✓ خدمة موثوقة وسهلة</small></div>
-   <span>📍</span>
-  </div>
- </main>
-
- <!-- صفحة الحجز -->
- <section id="bookingPage" class="page hidden">
-  <div class="panel">
-   <h3 id="bookingTitle">طلب تكسي 🚕</h3>
-   <label>مكان الانطلاق</label>
-   <input id="fromPlace" placeholder="مكان انطلاقك">
-   <label>الوجهة</label>
-   <input id="toPlace" placeholder="إلى أين تريد الذهاب؟">
-   <label>الخدمة</label>
-   <select id="serviceSelect">
-    <option value="taxi">تكسي</option>
-    <option value="tuk">تك تك</option>
-    <option value="delivery">مندوب</option>
-   </select>
-   <div class="note">يمكنك اختيار موقع الانطلاق بالضغط على الخريطة.</div>
-   <button class="action" onclick="createRide()">تأكيد طلب الرحلة</button>
-  </div>
-  <button class="action" onclick="showPage('home')">رجوع</button>
- </section>
-
- <!-- الرحلات -->
- <section id="tripsPage" class="page hidden">
-  <h3>رحلاتي 🚘</h3>
-  <div id="myRides">جارٍ تحميل الرحلات...</div>
- </section>
-
- <!-- لوحة السائق -->
- <section id="driverPage" class="page hidden">
-  <h3>لوحة السائق 🚕</h3>
-  <div class="note">الطلبات المتاحة للسائقين المعتمدين.</div>
-  <button class="action" onclick="loadDriverRides()">تحديث الطلبات</button>
-  <div id="driverRides" style="margin-top:12px"></div>
- </section>
-
- <!-- الحساب -->
- <section id="accountPage" class="page hidden">
-  <div class="panel">
-   <h3>حسابي 👤</h3>
-   <p id="accountName"></p>
-   <p id="accountPhone"></p>
-   <p id="accountEmail"></p>
-   <p id="accountRole" class="status"></p>
-  </div>
-  <div id="driverButtonArea"></div>
-  <button class="action" onclick="logout()">تسجيل الخروج</button>
- </section>
-
- <!-- الدعم -->
- <section id="supportPage" class="page hidden">
-  <div class="panel">
-   <h3>الدعم والمساعدة 🎧</h3>
-   <p>مرحباً بك في دعم رويال تكسي.</p>
-   <p class="note">أضف رقم خدمة العملاء الرسمي هنا بعد تجهيز المشروع.</p>
-  </div>
- </section>
-
- <nav class="bottom">
-  <button class="nav" onclick="showPage('account')"><i>👤</i>الحساب</button>
-  <button class="nav" onclick="showPage('trips')"><i>🚘</i>الرحلات</button>
-  <button class="nav" onclick="showPage('home')"><i>⌂</i>الرئيسية</button>
- </nav>
+<div style="position:relative">
+ <div id="map"></div>
+ <div class="map-label">📍 حدد موقعك ووجهتك على الخريطة</div>
+ <button class="map-btn" onclick="myLocation()">◎ موقعي الحالي</button>
 </div>
 
-<div class="toast" id="toast"></div>
+<main class="panel">
+
+ <h3>🚕 احجز رحلتك الآن</h3>
+
+ <div class="location">
+  <span class="dot"></span>
+  <input id="pickup" placeholder="موقع الانطلاق" readonly>
+ </div>
+
+ <div class="location">
+  <span class="dot red"></span>
+  <input id="destination" placeholder="إلى أين تريد الذهاب؟" readonly>
+ </div>
+
+ <div style="display:flex;gap:8px">
+  <button class="secondary" style="flex:1"
+   onclick="setMode('pickup')">تحديد الانطلاق</button>
+  <button class="secondary" style="flex:1"
+   onclick="setMode('destination')">تحديد الوجهة</button>
+ </div>
+
+ <div style="margin-top:14px">
+  <input id="search" placeholder="🔎 ابحث عن المكان الذي تريد الذهاب إليه"
+   style="width:100%;padding:14px;border-radius:12px;border:1px solid #45546b;background:#1b2a3e;color:white;outline:0">
+  <div id="results" class="search-results"></div>
+ </div>
+
+ <p class="info" id="instruction">
+ اضغط على الخريطة لتحديد موقع الانطلاق أو الوجهة.
+ </p>
+
+ <button class="gold-btn" onclick="calculateTrip()">
+ تثبيت الوجهة وعرض الأسعار ←
+ </button>
+
+ <section id="priceSection">
+  <h3 style="margin-top:20px">💰 اختر نوع السيارة والسعر</h3>
+
+  <div id="tripInfo">
+   المسافة: --<br>
+   الوقت المتوقع: --<br>
+   الوجهة: --
+  </div>
+
+  <div id="cars"></div>
+
+  <button class="gold-btn" onclick="confirmRide()">
+ تأكيد طلب الرحلة
+  </button>
+ </section>
+
+ <div id="message"></div>
+
+</main>
+
+<footer>
+ ROYAL TAXI © 2026
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-// =======================================
-// إعدادات قاعدة البيانات - ضع بياناتك
-// =======================================
-const SUPABASE_URL = "ضع_رابط_مشروعك";
-const SUPABASE_KEY = "ضع_المفتاح_العام";
+/* =============================
+   إعداد الخريطة
+============================= */
 
-let db=null;
-let user=null;
-let profile=null;
-let map=null;
-let marker=null;
-let latitude=31.057;
-let longitude=46.257;
-let authMode="login";
+const map=L.map('map').setView([31.05,46.26],13);
 
-const configured=SUPABASE_URL.startsWith("https://") &&
- !SUPABASE_URL.includes("ضع_");
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+ maxZoom:19,
+ attribution:'© OpenStreetMap'
+}).addTo(map);
 
-if(configured && window.supabase){
- db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let pickup=null;
+let destination=null;
+let pickupMarker=null;
+let destinationMarker=null;
+let routeLayer=null;
+let selectedCar=null;
+let distanceKm=0;
+let estimatedMinutes=0;
+let mode='destination';
+
+/* =============================
+   أنواع السيارات والأسعار
+============================= */
+
+const carTypes=[
+ {
+  id:'economy',
+  name:'اقتصادي',
+  icon:'🚗',
+  description:'سيارة اقتصادية - 4 ركاب',
+  base:1500,
+  km:500
+ },
+ {
+  id:'comfort',
+  name:'مريح',
+  icon:'🚙',
+  description:'سيارة مريحة - 4 ركاب',
+  base:2500,
+  km:700
+ },
+ {
+  id:'vip',
+  name:'ملكي VIP',
+  icon:'🚘',
+  description:'سيارة فاخرة - 4 ركاب',
+  base:4000,
+  km:1000
+ },
+ {
+  id:'family',
+  name:'عائلي',
+  icon:'🚐',
+  description:'سيارة عائلية',
+  base:5000,
+  km:1200
+ }
+];
+
+function setMode(value){
+ mode=value;
+ document.getElementById('instruction').innerText=
+ value==='pickup'?
+ 'اضغط على الخريطة لتثبيت موقع الانطلاق':
+ 'اضغط على الخريطة لتثبيت الوجهة الجديدة';
 }
 
-// =======================================
-// رسائل التطبيق
-// =======================================
-function toast(msg){
- const el=document.getElementById("toast");
- el.textContent=msg;
- el.style.display="block";
- clearTimeout(window.toastTimer);
- window.toastTimer=setTimeout(()=>el.style.display="none",3500);
-}
+/* =============================
+   اختيار المواقع من الخريطة
+============================= */
 
-function escapeHTML(value){
- return String(value??"").replace(/[&<>"']/g,c=>({
- "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
- }[c]));
-}
+map.on('click',function(e){
 
-// =======================================
-// التسجيل والدخول
-// =======================================
-function toggleAuth(){
- authMode=authMode==="login"?"register":"login";
- document.getElementById("authTitle").textContent=
-  authMode==="login"?"تسجيل الدخول":"إنشاء حساب جديد";
- document.getElementById("registerFields").classList.toggle(
-  "hidden",authMode==="login"
- );
- document.getElementById("authButton").textContent=
-  authMode==="login"?"دخول":"إنشاء الحساب";
- document.getElementById("switchText").textContent=
-  authMode==="login"?"ليس لديك حساب؟":"لديك حساب بالفعل؟";
- document.getElementById("switchButton").textContent=
-  authMode==="login"?"إنشاء حساب":"تسجيل الدخول";
-}
+ const p=[e.latlng.lat,e.latlng.lng];
 
-async function authenticate(){
- if(!db){
-  toast("أضف رابط Supabase والمفتاح في الكود");
-  return;
+ if(mode==='pickup'){
+  pickup=p;
+  if(pickupMarker)map.removeLayer(pickupMarker);
+
+  pickupMarker=L.marker(p).addTo(map)
+   .bindPopup('موقع الانطلاق').openPopup();
+
+  reverseAddress(p,'pickup');
+
+ }else{
+  destination=p;
+
+  if(destinationMarker)map.removeLayer(destinationMarker);
+
+  destinationMarker=L.marker(p).addTo(map)
+   .bindPopup('الوجهة الجديدة').openPopup();
+
+  reverseAddress(p,'destination');
  }
 
- const email=document.getElementById("email").value.trim();
- const password=document.getElementById("password").value;
- const button=document.getElementById("authButton");
+});
 
- if(!email || !password){
-  toast("أدخل البريد وكلمة المرور");
-  return;
- }
-
- button.disabled=true;
- button.textContent="يرجى الانتظار...";
-
+async function reverseAddress(coords,type){
  try{
-  if(authMode==="register"){
-   const name=document.getElementById("fullName").value.trim();
-   const phone=document.getElementById("phone").value.trim();
-   const requestedRole=document.getElementById("role").value;
+  const url=`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coords[0]}&lon=${coords[1]}`;
+  const response=await fetch(url);
+  const data=await response.json();
 
-   if(!name || !phone){
-    toast("أدخل الاسم ورقم الهاتف");
-    return;
-   }
-   if(password.length<6){
-    toast("كلمة المرور يجب أن تكون 6 أحرف على الأقل");
-    return;
-   }
+  const address=data.display_name||'موقع محدد على الخريطة';
 
-   const {data,error}=await db.auth.signUp({
-    email,password,
-    options:{data:{
-     full_name:name,
-     phone:phone,
-     requested_role:requestedRole
-    }}
-   });
-   if(error)throw error;
-
-   if(data.session){
-    await loadUser();
-   }else{
-    toast("أنشئ الحساب وافحص بريدك لتأكيده، ثم سجل الدخول");
-    toggleAuth();
-   }
+  if(type==='pickup'){
+   document.getElementById('pickup').value=address;
   }else{
-   const {error}=await db.auth.signInWithPassword({email,password});
-   if(error)throw error;
-   await loadUser();
+   document.getElementById('destination').value=address;
   }
  }catch(e){
-  toast(e.message||"حدث خطأ");
- }finally{
-  button.disabled=false;
-  button.textContent=authMode==="login"?"دخول":"إنشاء الحساب";
+  document.getElementById(type).value='موقع مثبت على الخريطة';
  }
 }
 
-// =======================================
-// تحميل بيانات الحساب
-// =======================================
-async function loadUser(){
- const {data:{user:loggedUser},error}=await db.auth.getUser();
- if(error||!loggedUser)return;
- user=loggedUser;
+/* =============================
+   تحديد الموقع الحالي
+============================= */
 
- const {data,error:profileError}=await db.from("profiles")
-  .select("*").eq("id",user.id).single();
-
- if(profileError){
-  toast("خطأ في ملف الحساب: "+profileError.message);
-  return;
- }
- profile=data;
-
- document.getElementById("authScreen").classList.add("hidden");
- document.getElementById("appScreen").classList.remove("hidden");
-
- document.getElementById("welcomeName").textContent=
-  "أهلاً بك، "+(profile.full_name||"صديقنا");
- document.getElementById("accountName").textContent="الاسم: "+profile.full_name;
- document.getElementById("accountPhone").textContent="الهاتف: "+profile.phone;
- document.getElementById("accountEmail").textContent="البريد: "+user.email;
-
- document.getElementById("accountRole").textContent=
-  profile.role==="driver"?"سائق معتمد":
-  profile.requested_role==="driver"?"طلب السائق قيد المراجعة":"زبون";
-
- const driverArea=document.getElementById("driverButtonArea");
- driverArea.innerHTML="";
- if(profile.role==="driver"){
-  const btn=document.createElement("button");
-  btn.className="action";
-  btn.style.marginBottom="10px";
-  btn.textContent="فتح لوحة السائق";
-  btn.onclick=()=>showPage("driver");
-  driverArea.appendChild(btn);
- }
- if(profile.requested_role==="driver"&&profile.role!=="driver"){
-  toast("طلبك كسائق بانتظار موافقة الإدارة");
- }
-
- initMap();
- showPage("home");
- loadMyRides();
-}
-
-// =======================================
-// الخريطة المجانية
-// =======================================
-function initMap(){
- if(map){
-  setTimeout(()=>map.invalidateSize(),250);
-  return;
- }
- map=L.map("map").setView([latitude,longitude],14);
-
- L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{
-  maxZoom:19,
-  attribution:"© OpenStreetMap"
- }).addTo(map);
-
- marker=L.marker([latitude,longitude]).addTo(map)
-  .bindPopup("موقع الانطلاق");
-
- map.on("click",e=>{
-  latitude=e.latlng.lat;
-  longitude=e.latlng.lng;
-  marker.setLatLng(e.latlng);
-  document.getElementById("locationText").textContent="تم تحديد موقع الانطلاق";
-  toast("تم تحديد الموقع على الخريطة");
- });
-
- setTimeout(()=>map.invalidateSize(),300);
-}
-
-function locateMe(){
+function myLocation(){
  if(!navigator.geolocation){
-  toast("تحديد الموقع غير مدعوم");
+  alert('المتصفح لا يدعم تحديد الموقع');
   return;
  }
- toast("جارٍ تحديد موقعك...");
- navigator.geolocation.getCurrentPosition(pos=>{
-  latitude=pos.coords.latitude;
-  longitude=pos.coords.longitude;
-  if(map){
-   map.setView([latitude,longitude],16);
-   marker.setLatLng([latitude,longitude]);
-  }
-  document.getElementById("locationText").textContent="موقعي الحالي";
-  toast("تم تحديد موقعك");
+
+ navigator.geolocation.getCurrentPosition(position=>{
+  pickup=[
+   position.coords.latitude,
+   position.coords.longitude
+  ];
+
+  if(pickupMarker)map.removeLayer(pickupMarker);
+
+  pickupMarker=L.marker(pickup).addTo(map)
+   .bindPopup('موقعك الحالي').openPopup();
+
+  map.setView(pickup,16);
+  reverseAddress(pickup,'pickup');
+
  },()=>{
-  toast("اسمح للمتصفح باستخدام الموقع وتأكد من تشغيل GPS");
- },{enableHighAccuracy:true,timeout:15000});
+  alert('تعذر تحديد موقعك. تحقق من صلاحية الموقع والاتصال.');
+ },{
+  enableHighAccuracy:true,
+  timeout:15000
+ });
 }
 
-// =======================================
-// التنقل بين الواجهات
-// =======================================
-const pages={
- home:"homePage",
- booking:"bookingPage",
- trips:"tripsPage",
- driver:"driverPage",
- account:"accountPage",
- support:"supportPage"
-};
+/* =============================
+   البحث عن الأماكن
+============================= */
 
-function showPage(name){
- Object.values(pages).forEach(id=>
-  document.getElementById(id).classList.add("hidden")
- );
- if(!pages[name])return;
+let searchTimer;
 
- document.getElementById(pages[name]).classList.remove("hidden");
+document.getElementById('search').addEventListener('input',function(){
 
- if(name==="home"&&map){
-  setTimeout(()=>map.invalidateSize(),250);
- }
- if(name==="trips")loadMyRides();
- if(name==="driver")loadDriverRides();
-}
+ clearTimeout(searchTimer);
 
-// =======================================
-// حجز الرحلة
-// =======================================
-function openBooking(type){
- const names={
-  taxi:"طلب تكسي 🚕",
-  tuk:"طلب تك تك 🛺",
-  delivery:"طلب مندوب 🛵"
- };
- document.getElementById("bookingTitle").textContent=names[type];
- document.getElementById("serviceSelect").value=type;
- document.getElementById("fromPlace").value=
-  document.getElementById("locationText").textContent;
- showPage("booking");
-}
+ const query=this.value.trim();
+ const results=document.getElementById('results');
 
-async function createRide(){
- if(!db||!user){
-  toast("سجل الدخول أولاً");
-  return;
- }
- const from=document.getElementById("fromPlace").value.trim();
- const to=document.getElementById("toPlace").value.trim();
- const type=document.getElementById("serviceSelect").value;
-
- if(!from||!to){
-  toast("أدخل الانطلاق والوجهة");
+ if(query.length<3){
+  results.innerHTML='';
   return;
  }
 
- const btn=document.querySelector("#bookingPage .action");
+ searchTimer=setTimeout(async()=>{
+  try{
+   const url='https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&countrycodes=iq&q='+encodeURIComponent(query);
+
+   const response=await fetch(url);
+   const data=await response.json();
+
+   results.innerHTML='';
+
+   data.forEach(place=>{
+    const item=document.createElement('div');
+    item.className='result';
+    item.textContent=place.display_name;
+
+    item.onclick=()=>{
+     const coords=[
+      Number(place.lat),
+      Number(place.lon)
+     ];
+
+     destination=coords;
+
+     if(destinationMarker)map.removeLayer(destinationMarker);
+
+     destinationMarker=L.marker(coords).addTo(map)
+      .bindPopup('الوجهة الجديدة').openPopup();
+
+     document.getElementById('destination').value=place.display_name;
+     document.getElementById('search').value='';
+     results.innerHTML='';
+     map.setView(coords,15);
+    };
+
+    results.appendChild(item);
+   });
+
+  }catch(e){
+   results.innerHTML='<div class="result">تعذر البحث حالياً</div>';
+  }
+ },600);
+});
+
+/* =============================
+   حساب المسار والمسافة
+============================= */
+
+async function calculateTrip(){
+
+ if(!pickup){
+  alert('حدد موقع الانطلاق أولاً');
+  return;
+ }
+
+ if(!destination){
+  alert('حدد الوجهة الجديدة أولاً');
+  return;
+ }
+
+ if(pickup[0]===destination[0]&&pickup[1]===destination[1]){
+  alert('الانطلاق والوجهة متطابقان');
+  return;
+ }
+
+ const btn=document.querySelector('.gold-btn');
  btn.disabled=true;
- btn.textContent="جارٍ إرسال الطلب...";
+ btn.innerText='جارٍ حساب المسافة...';
 
  try{
-  const {error}=await db.from("ride_requests").insert({
-   customer_id:user.id,
-   service_type:type,
-   from_text:from,
-   to_text:to,
-   from_lat:latitude,
-   from_lng:longitude
-  });
-  if(error)throw error;
 
-  toast("تم إرسال طلبك إلى قاعدة البيانات");
-  document.getElementById("toPlace").value="";
-  showPage("trips");
+  const url=
+  `https://router.project-osrm.org/route/v1/driving/${pickup[1]},${pickup[0]};${destination[1]},${destination[0]}?overview=full&geometries=geojson`;
+
+  const response=await fetch(url);
+  const data=await response.json();
+
+  if(!data.routes||!data.routes.length){
+   throw new Error('No route');
+  }
+
+  const route=data.routes[0];
+
+  distanceKm=route.distance/1000;
+  estimatedMinutes=Math.ceil(route.duration/60);
+
+  if(routeLayer)map.removeLayer(routeLayer);
+
+  routeLayer=L.geoJSON(route.geometry,{
+   style:{
+    color:'#e6b94e',
+    weight:6,
+    opacity:.9
+   }
+  }).addTo(map);
+
+  map.fitBounds(routeLayer.getBounds(),{padding:[30,30]});
+
+  document.getElementById('tripInfo').innerHTML=
+   `المسافة: ${distanceKm.toFixed(1)} كم<br>
+    الوقت المتوقع: ${estimatedMinutes} دقيقة<br>
+    الوجهة: ${document.getElementById('destination').value}`;
+
+  showPrices();
+
  }catch(e){
-  toast("تعذر إرسال الطلب: "+e.message);
+  alert('تعذر حساب الطريق. تحقق من اتصال الإنترنت وحاول مجدداً.');
  }finally{
   btn.disabled=false;
-  btn.textContent="تأكيد طلب الرحلة";
+  btn.innerText='تثبيت الوجهة وعرض الأسعار ←';
  }
 }
 
-// =======================================
-// رحلات الزبون
-// =======================================
-async function loadMyRides(){
- if(!db||!user)return;
- const box=document.getElementById("myRides");
- box.textContent="جارٍ تحميل الرحلات...";
+/* =============================
+   عرض قائمة السيارات والأسعار
+============================= */
 
- const {data,error}=await db.from("ride_requests")
-  .select("*").eq("customer_id",user.id)
-  .order("created_at",{ascending:false});
+function showPrices(){
 
- if(error){
-  box.textContent="خطأ: "+error.message;
+ const container=document.getElementById('cars');
+ container.innerHTML='';
+
+ selectedCar=null;
+
+ carTypes.forEach(car=>{
+
+  const price=Math.ceil(
+   (car.base+distanceKm*car.km)/250
+  )*250;
+
+  const element=document.createElement('div');
+
+  element.className='car';
+
+  element.innerHTML=`
+   <div class="car-icon">${car.icon}</div>
+   <div class="car-details">
+    <b>${car.name}</b>
+    <small>${car.description}</small>
+   </div>
+   <div class="price">${price.toLocaleString('en-US')} د.ع</div>
+  `;
+
+  element.onclick=()=>{
+   document.querySelectorAll('.car').forEach(c=>{
+    c.classList.remove('selected');
+   });
+
+   element.classList.add('selected');
+
+   selectedCar={
+    ...car,
+    price:price
+   };
+  };
+
+  container.appendChild(element);
+ });
+
+ document.getElementById('priceSection').style.display='block';
+
+ document.getElementById('priceSection').scrollIntoView({
+  behavior:'smooth',
+  block:'start'
+ });
+}
+
+/* =============================
+   تأكيد طلب الرحلة
+============================= */
+
+function confirmRide(){
+
+ if(!selectedCar){
+  alert('يرجى اختيار نوع السيارة أولاً');
   return;
  }
- if(!data.length){
-  box.innerHTML="<div class='panel'>لا توجد رحلات حالياً.</div>";
-  return;
- }
 
- box.innerHTML="";
- data.forEach(r=>{
-  const names={taxi:"تكسي 🚕",tuk:"تك تك 🛺",delivery:"مندوب 🛵"};
-  const states={
-   pending:"بانتظار سائق",
-   accepted:"تم قبول الرحلة",
-   c
+ const ride={
+  id:'ROYAL-'+Date.now(),
+  pickup:pickup,
+  destination:destination,
+  pickupAddress:document.getElementById('pickup').value,
+  destinationAddress:document.getElementById('destination').value,
+  distance:distanceKm,
+  minutes:estimatedMinutes,
+  car:selectedCar.name,
+  price:selectedCar.price,
+  status:'بانتظار السائق'
+ };
+
+ // نموذج تجريبي: لا يرسل الطلب إلى سائق حقيقي
+ localStorage.setItem('royal_last_ride',JSON.stringify(ride));
+
+ const message=document.getElementById('message');
+
+ message.style.display='block';
+ message.innerHTML=`
+  <b>✅ تم إنشاء طلب الرحلة بنجاح!</b><br><br>
+  رقم الطلب: ${ride.id}<br>
+  السيارة: ${ride.car}<br>
+  السعر: ${ride.price.toLocaleString('en-US')} دينار<br>
+  المسافة: ${ride.distance.toFixed(1)} كم<br>
+  الحالة: ${ride.status}<br><br>
+  <small>هذه نسخة تجريبية؛ ربط السائقين الفعليين يحتاج قاعدة بيانات وخدمة طلبات مباشرة.</small>
+ `;
+
+ message.scrollIntoView({behavior:'smooth'});
+}
+
+</script>
+</body>
+</html>
