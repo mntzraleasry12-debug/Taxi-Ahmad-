@@ -7,122 +7,317 @@
 <meta name="theme-color" content="#07152f">
 <title>ROYAL TAXI</title>
 
-<link rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
 *{box-sizing:border-box}
 :root{
 --gold:#efbd4c;
+--gold-soft:#ffe28d;
 --navy:#07152f;
 --panel:#14294b;
 --light:#fff;
 }
+html,body{height:100%}
 body{
-margin:0;background:var(--navy);color:white;
+margin:0;
+background:
+ radial-gradient(circle at 15% 0%, #153662 0%, #0a1b38 45%, #050e1f 100%);
+color:white;
 font-family:Tahoma,Arial,sans-serif;
+perspective:1400px;
+overflow-x:hidden;
 }
 button,input,select{font-family:inherit}
 button{cursor:pointer}
 .hidden{display:none!important}
-.page{max-width:520px;margin:auto;padding:16px}
+
+/* ===== الصفحات (انتقال ناعم) ===== */
+.page{
+max-width:520px;margin:auto;padding:16px;
+animation:pageIn .45s cubic-bezier(.2,.8,.3,1);
+transform-style:preserve-3d;
+}
+@keyframes pageIn{
+ from{opacity:0;transform:translateY(18px) scale(.98)}
+ to{opacity:1;transform:none}
+}
+
+/* ===== الهيدر ===== */
 header{
-padding:17px;background:#10213e;
+padding:17px;background:linear-gradient(180deg,#13274a,#0b1a33);
 border-bottom:2px solid var(--gold);
 display:flex;justify-content:space-between;
-align-items:center;position:sticky;top:0;z-index:10
+align-items:center;position:sticky;top:0;z-index:10;
+box-shadow:0 6px 20px rgba(0,0,0,.6), 0 2px 0 var(--gold) inset;
 }
-.logo{color:var(--gold);font-size:23px;font-weight:bold}
-.logo small{display:block;color:white;font-size:11px;margin-top:5px}
+.logo{
+color:var(--gold);font-size:23px;font-weight:bold;
+text-shadow:0 0 18px rgba(239,189,76,.55);
+animation:logoGlow 3.5s ease-in-out infinite;
+}
+@keyframes logoGlow{
+ 0%,100%{text-shadow:0 0 14px rgba(239,189,76,.4)}
+ 50%{text-shadow:0 0 26px rgba(239,189,76,.9)}
+}
+.logo small{display:block;color:#d7e2f1;font-size:11px;margin-top:5px;
+ text-shadow:none;font-weight:normal}
+
+/* ===== البطاقات 3D ===== */
 .card{
-background:linear-gradient(145deg,#203b65,#0d1c37);
-border:1px solid #667d9e;border-radius:19px;
+background:linear-gradient(145deg,#27436f,#0d1c37 70%);
+border:1px solid #667d9e;border-radius:20px;
 padding:18px;margin-bottom:16px;
-box-shadow:0 7px 0 #030b19,0 12px 20px #0006;
+box-shadow:
+ 0 8px 0 #030b19,
+ 0 16px 28px rgba(0,0,0,.55),
+ inset 0 1px 0 rgba(255,255,255,.12);
+transform-style:preserve-3d;
+transition:transform .5s cubic-bezier(.2,.8,.3,1), box-shadow .5s;
 }
+.card:hover{
+transform:translateY(-3px) rotateX(1.2deg);
+box-shadow:
+ 0 12px 0 #030b19,
+ 0 22px 34px rgba(0,0,0,.6),
+ inset 0 1px 0 rgba(255,255,255,.15);
+}
+
+/* ===== الهيرو ===== */
 .hero{text-align:center;padding:20px 5px}
-.crown{font-size:65px;color:var(--gold)}
-.hero h1{font-size:34px;color:var(--gold)}
-.car{font-size:85px;filter:drop-shadow(0 12px 6px #000)}
+.hero h1{
+font-size:34px;color:var(--gold);letter-spacing:1px;
+text-shadow:0 0 25px rgba(239,189,76,.7), 0 3px 0 #8a6218;
+}
+
+/* التاج المتحرك */
+.crown{
+display:inline-block;font-size:65px;color:var(--gold);
+animation:crownFloat 3.6s ease-in-out infinite;
+filter:drop-shadow(0 0 18px rgba(239,189,76,.75));
+}
+@keyframes crownFloat{
+ 0%,100%{transform:translateY(0) rotate(-5deg) scale(1)}
+ 50%{transform:translateY(-14px) rotate(5deg) scale(1.06)}
+}
+
+/* السيارة المتحركة */
+.car{
+display:inline-block;font-size:85px;
+animation:carDrive 2.4s ease-in-out infinite;
+filter:drop-shadow(0 16px 10px rgba(0,0,0,.7));
+}
+@keyframes carDrive{
+ 0%,100%{transform:translateX(-8px) rotate(-2deg)}
+ 50%{transform:translateX(8px) rotate(2deg)}
+}
+
 .gold{color:var(--gold)}
 .muted{color:#bac8db;font-size:13px;line-height:1.8}
+
+/* ===== الحقول ===== */
 .field{margin:15px 0}
 label{display:block;margin-bottom:8px;color:#ffe19a;font-size:13px}
 input,select{
 width:100%;padding:15px;border-radius:12px;
 border:1px solid #647a99;background:#091a34;
-color:white;font-size:15px;outline:none
+color:white;font-size:15px;outline:none;
+transition:border-color .25s, box-shadow .25s, transform .25s;
 }
-input:focus,select:focus{border-color:var(--gold)}
+input:focus,select:focus{
+border-color:var(--gold);
+box-shadow:0 0 0 3px rgba(239,189,76,.18), 0 0 20px rgba(239,189,76,.35);
+transform:translateY(-1px);
+}
+
+/* ===== زر أساسي 3D + لمعان ===== */
 .primary{
-width:100%;padding:16px;border:0;border-radius:13px;
-background:linear-gradient(145deg,#ffe28d,#d99d2e);
+position:relative;overflow:hidden;
+width:100%;padding:16px;border:0;border-radius:14px;
+background:linear-gradient(150deg,#ffe9a5,#efbd4c 45%,#c98a1f);
 color:#101b30;font-weight:bold;font-size:16px;
-box-shadow:0 5px 0 #805817;
+box-shadow:
+ 0 7px 0 #7d5515,
+ 0 12px 24px rgba(239,189,76,.4),
+ inset 0 1px 0 rgba(255,255,255,.6);
+transform-style:preserve-3d;
+transition:transform .12s ease, box-shadow .12s ease, filter .25s;
 }
-.primary:active{transform:translateY(4px);box-shadow:none}
+.primary::after{
+content:"";position:absolute;top:0;left:-70%;width:45%;height:100%;
+background:linear-gradient(100deg,transparent,rgba(255,255,255,.65),transparent);
+transform:skewX(-20deg);
+animation:shine 3.8s infinite;
+}
+@keyframes shine{
+ 0%{left:-70%}
+ 55%{left:140%}
+ 100%{left:140%}
+}
+.primary:hover{filter:brightness(1.08)}
+.primary:active{
+transform:translateY(7px) scale(.985);
+box-shadow:0 0 0 #7d5515, 0 4px 10px rgba(0,0,0,.4);
+}
+
+/* ===== زر ثانوي 3D ===== */
 .secondary{
-background:#263e61;color:white;border:1px solid #7085a4;
-padding:14px;border-radius:12px;
+background:linear-gradient(150deg,#38537c,#1a2f52);
+color:#fff;border:1px solid #7085a4;
+padding:14px;border-radius:13px;
+box-shadow:
+ 0 6px 0 #0a1830,
+ 0 10px 18px rgba(0,0,0,.45),
+ inset 0 1px 0 rgba(255,255,255,.12);
+transition:transform .12s ease, box-shadow .12s ease, filter .25s;
 }
-.secondary:active{transform:translateY(3px)}
+.secondary:hover{filter:brightness(1.1)}
+.secondary:active{
+transform:translateY(6px);
+box-shadow:0 0 0 #0a1830, 0 3px 8px rgba(0,0,0,.35);
+}
+
+/* ===== اختيار نوع الحساب 3D ===== */
 .role{
 display:flex;align-items:center;gap:13px;
 padding:16px;margin:12px 0;
-background:#172e50;border:2px solid #526887;
-border-radius:14px;cursor:pointer
+background:linear-gradient(150deg,#1b3358,#122444);
+border:2px solid #526887;border-radius:16px;
+cursor:pointer;
+box-shadow:
+ 0 6px 0 #040c19,
+ 0 10px 20px rgba(0,0,0,.45),
+ inset 0 1px 0 rgba(255,255,255,.08);
+transition:transform .2s, box-shadow .2s, border-color .3s, background .3s;
+transform-style:preserve-3d;
 }
-.role.active{border-color:var(--gold);background:#294367}
-.role-icon{font-size:34px}
+.role:hover{transform:translateY(-3px) rotateX(2deg)}
+.role:active{transform:translateY(4px);box-shadow:0 0 0 #040c19}
+.role.active{
+border-color:var(--gold);
+background:linear-gradient(150deg,#2e4f80,#1b355c);
+box-shadow:
+ 0 6px 0 #040c19,
+ 0 0 0 3px rgba(239,189,76,.25),
+ 0 12px 28px rgba(239,189,76,.3),
+ inset 0 1px 0 rgba(255,255,255,.15);
+}
+.role-icon{
+font-size:34px;display:inline-block;
+transition:transform .35s cubic-bezier(.2,1.6,.4,1);
+filter:drop-shadow(0 6px 6px rgba(0,0,0,.5));
+}
+.role:hover .role-icon{transform:scale(1.15) rotate(-6deg)}
+.role.active .role-icon{animation:iconPop 2.4s ease-in-out infinite}
+@keyframes iconPop{
+ 0%,100%{transform:scale(1) rotate(0)}
+ 50%{transform:scale(1.12) rotate(6deg)}
+}
 .role-info{flex:1}
 .role-info small{display:block;color:#b8c6d9;margin-top:5px}
+
 .link{color:var(--gold);cursor:pointer;text-decoration:underline}
 .center{text-align:center}
+
 .error,.success{
-padding:12px;border-radius:10px;margin-top:12px;font-size:13px
+padding:12px;border-radius:10px;margin-top:12px;font-size:13px;
+animation:pageIn .3s ease;
 }
-.error{background:#592b36;color:#ffc1c1}
-.success{background:#174c3b;color:#c3ffdc}
+.error{background:#592b36;color:#ffc1c1;box-shadow:0 4px 0 #2d141a}
+.success{background:#174c3b;color:#c3ffdc;box-shadow:0 4px 0 #0b2c22}
+
+/* ===== خدمات 3D ===== */
 .services{display:grid;grid-template-columns:1fr 1fr;gap:13px}
 .service{
 padding:18px 8px;text-align:center;
-background:linear-gradient(145deg,#294a79,#10213f);
-border:1px solid var(--gold);border-radius:17px;
-color:white;box-shadow:0 5px 0 #030b19;
+background:linear-gradient(150deg,#2d5083,#10213f);
+border:1px solid var(--gold);border-radius:18px;
+color:white;
+box-shadow:
+ 0 7px 0 #030b19,
+ 0 12px 22px rgba(0,0,0,.5),
+ inset 0 1px 0 rgba(255,255,255,.12);
+transition:transform .18s, box-shadow .18s, filter .3s;
+transform-style:preserve-3d;
 }
-.service .emoji{display:block;font-size:48px}
+.service:hover{transform:translateY(-4px) rotateX(3deg);filter:brightness(1.08)}
+.service:active{transform:translateY(5px);box-shadow:0 0 0 #030b19}
+.service .emoji{
+display:block;font-size:48px;
+animation:bob 2.6s ease-in-out infinite;
+filter:drop-shadow(0 10px 8px rgba(0,0,0,.6));
+}
+.service:nth-child(2) .emoji{animation-delay:.6s}
+@keyframes bob{
+ 0%,100%{transform:translateY(0) scale(1) rotate(0)}
+ 50%{transform:translateY(-9px) scale(1.08) rotate(4deg)}
+}
 .service b{display:block;color:var(--gold);margin:9px}
 .service small{color:#c8d5e8}
-.service:active{transform:translateY(4px);box-shadow:none}
-#map{
-height:340px;border-radius:15px;
-border:2px solid var(--gold);z-index:1;
-}
+
+#map{height:340px;border-radius:15px;border:2px solid var(--gold);z-index:1;
+ box-shadow:0 8px 22px rgba(0,0,0,.55)}
+
 .row{display:flex;gap:10px;margin:12px 0}
 .row>*{flex:1}
+
 .point{
 padding:13px;background:#091a34;
 border:1px solid #536c90;border-radius:11px;
 margin:9px 0;font-size:13px;
+box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
 }
+
+/* ===== بطاقة السعر 3D ===== */
 .price{
 padding:15px;margin:10px 0;
-background:#1b355a;border:1px solid #7185a2;
-border-radius:13px;display:flex;
+background:linear-gradient(150deg,#22406c,#132849);
+border:1px solid #7185a2;
+border-radius:14px;display:flex;
 justify-content:space-between;align-items:center;gap:8px;
+box-shadow:0 6px 0 #030b19, 0 10px 18px rgba(0,0,0,.45);
+transition:transform .2s, box-shadow .2s;
 }
+.price:hover{transform:translateY(-3px) rotateX(2deg)}
 .price button{
-padding:10px;border:0;border-radius:9px;
-background:var(--gold);font-weight:bold;
+padding:10px 16px;border:0;border-radius:10px;
+background:linear-gradient(150deg,#ffe28d,#e0a733);
+font-weight:bold;color:#101b30;
+box-shadow:0 4px 0 #7d5515;
+transition:transform .12s, box-shadow .12s;
 }
+.price button:active{transform:translateY(4px);box-shadow:none}
+
+/* ===== الشريط السفلي ===== */
 .nav{
 display:flex;justify-content:space-around;
-padding:13px;background:#091831;
+padding:13px;
+background:linear-gradient(180deg,#0d1f3c,#07132a);
 border-top:1px solid var(--gold);
 position:sticky;bottom:0;
+box-shadow:0 -8px 22px rgba(0,0,0,.6);
 }
-.nav button{background:none;border:0;color:var(--gold)}
-.nav span{display:block;font-size:23px;margin-bottom:5px}
+.nav button{
+background:none;border:0;color:var(--gold);
+transition:transform .2s, filter .2s;
+}
+.nav button:hover{transform:translateY(-4px);filter:brightness(1.2)}
+.nav button:active{transform:translateY(2px)}
+.nav span{
+display:block;font-size:23px;margin-bottom:5px;
+animation:navBounce 3s ease-in-out infinite;
+}
+.nav button:nth-child(2) span{animation-delay:.4s}
+.nav button:nth-child(3) span{animation-delay:.8s}
+@keyframes navBounce{
+ 0%,100%{transform:translateY(0)}
+ 50%{transform:translateY(-5px)}
+}
+
+/* ===== تقليل الحركة عند الحاجة ===== */
+@media (prefers-reduced-motion: reduce){
+ *{animation:none!important;transition:none!important}
+}
 </style>
 </head>
 
@@ -137,7 +332,6 @@ position:sticky;bottom:0;
 </header>
 
 <!-- LOGIN -->
-
 <section id="loginScreen" class="page">
  <div class="hero">
   <div class="crown">♛</div>
@@ -230,7 +424,6 @@ position:sticky;bottom:0;
 </section>
 
 <!-- HOME -->
-
 <section id="homeScreen" class="page hidden">
 
  <div class="card hero">
@@ -273,7 +466,6 @@ position:sticky;bottom:0;
 </section>
 
 <!-- MAP -->
-
 <section id="mapScreen" class="page hidden">
  <div class="card">
   <h2 class="gold">خريطة الرحلة 📍</h2>
@@ -307,7 +499,6 @@ position:sticky;bottom:0;
 </section>
 
 <!-- PRICES -->
-
 <section id="priceScreen" class="page hidden">
  <div class="card">
   <h2 class="gold">قائمة أسعار الرحلة 👑</h2>
@@ -321,7 +512,6 @@ position:sticky;bottom:0;
 </section>
 
 <!-- DRIVER -->
-
 <section id="driverScreen" class="page hidden">
  <div class="card center">
   <div class="car">🚖</div>
@@ -344,7 +534,6 @@ position:sticky;bottom:0;
 </section>
 
 <!-- ACCOUNT -->
-
 <section id="accountScreen" class="page hidden">
  <div class="card">
   <h2 class="gold">حسابي</h2>
@@ -357,7 +546,7 @@ position:sticky;bottom:0;
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-/* ROYAL TAXI - النسخة المصححة */
+/* ROYAL TAXI - نسخة 3D المصححة */
 
 (function(){
 
@@ -415,20 +604,21 @@ function clearMessages(){
 }
 
 function showScreen(id){
- document.querySelectorAll(".page").forEach(p=>{
-  p.classList.add("hidden");
- });
- $(id).classList.remove("hidden");
+ document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));
+ const el=$(id);
+ el.classList.remove("hidden");
+ /* إعادة تشغيل حركة الدخول */
+ el.style.animation="none";
+ void el.offsetWidth;
+ el.style.animation="";
  window.scrollTo(0,0);
 }
 
 function chooseRole(value){
  role=value;
  clearMessages();
-
  $("passengerRole").classList.toggle("active",value==="passenger");
  $("driverRole").classList.toggle("active",value==="driver");
-
  updateForm();
 }
 
@@ -439,48 +629,32 @@ function updateForm(){
 
  $("nameField").classList.toggle("hidden",!register);
  $("confirmField").classList.toggle("hidden",!register);
- $("driverFields").classList.toggle("hidden",
-  !(register&&role==="driver"));
+ $("driverFields").classList.toggle("hidden",!(register&&role==="driver"));
 
- $("submitAuth").textContent=register?
- "إنشاء الحساب":"تسجيل الدخول";
-
- $("switchText").textContent=register?
- "لديك حساب بالفعل؟":"ليس لديك حساب؟";
-
- $("switchButton").textContent=register?
- "تسجيل الدخول":"إنشاء حساب جديد";
+ $("submitAuth").textContent=register?"إنشاء الحساب":"تسجيل الدخول";
+ $("switchText").textContent=register?"لديك حساب بالفعل؟":"ليس لديك حساب؟";
+ $("switchButton").textContent=register?"تسجيل الدخول":"إنشاء حساب جديد";
 }
 
 /* اختيار نوع الحساب */
-
 $("passengerRole").addEventListener("click",()=>chooseRole("passenger"));
 $("driverRole").addEventListener("click",()=>chooseRole("driver"));
-
 $("passengerRole").addEventListener("keydown",e=>{
- if(e.key==="Enter"||e.key===" "){
-  e.preventDefault();chooseRole("passenger");
- }
+ if(e.key==="Enter"||e.key===" "){e.preventDefault();chooseRole("passenger");}
 });
-
 $("driverRole").addEventListener("keydown",e=>{
- if(e.key==="Enter"||e.key===" "){
-  e.preventDefault();chooseRole("driver");
- }
+ if(e.key==="Enter"||e.key===" "){e.preventDefault();chooseRole("driver");}
 });
 
-/* التبديل بين التسجيل والدخول */
-
+/* التبديل */
 $("switchButton").addEventListener("click",()=>{
  register=!register;
  clearMessages();
  updateForm();
 });
 
-/* التسجيل وتسجيل الدخول */
-
+/* التسجيل / الدخول */
 $("authForm").addEventListener("submit",function(e){
-
  e.preventDefault();
  clearMessages();
 
@@ -491,7 +665,6 @@ $("authForm").addEventListener("submit",function(e){
   error("رقم الهاتف غير صحيح. اكتب 11 رقماً يبدأ بـ 07.");
   return;
  }
-
  if(password.length<6){
   error("كلمة المرور يجب أن تكون 6 أحرف على الأقل.");
   return;
@@ -500,53 +673,31 @@ $("authForm").addEventListener("submit",function(e){
  let list=getUsers();
 
  if(register){
-
   const name=$("fullName").value.trim();
-
-  if(name.length<3){
-   error("يرجى إدخال الاسم الكامل.");
-   return;
-  }
-
+  if(name.length<3){error("يرجى إدخال الاسم الكامل.");return;}
   if(password!==$("confirmPassword").value){
-   error("كلمة المرور غير متطابقة.");
-   return;
+   error("كلمة المرور غير متطابقة.");return;
   }
-
   if(list.some(u=>u.phone===phone&&u.role===role)){
-   error("هذا الرقم مسجل مسبقاً لهذا النوع من الحسابات.");
-   return;
+   error("هذا الرقم مسجل مسبقاً لهذا النوع من الحسابات.");return;
   }
 
-  let vehicle="";
-  let plate="";
-  let license="";
-
+  let vehicle="",plate="",license="";
   if(role==="driver"){
    vehicle=$("vehicle").value;
    plate=$("plate").value.trim();
    license=$("license").value.trim();
-
    if(!vehicle||plate.length<2||license.length<2){
-    error("أكمل معلومات المركبة واللوحة والرخصة.");
-    return;
+    error("أكمل معلومات المركبة واللوحة والرخصة.");return;
    }
   }
 
   const newUser={
-   id:Date.now(),
-   name:name,
-   phone:phone,
-   password:password,
-   role:role,
-   vehicle:vehicle,
-   plate:plate,
-   license:license,
-   online:false
+   id:Date.now(),name,phone,password,role,
+   vehicle,plate,license,online:false
   };
 
   list.push(newUser);
-
   if(!saveUsers(list))return;
 
   currentUser=newUser;
@@ -554,29 +705,20 @@ $("authForm").addEventListener("submit",function(e){
   openDashboard();
 
  }else{
-
   currentUser=list.find(u=>
-   u.phone===phone&&
-   u.password===password&&
-   u.role===role
+   u.phone===phone&&u.password===password&&u.role===role
   );
-
   if(!currentUser){
    error("بيانات الدخول غير صحيحة. تأكد من نوع الحساب ورقم الهاتف وكلمة المرور.");
    return;
   }
-
   openDashboard();
  }
-
 });
 
-/* فتح لوحة الحساب */
-
+/* لوحة الحساب */
 function openDashboard(){
-
  clearMessages();
-
  if(currentUser.role==="passenger"){
   $("welcomeName").textContent=currentUser.name;
   showScreen("homeScreen");
@@ -589,281 +731,8 @@ function openDashboard(){
  }
 }
 
-/* حفظ المستخدم */
-
 function updateCurrentUser(){
  if(!currentUser)return;
-
  const list=getUsers();
  const index=list.findIndex(u=>u.id===currentUser.id);
-
- if(index!==-1){
-  list[index]=currentUser;
-  saveUsers(list);
- }
-}
-
-/* الخروج */
-
-function logout(){
-
- if(currentUser&&currentUser.role==="driver"){
-  currentUser.online=false;
-  updateCurrentUser();
- }
-
- currentUser=null;
- register=false;
- $("authForm").reset();
- chooseRole("passenger");
- showScreen("loginScreen");
-}
-
-$("logoutButton").addEventListener("click",logout);
-$("driverLogout").addEventListener("click",logout);
-
-/* السائق */
-
-let isOnline=false;
-
-function updateOnline(){
- isOnline=!!currentUser.online;
-
- $("driverStatus").textContent=
- isOnline?"🟢 أنت متصل وتستقبل الرحلات":"🔴 أنت غير متصل";
-
- $("onlineButton").textContent=
- isOnline?"إيقاف استقبال الرحلات":"تشغيل استقبال الرحلات";
-}
-
-$("onlineButton").addEventListener("click",()=>{
- isOnline=!isOnline;
- currentUser.online=isOnline;
- updateCurrentUser();
- updateOnline();
-});
-
-/* الرئيسية */
-
-document.querySelectorAll("[data-service]").forEach(button=>{
- button.addEventListener("click",()=>{
-  selectedService=button.dataset.service;
-  openMap();
- });
-});
-
-function openMap(){
-
- pickup=null;
- destination=null;
- pickupMarker=null;
- destinationMarker=null;
-
- $("pickupInfo").textContent="🟢 الانطلاق: لم يحدد";
- $("destinationInfo").textContent="🔴 الوجهة: لم تحدد";
- $("mapMessage").textContent="حدد موقع الانطلاق على الخريطة.";
- $("serviceName").textContent="الخدمة المختارة: "+selectedService;
-
- showScreen("mapScreen");
-
- setTimeout(initMap,350);
-}
-
-/* الخريطة */
-
-function initMap(){
-
- if(typeof L==="undefined"){
-  $("mapMessage").textContent=
-  "تعذر تحميل الخريطة. تحقق من الإنترنت ثم أعد المحاولة.";
-  return;
- }
-
- if(!map){
-
-  map=L.map("map").setView([31.05,46.26],13);
-
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
-   maxZoom:19,
-   attribution:"© OpenStreetMap"
-  }).addTo(map);
-
-  map.on("click",function(e){
-   setPoint([e.latlng.lat,e.latlng.lng],mapMode);
-  });
- }
-
- setTimeout(()=>map.invalidateSize(),250);
-}
-
-function setPoint(coords,type){
-
- if(!map)return;
-
- if(type==="pickup"){
-
-  pickup=coords;
-
-  if(pickupMarker)map.removeLayer(pickupMarker);
-
-  pickupMarker=L.marker(coords).addTo(map)
-   .bindPopup("موقع الانطلاق").openPopup();
-
-  $("pickupInfo").textContent="🟢 تم تحديد الانطلاق";
-
- }else{
-
-  destination=coords;
-
-  if(destinationMarker)map.removeLayer(destinationMarker);
-
-  destinationMarker=L.marker(coords).addTo(map)
-   .bindPopup("الوجهة الجديدة").openPopup();
-
-  $("destinationInfo").textContent="🔴 تم تثبيت الوجهة الجديدة";
- }
-
- $("mapMessage").textContent="تم تحديد الموقع بنجاح.";
-}
-
-$("pickupButton").addEventListener("click",()=>{
- mapMode="pickup";
- $("mapMessage").textContent="اضغط على الخريطة لتحديد الانطلاق.";
-});
-
-$("destinationButton").addEventListener("click",()=>{
- mapMode="destination";
- $("mapMessage").textContent="اضغط على الخريطة لتثبيت الوجهة الجديدة.";
-});
-
-/* الموقع الحالي */
-
-$("currentLocation").addEventListener("click",()=>{
-
- if(!navigator.geolocation){
-  alert("المتصفح لا يدعم تحديد الموقع.");
-  return;
- }
-
- $("mapMessage").textContent="جار تحديد موقعك...";
-
- navigator.geolocation.getCurrentPosition(
-  pos=>{
-   const coords=[pos.coords.latitude,pos.coords.longitude];
-   mapMode="pickup";
-   setPoint(coords,"pickup");
-   map.setView(coords,16);
-  },
-  ()=>{
-   $("mapMessage").textContent="تعذر تحديد الموقع. اسمح للمتصفح باستخدام GPS.";
-  },
-  {enableHighAccuracy:true,timeout:15000}
- );
-});
-
-/* حساب المسافة */
-
-$("confirmDestination").addEventListener("click",async()=>{
-
- if(!pickup){
-  alert("حدد موقع الانطلاق أولاً.");
-  return;
- }
-
- if(!destination){
-  alert("حدد الوجهة الجديدة أولاً.");
-  return;
- }
-
- const button=$("confirmDestination");
- button.disabled=true;
- button.textContent="جار حساب المسافة...";
-
- try{
-
-  const url=
-  "https://router.project-osrm.org/route/v1/driving/"+
-  pickup[1]+","+pickup[0]+";"+
-  destination[1]+","+destination[0]+
-  "?overview=full&geometries=geojson";
-
-  const response=await fetch(url);
-
-  if(!response.ok)throw new Error("Network error");
-
-  const result=await response.json();
-
-  if(!result.routes||!result.routes.length){
-   throw new Error("No route");
-  }
-
-  const route=result.routes[0];
-
-  tripDistance=route.distance/1000;
-  tripDuration=Math.ceil(route.duration/60);
-
-  if(routeLayer)map.removeLayer(routeLayer);
-
-  routeLayer=L.geoJSON(route.geometry,{
-   style:{color:"#eabc49",weight:6}
-  }).addTo(map);
-
-  map.fitBounds(routeLayer.getBounds(),{padding:[25,25]});
-
-  displayPrices();
-
- }catch(e){
-
-  alert("لم نستطع حساب المسافة. تحقق من الإنترنت وحاول مجدداً.");
-
- }finally{
-
-  button.disabled=false;
-  button.textContent="تثبيت الوجهة وعرض الأسعار";
-
- }
-
-});
-
-/* الأسعار */
-
-function displayPrices(){
-
- showScreen("priceScreen");
-
- // كل كيلومترين أو جزء منه = 1000 دينار
- const units=Math.ceil(tripDistance/2);
- const base=units*1000;
-
- $("tripInfo").innerHTML=
- "الخدمة: "+selectedService+
- "<br>المسافة: "+tripDistance.toFixed(2)+" كم"+
- "<br>الوقت التقريبي: "+tripDuration+" دقيقة"+
- "<br>التعرفة الأساسية: "+base.toLocaleString("en-US")+" دينار";
-
- let cars=[];
-
- if(selectedService==="تكسي"){
-  cars=[
-   {name:"اقتصادي",icon:"🚗",factor:1},
-   {name:"مريح",icon:"🚙",factor:1.5},
-   {name:"VIP",icon:"🚘",factor:2}
-  ];
- }else{
-  cars=[
-   {name:"تكتك",icon:"🛺",factor:1}
-  ];
- }
-
- $("prices").innerHTML="";
-
- cars.forEach(car=>{
-
-  const price=Math.ceil(base*car.factor/250)*250;
-
-  const div=document.createElement("div");
-  div.className="price";
-
-  const details=document.createElement("div");
-
-  const 
+ if(index
