@@ -3,345 +3,201 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="theme-color" content="#07152f">
-<title>ROYAL TAXI 3D</title>
+<title>ROYAL TAXI</title>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
 *{box-sizing:border-box}
 :root{
- --navy:#07152f;
- --navy2:#10264b;
- --gold:#efbd4c;
- --gold2:#ffdf86;
- --white:#fff;
- --muted:#aab9d0;
+--gold:#efbd4c;
+--navy:#07152f;
+--panel:#14294b;
+--light:#fff;
 }
 body{
- margin:0;
- background:var(--navy);
- color:white;
- font-family:Tahoma,Arial,sans-serif;
+margin:0;background:var(--navy);color:white;
+font-family:Tahoma,Arial,sans-serif;
 }
 button,input,select{font-family:inherit}
 button{cursor:pointer}
 .hidden{display:none!important}
-.page{max-width:520px;margin:auto;padding:17px}
+.page{max-width:520px;margin:auto;padding:16px}
 header{
- padding:17px;
- display:flex;
- justify-content:space-between;
- align-items:center;
- background:linear-gradient(140deg,#10264b,#07152f);
- border-bottom:1px solid #b98c39;
- position:sticky;top:0;z-index:100;
+padding:17px;background:#10213e;
+border-bottom:2px solid var(--gold);
+display:flex;justify-content:space-between;
+align-items:center;position:sticky;top:0;z-index:10
 }
-.logo{
- font-size:23px;
- font-weight:900;
- color:var(--gold);
- text-shadow:0 2px 10px #d99b30;
-}
-.logo small{
- display:block;
- color:white;
- font-size:11px;
- margin-top:5px;
-}
-.iconbtn{
- border:1px solid var(--gold);
- background:linear-gradient(145deg,#263d66,#08152d);
- color:var(--gold);
- width:43px;height:43px;
- border-radius:50%;
- font-size:22px;
- box-shadow:0 4px 0 #050b18,0 5px 12px #0008;
-}
-h2{font-size:21px}
-p{line-height:1.8}
-.gold{color:var(--gold)}
-.muted{color:var(--muted);font-size:13px}
+.logo{color:var(--gold);font-size:23px;font-weight:bold}
+.logo small{display:block;color:white;font-size:11px;margin-top:5px}
 .card{
- background:linear-gradient(145deg,#172e53,#091a36);
- border:1px solid #657da0;
- border-radius:20px;
- padding:19px;
- margin-bottom:16px;
- box-shadow:0 8px 0 #030b1b,0 13px 25px #0007;
+background:linear-gradient(145deg,#203b65,#0d1c37);
+border:1px solid #667d9e;border-radius:19px;
+padding:18px;margin-bottom:16px;
+box-shadow:0 7px 0 #030b19,0 12px 20px #0006;
 }
-.primary{
- width:100%;
- border:1px solid #ffe49c;
- padding:16px;
- border-radius:15px;
- background:linear-gradient(145deg,#ffe18a,#d99b26);
- color:#101a2c;
- font-size:16px;
- font-weight:900;
- box-shadow:0 5px 0 #8b5e15,0 8px 16px #0006;
-}
-.primary:active,.service:active,.secondary:active{
- transform:translateY(4px);
- box-shadow:none;
-}
-.secondary{
- background:linear-gradient(145deg,#263f68,#10213e);
- color:white;
- border:1px solid #62799b;
- padding:14px;
- border-radius:13px;
- box-shadow:0 4px 0 #050d1c;
-}
+.hero{text-align:center;padding:20px 5px}
+.crown{font-size:65px;color:var(--gold)}
+.hero h1{font-size:34px;color:var(--gold)}
+.car{font-size:85px;filter:drop-shadow(0 12px 6px #000)}
+.gold{color:var(--gold)}
+.muted{color:#bac8db;font-size:13px;line-height:1.8}
 .field{margin:15px 0}
-label{
- display:block;
- margin-bottom:8px;
- font-size:13px;
- color:var(--gold2);
-}
+label{display:block;margin-bottom:8px;color:#ffe19a;font-size:13px}
 input,select{
- width:100%;
- padding:14px;
- border-radius:12px;
- border:1px solid #62799b;
- background:#0b1a33;
- color:white;
- font-size:15px;
- outline:none;
+width:100%;padding:15px;border-radius:12px;
+border:1px solid #647a99;background:#091a34;
+color:white;font-size:15px;outline:none
 }
 input:focus,select:focus{border-color:var(--gold)}
+.primary{
+width:100%;padding:16px;border:0;border-radius:13px;
+background:linear-gradient(145deg,#ffe28d,#d99d2e);
+color:#101b30;font-weight:bold;font-size:16px;
+box-shadow:0 5px 0 #805817;
+}
+.primary:active{transform:translateY(4px);box-shadow:none}
+.secondary{
+background:#263e61;color:white;border:1px solid #7085a4;
+padding:14px;border-radius:12px;
+}
+.secondary:active{transform:translateY(3px)}
 .role{
- display:flex;
- gap:13px;
- align-items:center;
- padding:17px;
- margin:12px 0;
- border:1px solid #607798;
- border-radius:16px;
- background:linear-gradient(145deg,#263d62,#101f3a);
- cursor:pointer;
- box-shadow:0 4px 0 #050b18;
+display:flex;align-items:center;gap:13px;
+padding:16px;margin:12px 0;
+background:#172e50;border:2px solid #526887;
+border-radius:14px;cursor:pointer
 }
-.role.active{border:2px solid var(--gold)}
-.roleicon{font-size:34px}
-.roleinfo{flex:1}
-.roleinfo small{
- display:block;
- color:var(--muted);
- margin-top:6px;
+.role.active{border-color:var(--gold);background:#294367}
+.role-icon{font-size:34px}
+.role-info{flex:1}
+.role-info small{display:block;color:#b8c6d9;margin-top:5px}
+.link{color:var(--gold);cursor:pointer;text-decoration:underline}
+.center{text-align:center}
+.error,.success{
+padding:12px;border-radius:10px;margin-top:12px;font-size:13px
 }
-.switch{text-align:center;font-size:13px;margin:20px}
-.link{color:var(--gold);text-decoration:underline;cursor:pointer}
-.error{
- color:#ffb6bb;
- background:#522630;
- padding:12px;
- border-radius:10px;
- margin-top:12px;
- font-size:13px;
-}
-.hero{
- position:relative;
- overflow:hidden;
- text-align:center;
- padding:25px 12px 5px;
-}
-.crown{
- font-size:65px;
- color:var(--gold);
- filter:drop-shadow(0 5px 12px #e4a72d);
-}
-.hero h1{
- color:var(--gold);
- font-size:34px;
- margin:8px 0;
- text-shadow:0 4px 12px #b98020;
-}
-.hero p{color:#e8edf8}
-.car3d{
- font-size:105px;
- margin:5px;
- display:inline-block;
- filter:drop-shadow(0 17px 9px #000);
- transform:perspective(300px) rotateX(-8deg);
- animation:float 3s ease-in-out infinite;
-}
-@keyframes float{
- 0%,100%{transform:translateY(0) perspective(300px) rotateX(-8deg)}
- 50%{transform:translateY(-9px) perspective(300px) rotateX(-8deg)}
-}
-.services{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:13px;
-}
+.error{background:#592b36;color:#ffc1c1}
+.success{background:#174c3b;color:#c3ffdc}
+.services{display:grid;grid-template-columns:1fr 1fr;gap:13px}
 .service{
- border:1px solid var(--gold);
- border-radius:19px;
- background:linear-gradient(145deg,#294775,#0a1934);
- padding:17px 8px;
- color:white;
- box-shadow:0 6px 0 #050b18,0 12px 18px #0008;
- text-align:center;
+padding:18px 8px;text-align:center;
+background:linear-gradient(145deg,#294a79,#10213f);
+border:1px solid var(--gold);border-radius:17px;
+color:white;box-shadow:0 5px 0 #030b19;
 }
-.service .emoji{font-size:45px;display:block}
-.service b{display:block;margin:9px 0;color:var(--gold2)}
-.service small{color:#c2d0e4}
-.service.wide{grid-column:span 2}
-.features{
- display:grid;
- grid-template-columns:repeat(4,1fr);
- gap:7px;
- margin:18px 0;
-}
-.feature{
- text-align:center;
- padding:12px 3px;
- border:1px solid #536b8d;
- border-radius:13px;
- background:#122849;
- font-size:21px;
-}
-.feature small{
- display:block;
- font-size:10px;
- color:white;
- margin-top:7px;
-}
+.service .emoji{display:block;font-size:48px}
+.service b{display:block;color:var(--gold);margin:9px}
+.service small{color:#c8d5e8}
+.service:active{transform:translateY(4px);box-shadow:none}
 #map{
- height:340px;
- width:100%;
- border-radius:16px;
- border:2px solid var(--gold);
- z-index:1;
+height:340px;border-radius:15px;
+border:2px solid var(--gold);z-index:1;
 }
-.row{display:flex;gap:9px;margin:10px 0}
+.row{display:flex;gap:10px;margin:12px 0}
 .row>*{flex:1}
 .point{
- background:#0a1a33;
- padding:13px;
- border:1px solid #536b8e;
- border-radius:12px;
- margin:9px 0;
- font-size:13px;
+padding:13px;background:#091a34;
+border:1px solid #536c90;border-radius:11px;
+margin:9px 0;font-size:13px;
 }
 .price{
- padding:15px;
- margin:10px 0;
- background:linear-gradient(145deg,#29436b,#101f3b);
- border:1px solid #7288a7;
- border-radius:14px;
- display:flex;
- justify-content:space-between;
- align-items:center;
- gap:8px;
+padding:15px;margin:10px 0;
+background:#1b355a;border:1px solid #7185a2;
+border-radius:13px;display:flex;
+justify-content:space-between;align-items:center;gap:8px;
 }
 .price button{
- background:var(--gold);
- color:#111c30;
- border:0;
- padding:10px;
- border-radius:10px;
- font-weight:bold;
+padding:10px;border:0;border-radius:9px;
+background:var(--gold);font-weight:bold;
 }
 .nav{
- display:flex;
- justify-content:space-around;
- position:sticky;
- bottom:0;
- background:#091832;
- border-top:1px solid var(--gold);
- padding:12px;
- z-index:100;
+display:flex;justify-content:space-around;
+padding:13px;background:#091831;
+border-top:1px solid var(--gold);
+position:sticky;bottom:0;
 }
-.nav button{
- color:var(--gold);
- background:none;
- border:0;
- font-size:13px;
-}
-.nav span{display:block;font-size:22px;margin-bottom:5px}
-.status{
- padding:12px;
- border-radius:12px;
- background:#0a1b34;
- color:var(--gold);
-}
+.nav button{background:none;border:0;color:var(--gold)}
+.nav span{display:block;font-size:23px;margin-bottom:5px}
 </style>
 </head>
 
 <body>
 
 <header>
- <button class="iconbtn" id="profileBtn">👤</button>
+ <button class="secondary" id="profileButton">👤</button>
  <div class="logo">ROYAL TAXI
   <small>رحلتك براحة وأمان 👑</small>
  </div>
- <button class="iconbtn" id="homeBtn">⌂</button>
+ <button class="secondary" id="homeButton">⌂</button>
 </header>
 
-<!-- تسجيل الدخول -->
+<!-- LOGIN -->
 
 <section id="loginScreen" class="page">
-
  <div class="hero">
   <div class="crown">♛</div>
   <h1>ROYAL TAXI</h1>
-  <p>أهلاً بك في رحلتك الملكية</p>
-  <div class="car3d">🚕</div>
-  <p class="gold">اختر حسابك للمتابعة</p>
+  <p>مرحباً بك في رويال تكسي</p>
+  <div class="car">🚕</div>
+  <p class="gold">اختر نوع حسابك</p>
  </div>
 
  <div class="card">
-  <div class="role active" id="passengerRole">
-   <span class="roleicon">👤</span>
-   <div class="roleinfo">
-    <b>راكب</b>
-    <small>احجز رحلتك بكل سهولة</small>
+
+  <div class="role active" id="passengerRole" tabindex="0">
+   <span class="role-icon">👤</span>
+   <div class="role-info">
+    <b>الراكب</b>
+    <small>حجز الرحلات والتنقل</small>
    </div>
    ✓
   </div>
 
-  <div class="role" id="driverRole">
-   <span class="roleicon">🚖</span>
-   <div class="roleinfo">
-    <b>سائق</b>
-    <small>استقبل طلبات الزبائن</small>
+  <div class="role" id="driverRole" tabindex="0">
+   <span class="role-icon">🚖</span>
+   <div class="role-info">
+    <b>السائق</b>
+    <small>استقبال طلبات الزبائن</small>
    </div>
    ✓
   </div>
 
-  <h2 id="authTitle" class="gold">تسجيل دخول الراكب</h2>
+  <h3 class="gold" id="authTitle">تسجيل دخول الراكب</h3>
 
   <form id="authForm">
-   <div id="nameGroup" class="field hidden">
+
+   <div class="field hidden" id="nameField">
     <label>الاسم الكامل</label>
-    <input id="name" placeholder="اسمك الكامل">
+    <input id="fullName" type="text" placeholder="اكتب اسمك">
    </div>
 
    <div class="field">
     <label>رقم الهاتف</label>
-    <input id="phone" type="tel" inputmode="numeric"
-    placeholder="07XXXXXXXXX">
+    <input id="phone" type="tel"
+    inputmode="numeric" placeholder="07XXXXXXXXX">
    </div>
 
    <div class="field">
     <label>كلمة المرور</label>
-    <input id="password" type="password" placeholder="6 أحرف على الأقل">
+    <input id="password" type="password"
+    placeholder="6 أحرف على الأقل">
    </div>
 
-   <div id="confirmGroup" class="field hidden">
+   <div class="field hidden" id="confirmField">
     <label>تأكيد كلمة المرور</label>
-    <input id="confirm" type="password">
+    <input id="confirmPassword" type="password">
    </div>
 
    <div id="driverFields" class="hidden">
     <div class="field">
-     <label>نوع السيارة</label>
+     <label>نوع المركبة</label>
      <select id="vehicle">
-      <option value="">اختر السيارة</option>
+      <option value="">اختر المركبة</option>
       <option>تكسي</option>
       <option>تكتك</option>
       <option>سيدان</option>
@@ -352,465 +208,579 @@ input:focus,select:focus{border-color:var(--gold)}
      <label>رقم اللوحة</label>
      <input id="plate" placeholder="رقم اللوحة">
     </div>
+    <div class="field">
+     <label>رقم رخصة القيادة</label>
+     <input id="license" placeholder="رقم الرخصة">
+    </div>
    </div>
 
-   <button class="primary" id="authSubmit">تسجيل الدخول</button>
+   <button class="primary" id="submitAuth" type="submit">
+    تسجيل الدخول
+   </button>
   </form>
 
-  <div class="switch">
+  <div class="center" style="margin-top:20px;font-size:13px">
    <span id="switchText">ليس لديك حساب؟</span>
-   <span class="link" id="switchMode">إنشاء حساب</span>
+   <span class="link" id="switchButton">إنشاء حساب جديد</span>
   </div>
-  <div id="error" class="error hidden"></div>
+
+  <div id="errorBox" class="error hidden"></div>
+  <div id="successBox" class="success hidden"></div>
  </div>
 </section>
 
-<!-- الرئيسية -->
+<!-- HOME -->
 
 <section id="homeScreen" class="page hidden">
 
- <div class="banner card">
-  <p class="gold">مرحباً بك في رويال تكسي</p>
-  <h2>رحلتك تبدأ من هنا 👑</h2>
-  <p>نوصلك بأمان وسرعة وبأفضل الأسعار</p>
-  <div class="car3d">🚕</div>
+ <div class="card hero">
+  <div class="crown">♛</div>
+  <h1>ROYAL TAXI</h1>
+  <p>أهلاً بك <b id="welcomeName" class="gold"></b></p>
+  <div class="car">🚕</div>
+  <p>رحلتك تبدأ من هنا</p>
  </div>
 
  <div class="card">
-  <h2>ماذا تريد اليوم؟</h2>
-  <p class="muted">اختر الخدمة المناسبة لك</p>
-
+  <h2 class="gold">اختر الخدمة</h2>
   <div class="services">
    <button class="service" data-service="تكسي">
     <span class="emoji">🚕</span>
     <b>طلب تكسي</b>
     <small>سيارة خاصة</small>
    </button>
-
    <button class="service" data-service="تكتك">
     <span class="emoji">🛺</span>
     <b>طلب تكتك</b>
-    <small>تنقل اقتصادي</small>
-   </button>
-
-   <button class="service wide" id="courier">
-    <span class="emoji">🏍️</span>
-    <b>طلب مندوب</b>
-    <small>توصيل سريع</small>
+    <small>رحلة اقتصادية</small>
    </button>
   </div>
  </div>
 
  <div class="card">
-  <h3 class="gold">لماذا رويال تكسي؟</h3>
-  <div class="features">
-   <div class="feature">🛡️<small>أمان</small></div>
-   <div class="feature">⚡<small>سرعة</small></div>
-   <div class="feature">🎧<small>دعم</small></div>
-   <div class="feature">⭐<small>أسعار</small></div>
-  </div>
+  <h3 class="gold">خدماتنا</h3>
+  <p>🛡️ رحلات آمنة</p>
+  <p>⚡ سرعة في الوصول</p>
+  <p>⭐ أسعار مناسبة</p>
+  <p>🎧 دعم ومساعدة</p>
  </div>
 
  <div class="nav">
   <button id="navAccount"><span>👤</span>حسابي</button>
   <button id="navHome"><span>🏠</span>الرئيسية</button>
-  <button id="navTrips"><span>🚕</span>الرحلات</button>
+  <button id="navTrips"><span>🚕</span>رحلاتي</button>
  </div>
 </section>
 
-<!-- الخريطة -->
+<!-- MAP -->
 
 <section id="mapScreen" class="page hidden">
-
  <div class="card">
-  <h2 class="gold">حدد رحلتك 📍</h2>
-  <p id="serviceTitle">طلب تكسي</p>
+  <h2 class="gold">خريطة الرحلة 📍</h2>
+  <p id="serviceName">نوع الخدمة</p>
 
   <div id="map"></div>
 
   <div class="row">
-   <button class="secondary" id="pickupMode">📍 تحديد الانطلاق</button>
-   <button class="secondary" id="destinationMode">🎯 تثبيت الوجهة الجديدة</button>
+   <button class="secondary" id="pickupButton">📍 الانطلاق</button>
+   <button class="secondary" id="destinationButton">🎯 الوجهة الجديدة</button>
   </div>
 
-  <button class="secondary" style="width:100%" id="myLocation">
-   ◎ موقعي الحالي
-  </button>
+  <button class="secondary" id="currentLocation"
+  style="width:100%">◎ موقعي الحالي</button>
 
-  <div class="point" id="mapStatus">
-   اختر موقع الانطلاق من الخريطة أولاً.
+  <div class="point" id="mapMessage">
+   حدد موقع الانطلاق على الخريطة.
   </div>
 
-  <div class="point" id="pickupText">🟢 الانطلاق: لم يحدد</div>
-  <div class="point" id="destinationText">🔴 الوجهة: لم تحدد</div>
+  <div class="point" id="pickupInfo">🟢 الانطلاق: لم يحدد</div>
+  <div class="point" id="destinationInfo">🔴 الوجهة: لم تحدد</div>
 
-  <button class="primary" id="calculate">
+  <button class="primary" id="confirmDestination">
    تثبيت الوجهة وعرض الأسعار
   </button>
  </div>
 
- <button class="secondary" style="width:100%" id="backHome">
-  الرجوع للرئيسية
+ <button class="secondary" id="mapBack" style="width:100%">
+  العودة للرئيسية
  </button>
 </section>
 
-<!-- الأسعار -->
+<!-- PRICES -->
 
-<section id="pricesScreen" class="page hidden">
+<section id="priceScreen" class="page hidden">
  <div class="card">
-  <h2 class="gold">قائمة أسعار الرحلات 👑</h2>
-  <p class="muted">كل 2 كم = 1,000 دينار عراقي</p>
-  <div class="point" id="tripDetails"></div>
-  <div id="priceList"></div>
-  <button class="secondary" style="width:100%" id="changeDestination">
+  <h2 class="gold">قائمة أسعار الرحلة 👑</h2>
+  <p class="muted">كل 2 كيلومتر = 1,000 دينار عراقي</p>
+  <div id="tripInfo" class="point"></div>
+  <div id="prices"></div>
+  <button class="secondary" id="editTrip" style="width:100%">
    تعديل الوجهة
   </button>
  </div>
 </section>
 
-<!-- السائق -->
+<!-- DRIVER -->
 
 <section id="driverScreen" class="page hidden">
- <div class="card">
-  <div class="hero">
-   <div class="car3d">🚖</div>
-   <h2 class="gold">لوحة تحكم السائق</h2>
-  </div>
-  <h3>أهلاً بك <span id="driverName"></span></h3>
+ <div class="card center">
+  <div class="car">🚖</div>
+  <h2 class="gold">لوحة السائق</h2>
+  <p>أهلاً بك <b id="driverName"></b></p>
   <p>المركبة: <b id="driverVehicle"></b></p>
   <p>اللوحة: <b id="driverPlate"></b></p>
-  <div class="status" id="driverStatus">أنت غير متصل</div>
-  <button class="primary" id="onlineBtn">تشغيل استقبال الرحلات</button>
+  <div id="driverStatus" class="point">غير متصل</div>
+  <button class="primary" id="onlineButton">تشغيل استقبال الرحلات</button>
  </div>
+
  <div class="card">
   <h3 class="gold">طلبات الرحلات</h3>
-  <div id="requests">لا توجد طلبات حالياً.</div>
+  <div id="driverRequests">لا توجد طلبات حالياً.</div>
  </div>
- <button class="secondary" style="width:100%" id="driverLogout">تسجيل الخروج</button>
+
+ <button class="secondary" id="driverLogout" style="width:100%">
+  تسجيل الخروج
+ </button>
 </section>
 
-<!-- الحساب -->
+<!-- ACCOUNT -->
 
 <section id="accountScreen" class="page hidden">
  <div class="card">
-  <h2 class="gold">حسابي 👤</h2>
-  <p>الاسم: <span id="accountName"></span></p>
-  <p>الهاتف: <span id="accountPhone"></span></p>
-  <button class="primary" id="logout">تسجيل الخروج</button>
+  <h2 class="gold">حسابي</h2>
+  <p>الاسم: <b id="accountName"></b></p>
+  <p>الهاتف: <b id="accountPhone"></b></p>
+  <button class="primary" id="logoutButton">تسجيل الخروج</button>
  </div>
 </section>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
+/* ROYAL TAXI - النسخة المصححة */
+
+(function(){
+
 "use strict";
 
 const $=id=>document.getElementById(id);
 
 let role="passenger";
-let registering=false;
-let user=null;
-let service="تكسي";
+let register=false;
+let currentUser=null;
+let selectedService="تكسي";
+
 let map=null;
 let pickup=null;
 let destination=null;
 let pickupMarker=null;
 let destinationMarker=null;
-let mode="pickup";
-let routeLine=null;
-let online=false;
-let tripKm=0;
-let tripMinutes=0;
-let prices=[];
+let routeLayer=null;
+let mapMode="pickup";
+let tripDistance=0;
+let tripDuration=0;
 
-function users(){
+function getUsers(){
  try{
-  return JSON.parse(localStorage.getItem("royal3d_users")||"[]");
+  const data=JSON.parse(localStorage.getItem("royal_users_v3")||"[]");
+  return Array.isArray(data)?data:[];
  }catch(e){return []}
 }
 
-function saveUsers(list){
+function saveUsers(data){
  try{
-  localStorage.setItem("royal3d_users",JSON.stringify(list));
+  localStorage.setItem("royal_users_v3",JSON.stringify(data));
   return true;
- }catch(e){return false}
+ }catch(e){
+  error("تعذر الحفظ. تحقق من مساحة المتصفح.");
+  return false;
+ }
 }
 
-function message(t){
- $("error").textContent=t;
- $("error").classList.remove("hidden");
+function error(text){
+ $("errorBox").textContent=text;
+ $("errorBox").classList.remove("hidden");
+ $("successBox").classList.add("hidden");
 }
 
-function clearMessage(){
- $("error").classList.add("hidden");
+function success(text){
+ $("successBox").textContent=text;
+ $("successBox").classList.remove("hidden");
+ $("errorBox").classList.add("hidden");
 }
 
-function screen(id){
- document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));
+function clearMessages(){
+ $("errorBox").classList.add("hidden");
+ $("successBox").classList.add("hidden");
+}
+
+function showScreen(id){
+ document.querySelectorAll(".page").forEach(p=>{
+  p.classList.add("hidden");
+ });
  $(id).classList.remove("hidden");
  window.scrollTo(0,0);
 }
 
-function selectRole(r){
- role=r;
- $("passengerRole").classList.toggle("active",r==="passenger");
- $("driverRole").classList.toggle("active",r==="driver");
- updateAuth();
+function chooseRole(value){
+ role=value;
+ clearMessages();
+
+ $("passengerRole").classList.toggle("active",value==="passenger");
+ $("driverRole").classList.toggle("active",value==="driver");
+
+ updateForm();
 }
 
-$("passengerRole").onclick=()=>selectRole("passenger");
-$("driverRole").onclick=()=>selectRole("driver");
-
-function updateAuth(){
+function updateForm(){
  $("authTitle").textContent=
- (registering?"إنشاء حساب ":"تسجيل دخول ")+
- (role==="driver"?"السائق":"الراكب");
+ (register?"إنشاء حساب ":"تسجيل دخول ")+
+ (role==="passenger"?"الراكب":"السائق");
 
- $("nameGroup").classList.toggle("hidden",!registering);
- $("confirmGroup").classList.toggle("hidden",!registering);
- $("driverFields").classList.toggle("hidden",!(registering&&role==="driver"));
- $("authSubmit").textContent=registering?"إنشاء الحساب":"تسجيل الدخول";
- $("switchText").textContent=registering?"لديك حساب بالفعل؟":"ليس لديك حساب؟";
- $("switchMode").textContent=registering?"تسجيل الدخول":"إنشاء حساب";
+ $("nameField").classList.toggle("hidden",!register);
+ $("confirmField").classList.toggle("hidden",!register);
+ $("driverFields").classList.toggle("hidden",
+  !(register&&role==="driver"));
+
+ $("submitAuth").textContent=register?
+ "إنشاء الحساب":"تسجيل الدخول";
+
+ $("switchText").textContent=register?
+ "لديك حساب بالفعل؟":"ليس لديك حساب؟";
+
+ $("switchButton").textContent=register?
+ "تسجيل الدخول":"إنشاء حساب جديد";
 }
 
-$("switchMode").onclick=()=>{
- registering=!registering;
- clearMessage();
- updateAuth();
-};
+/* اختيار نوع الحساب */
 
-$("authForm").onsubmit=e=>{
+$("passengerRole").addEventListener("click",()=>chooseRole("passenger"));
+$("driverRole").addEventListener("click",()=>chooseRole("driver"));
+
+$("passengerRole").addEventListener("keydown",e=>{
+ if(e.key==="Enter"||e.key===" "){
+  e.preventDefault();chooseRole("passenger");
+ }
+});
+
+$("driverRole").addEventListener("keydown",e=>{
+ if(e.key==="Enter"||e.key===" "){
+  e.preventDefault();chooseRole("driver");
+ }
+});
+
+/* التبديل بين التسجيل والدخول */
+
+$("switchButton").addEventListener("click",()=>{
+ register=!register;
+ clearMessages();
+ updateForm();
+});
+
+/* التسجيل وتسجيل الدخول */
+
+$("authForm").addEventListener("submit",function(e){
+
  e.preventDefault();
- clearMessage();
+ clearMessages();
 
  const phone=$("phone").value.trim().replace(/[\s-]/g,"");
  const password=$("password").value;
 
  if(!/^07[0-9]{9}$/.test(phone)){
-  message("أدخل رقم هاتف عراقي صحيح يبدأ بـ 07 ويتكون من 11 رقماً.");
+  error("رقم الهاتف غير صحيح. اكتب 11 رقماً يبدأ بـ 07.");
   return;
  }
+
  if(password.length<6){
-  message("كلمة المرور يجب أن تكون 6 أحرف على الأقل.");
+  error("كلمة المرور يجب أن تكون 6 أحرف على الأقل.");
   return;
  }
 
- let list=users();
+ let list=getUsers();
 
- if(registering){
-  const name=$("name").value.trim();
-  if(name.length<3){message("اكتب اسمك الكامل.");return}
-  if(password!==$("confirm").value){
-   message("كلمتا المرور غير متطابقتين.");
+ if(register){
+
+  const name=$("fullName").value.trim();
+
+  if(name.length<3){
+   error("يرجى إدخال الاسم الكامل.");
    return;
   }
+
+  if(password!==$("confirmPassword").value){
+   error("كلمة المرور غير متطابقة.");
+   return;
+  }
+
   if(list.some(u=>u.phone===phone&&u.role===role)){
-   message("هذا الرقم مسجل لهذا النوع من الحسابات.");
+   error("هذا الرقم مسجل مسبقاً لهذا النوع من الحسابات.");
    return;
   }
 
-  let vehicle="",plate="";
+  let vehicle="";
+  let plate="";
+  let license="";
+
   if(role==="driver"){
    vehicle=$("vehicle").value;
    plate=$("plate").value.trim();
-   if(!vehicle||plate.length<2){
-    message("أدخل نوع المركبة ورقم اللوحة.");
+   license=$("license").value.trim();
+
+   if(!vehicle||plate.length<2||license.length<2){
+    error("أكمل معلومات المركبة واللوحة والرخصة.");
     return;
    }
   }
 
-  user={
+  const newUser={
    id:Date.now(),
-   name,phone,password,role,vehicle,plate,online:false
+   name:name,
+   phone:phone,
+   password:password,
+   role:role,
+   vehicle:vehicle,
+   plate:plate,
+   license:license,
+   online:false
   };
-  list.push(user);
-  if(!saveUsers(list)){message("تعذر حفظ الحساب.");return}
-  enter();
+
+  list.push(newUser);
+
+  if(!saveUsers(list))return;
+
+  currentUser=newUser;
+  register=false;
+  openDashboard();
+
  }else{
-  user=list.find(u=>u.phone===phone&&u.password===password&&u.role===role);
-  if(!user){message("بيانات الدخول غير صحيحة أو الحساب غير موجود.");return}
-  enter();
+
+  currentUser=list.find(u=>
+   u.phone===phone&&
+   u.password===password&&
+   u.role===role
+  );
+
+  if(!currentUser){
+   error("بيانات الدخول غير صحيحة. تأكد من نوع الحساب ورقم الهاتف وكلمة المرور.");
+   return;
+  }
+
+  openDashboard();
  }
-};
 
-function enter(){
- registering=false;
- updateAuth();
- if(user.role==="driver"){
-  $("driverName").textContent=user.name;
-  $("driverVehicle").textContent=user.vehicle;
-  $("driverPlate").textContent=user.plate;
-  online=!!user.online;
-  updateOnline();
-  screen("driverScreen");
- }else{
-  screen("homeScreen");
- }
-}
-
-function logout(){
- if(user&&user.role==="driver"){
-  user.online=false;
-  updateUser();
- }
- user=null;
- online=false;
- registering=false;
- $("authForm").reset();
- selectRole("passenger");
- screen("loginScreen");
-}
-
-function updateUser(){
- let list=users();
- let i=list.findIndex(u=>u.id===user.id);
- if(i>=0){list[i]=user;saveUsers(list)}
-}
-
-$("logout").onclick=logout;
-$("driverLogout").onclick=logout;
-
-function updateOnline(){
- $("driverStatus").textContent=online?"أنت متصل وتستقبل الرحلات":"أنت غير متصل";
- $("onlineBtn").textContent=online?"إيقاف استقبال الرحلات":"تشغيل استقبال الرحلات";
-}
-
-$("onlineBtn").onclick=()=>{
- online=!online;
- user.online=online;
- updateUser();
- updateOnline();
-};
-
-/* الرئيسية والخدمات */
-
-document.querySelectorAll("[data-service]").forEach(btn=>{
- btn.onclick=()=>{
-  service=btn.dataset.service;
-  openMap();
- };
 });
 
-$("courier").onclick=()=>{
- service="مندوب";
- openMap();
-};
+/* فتح لوحة الحساب */
 
-$("homeBtn").onclick=()=>{
- if(user&&user.role==="passenger")screen("homeScreen");
-};
+function openDashboard(){
 
-$("navHome").onclick=()=>screen("homeScreen");
-$("navAccount").onclick=()=>{
- if(!user)return;
- $("accountName").textContent=user.name;
- $("accountPhone").textContent=user.phone;
- screen("accountScreen");
-};
-$("navTrips").onclick=()=>{
- if(pickup&&destination)screen("pricesScreen");
- else alert("لم تقم بطلب رحلة بعد.");
-};
+ clearMessages();
 
-$("profileBtn").onclick=()=>{
- if(user&&user.role==="passenger")$("navAccount").click();
-};
+ if(currentUser.role==="passenger"){
+  $("welcomeName").textContent=currentUser.name;
+  showScreen("homeScreen");
+ }else{
+  $("driverName").textContent=currentUser.name;
+  $("driverVehicle").textContent=currentUser.vehicle;
+  $("driverPlate").textContent=currentUser.plate;
+  updateOnline();
+  showScreen("driverScreen");
+ }
+}
+
+/* حفظ المستخدم */
+
+function updateCurrentUser(){
+ if(!currentUser)return;
+
+ const list=getUsers();
+ const index=list.findIndex(u=>u.id===currentUser.id);
+
+ if(index!==-1){
+  list[index]=currentUser;
+  saveUsers(list);
+ }
+}
+
+/* الخروج */
+
+function logout(){
+
+ if(currentUser&&currentUser.role==="driver"){
+  currentUser.online=false;
+  updateCurrentUser();
+ }
+
+ currentUser=null;
+ register=false;
+ $("authForm").reset();
+ chooseRole("passenger");
+ showScreen("loginScreen");
+}
+
+$("logoutButton").addEventListener("click",logout);
+$("driverLogout").addEventListener("click",logout);
+
+/* السائق */
+
+let isOnline=false;
+
+function updateOnline(){
+ isOnline=!!currentUser.online;
+
+ $("driverStatus").textContent=
+ isOnline?"🟢 أنت متصل وتستقبل الرحلات":"🔴 أنت غير متصل";
+
+ $("onlineButton").textContent=
+ isOnline?"إيقاف استقبال الرحلات":"تشغيل استقبال الرحلات";
+}
+
+$("onlineButton").addEventListener("click",()=>{
+ isOnline=!isOnline;
+ currentUser.online=isOnline;
+ updateCurrentUser();
+ updateOnline();
+});
+
+/* الرئيسية */
+
+document.querySelectorAll("[data-service]").forEach(button=>{
+ button.addEventListener("click",()=>{
+  selectedService=button.dataset.service;
+  openMap();
+ });
+});
 
 function openMap(){
+
  pickup=null;
  destination=null;
- if(pickupMarker&&map)map.removeLayer(pickupMarker);
- if(destinationMarker&&map)map.removeLayer(destinationMarker);
  pickupMarker=null;
  destinationMarker=null;
- if(routeLine&&map)map.removeLayer(routeLine);
- routeLine=null;
 
- $("serviceTitle").textContent="نوع الخدمة: "+service;
- $("pickupText").textContent="🟢 الانطلاق: لم يحدد";
- $("destinationText").textContent="🔴 الوجهة: لم تحدد";
- $("mapStatus").textContent="حدد موقع الانطلاق من الخريطة.";
- screen("mapScreen");
- setTimeout(initMap,250);
+ $("pickupInfo").textContent="🟢 الانطلاق: لم يحدد";
+ $("destinationInfo").textContent="🔴 الوجهة: لم تحدد";
+ $("mapMessage").textContent="حدد موقع الانطلاق على الخريطة.";
+ $("serviceName").textContent="الخدمة المختارة: "+selectedService;
+
+ showScreen("mapScreen");
+
+ setTimeout(initMap,350);
 }
 
 /* الخريطة */
 
 function initMap(){
+
  if(typeof L==="undefined"){
-  $("mapStatus").textContent="تعذر تحميل الخريطة. تحقق من الإنترنت.";
+  $("mapMessage").textContent=
+  "تعذر تحميل الخريطة. تحقق من الإنترنت ثم أعد المحاولة.";
   return;
  }
+
  if(!map){
+
   map=L.map("map").setView([31.05,46.26],13);
+
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
    maxZoom:19,
    attribution:"© OpenStreetMap"
   }).addTo(map);
-  map.on("click",e=>{
-   setPoint([e.latlng.lat,e.latlng.lng],mode);
+
+  map.on("click",function(e){
+   setPoint([e.latlng.lat,e.latlng.lng],mapMode);
   });
  }
- setTimeout(()=>map.invalidateSize(),200);
+
+ setTimeout(()=>map.invalidateSize(),250);
 }
 
 function setPoint(coords,type){
+
  if(!map)return;
 
  if(type==="pickup"){
+
   pickup=coords;
+
   if(pickupMarker)map.removeLayer(pickupMarker);
-  pickupMarker=L.marker(coords).addTo(map).bindPopup("موقع الانطلاق").openPopup();
-  $("pickupText").textContent="🟢 تم تحديد موقع الانطلاق";
+
+  pickupMarker=L.marker(coords).addTo(map)
+   .bindPopup("موقع الانطلاق").openPopup();
+
+  $("pickupInfo").textContent="🟢 تم تحديد الانطلاق";
+
  }else{
+
   destination=coords;
+
   if(destinationMarker)map.removeLayer(destinationMarker);
-  destinationMarker=L.marker(coords).addTo(map).bindPopup("الوجهة الجديدة").openPopup();
-  $("destinationText").textContent="🔴 تم تثبيت الوجهة الجديدة";
+
+  destinationMarker=L.marker(coords).addTo(map)
+   .bindPopup("الوجهة الجديدة").openPopup();
+
+  $("destinationInfo").textContent="🔴 تم تثبيت الوجهة الجديدة";
  }
 
- $("mapStatus").textContent="تم حفظ الموقع على الخريطة.";
+ $("mapMessage").textContent="تم تحديد الموقع بنجاح.";
 }
 
-$("pickupMode").onclick=()=>{
- mode="pickup";
- $("mapStatus").textContent="اضغط على الخريطة لتحديد موقع الانطلاق.";
-};
+$("pickupButton").addEventListener("click",()=>{
+ mapMode="pickup";
+ $("mapMessage").textContent="اضغط على الخريطة لتحديد الانطلاق.";
+});
 
-$("destinationMode").onclick=()=>{
- mode="destination";
- $("mapStatus").textContent="اضغط على الخريطة لتثبيت الوجهة الجديدة.";
-};
+$("destinationButton").addEventListener("click",()=>{
+ mapMode="destination";
+ $("mapMessage").textContent="اضغط على الخريطة لتثبيت الوجهة الجديدة.";
+});
 
-$("myLocation").onclick=()=>{
+/* الموقع الحالي */
+
+$("currentLocation").addEventListener("click",()=>{
+
  if(!navigator.geolocation){
   alert("المتصفح لا يدعم تحديد الموقع.");
   return;
  }
- navigator.geolocation.getCurrentPosition(pos=>{
-  const coords=[pos.coords.latitude,pos.coords.longitude];
-  mode="pickup";
-  setPoint(coords,"pickup");
-  map.setView(coords,16);
- },()=>alert("اسمح للمتصفح باستخدام موقعك."));
-};
 
-$("backHome").onclick=()=>screen("homeScreen");
+ $("mapMessage").textContent="جار تحديد موقعك...";
 
-/* حساب المسافة والأسعار */
+ navigator.geolocation.getCurrentPosition(
+  pos=>{
+   const coords=[pos.coords.latitude,pos.coords.longitude];
+   mapMode="pickup";
+   setPoint(coords,"pickup");
+   map.setView(coords,16);
+  },
+  ()=>{
+   $("mapMessage").textContent="تعذر تحديد الموقع. اسمح للمتصفح باستخدام GPS.";
+  },
+  {enableHighAccuracy:true,timeout:15000}
+ );
+});
 
-$("calculate").onclick=async()=>{
- if(!pickup){alert("حدد الانطلاق أولاً.");return}
- if(!destination){alert("حدد الوجهة الجديدة.");return}
- if(pickup[0]===destination[0]&&pickup[1]===destination[1]){
-  alert("اختر وجهة مختلفة عن موقع الانطلاق.");
+/* حساب المسافة */
+
+$("confirmDestination").addEventListener("click",async()=>{
+
+ if(!pickup){
+  alert("حدد موقع الانطلاق أولاً.");
   return;
  }
 
- $("calculate").textContent="جار حساب المسافة...";
+ if(!destination){
+  alert("حدد الوجهة الجديدة أولاً.");
+  return;
+ }
+
+ const button=$("confirmDestination");
+ button.disabled=true;
+ button.textContent="جار حساب المسافة...";
 
  try{
+
   const url=
   "https://router.project-osrm.org/route/v1/driving/"+
   pickup[1]+","+pickup[0]+";"+
@@ -818,37 +788,82 @@ $("calculate").onclick=async()=>{
   "?overview=full&geometries=geojson";
 
   const response=await fetch(url);
-  if(!response.ok)throw new Error();
-  const data=await response.json();
-  if(!data.routes||!data.routes.length)throw new Error();
 
-  const route=data.routes[0];
-  tripKm=route.distance/1000;
-  tripMinutes=Math.ceil(route.duration/60);
+  if(!response.ok)throw new Error("Network error");
 
-  if(routeLine)map.removeLayer(routeLine);
-  routeLine=L.geoJSON(route.geometry,{
-   style:{color:"#e6ad36",weight:6,opacity:.9}
+  const result=await response.json();
+
+  if(!result.routes||!result.routes.length){
+   throw new Error("No route");
+  }
+
+  const route=result.routes[0];
+
+  tripDistance=route.distance/1000;
+  tripDuration=Math.ceil(route.duration/60);
+
+  if(routeLayer)map.removeLayer(routeLayer);
+
+  routeLayer=L.geoJSON(route.geometry,{
+   style:{color:"#eabc49",weight:6}
   }).addTo(map);
 
-  map.fitBounds(routeLine.getBounds(),{padding:[25,25]});
-  showPrices();
- }catch(e){
-  alert("تعذر حساب الطريق. تحقق من الإنترنت وحاول مجدداً.");
- }finally{
-  $("calculate").textContent="تثبيت الوجهة وعرض الأسعار";
- }
-};
+  map.fitBounds(routeLayer.getBounds(),{padding:[25,25]});
 
-function showPrices(){
- screen("pricesScreen");
+  displayPrices();
+
+ }catch(e){
+
+  alert("لم نستطع حساب المسافة. تحقق من الإنترنت وحاول مجدداً.");
+
+ }finally{
+
+  button.disabled=false;
+  button.textContent="تثبيت الوجهة وعرض الأسعار";
+
+ }
+
+});
+
+/* الأسعار */
+
+function displayPrices(){
+
+ showScreen("priceScreen");
 
  // كل كيلومترين أو جزء منه = 1000 دينار
- const units=Math.ceil(tripKm/2);
- const basePrice=units*1000;
+ const units=Math.ceil(tripDistance/2);
+ const base=units*1000;
 
- $("tripDetails").innerHTML=
- "نوع الخدمة: "+service+
- "<br>المسافة: "+tripKm.toFixed(2)+" كم"+
- "<br>الوقت التقريبي: "+tripMinutes+" دقيقة"+
- "<br>التعرفة: 1000 د
+ $("tripInfo").innerHTML=
+ "الخدمة: "+selectedService+
+ "<br>المسافة: "+tripDistance.toFixed(2)+" كم"+
+ "<br>الوقت التقريبي: "+tripDuration+" دقيقة"+
+ "<br>التعرفة الأساسية: "+base.toLocaleString("en-US")+" دينار";
+
+ let cars=[];
+
+ if(selectedService==="تكسي"){
+  cars=[
+   {name:"اقتصادي",icon:"🚗",factor:1},
+   {name:"مريح",icon:"🚙",factor:1.5},
+   {name:"VIP",icon:"🚘",factor:2}
+  ];
+ }else{
+  cars=[
+   {name:"تكتك",icon:"🛺",factor:1}
+  ];
+ }
+
+ $("prices").innerHTML="";
+
+ cars.forEach(car=>{
+
+  const price=Math.ceil(base*car.factor/250)*250;
+
+  const div=document.createElement("div");
+  div.className="price";
+
+  const details=document.createElement("div");
+
+  const 
